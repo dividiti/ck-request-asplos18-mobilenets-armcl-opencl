@@ -51,8 +51,8 @@ $ ck install request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-
 ## Build and make a sample run
 
 ```
-$ ck compile request-asplos18:program:mobilenets-armcl-opencl
-$ ck run request-asplos18:program:mobilenets-armcl-opencl
+$ ck compile request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
+$ ck run request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
 ...
 --------------------------------
 Process results in predictions
