@@ -30,8 +30,8 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 Note that *#* sign means *sudo* on Linux
 
 ```
-# sudo apt-get install python python-pip sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev
-# pip install numpy scipy
+# sudo apt-get install python python-pip sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev python-numpy python-scipy
+# sudo pip install pillow
 ```
 
 ### Install Collective Knowledge
