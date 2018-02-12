@@ -55,7 +55,7 @@
         },
         "post_process_via_ck": "yes",
         "post_process_cmds": [
-          "python $#ck_take_from_{program:cb287514a974a848}#$postprocess.py"
+          "python $#ck_take_from_{program:5a9a6915b20ea1bf}#$postprocess.py"
         ],
         "run_cmd_main": "$#BIN_FILE#$",
         "run_output_files": [
