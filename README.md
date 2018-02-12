@@ -17,6 +17,8 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 * **Metrics:** total execution time; accuracy after validating some(all) images from the data set
 * **Output:** classification result; execution time; accuracy
 * **Experiments:** CK command line 
+* **How much time is needed to prepare workflow (approximately)?:**: 20 minutes
+* **How much time is needed to complete experiments (approximately)?**:
 * **Collective Knowledge workflow framework used?:** Yes
 * **Publicly available?:** Yes
 
