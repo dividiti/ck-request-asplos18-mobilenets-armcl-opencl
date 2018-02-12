@@ -11,7 +11,7 @@
 ### Get submission repository
 
 ```
-$ ck pull repo --url=https://github.com/dividiti/request-asplos18
+$ ck pull repo --url=https://github.com/dividiti/https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl
 ```
 
 ### Pre-install dependencies
