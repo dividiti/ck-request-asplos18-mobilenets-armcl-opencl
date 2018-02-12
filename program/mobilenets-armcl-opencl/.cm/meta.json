@@ -1,5 +1,5 @@
 {
-  "backup_data_uid": "cb287514a974a848",
+  "backup_data_uid": "5a9a6915b20ea1bf",
   "build_compiler_vars": {
     "ARM_COMPUTE_CL": 1
   },
@@ -51,7 +51,6 @@
         "fine_grain_timer_file": "tmp-ck-timer.json",
         "need_compute_device": "opencl",
         "pre_process_via_ck": {
-          "data_uoa": "cb287514a974a848",
           "script_name": "preprocess"
         },
         "post_process_via_ck": "yes",
