@@ -246,6 +246,7 @@ void run_mobilenet()
                             session().batch_size());
 
     Graph graph;
+    float alpha = session().image_width_multiplier();
     cout << "\nPrepare graph...\n";
     xopenme_clock_start(X_TIMER_SETUP);
     graph << target_hint
@@ -253,7 +254,7 @@ void run_mobilenet()
           << Tensor(TensorInfo(input_shape, 1, DATATYPE), 
              arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
           << ConvolutionLayer(
-              3U, 3U, 32U,
+              3U, 3U, (unsigned int)(32 * alpha),
               weights_accessor("Conv2d_0_weights.npy"),
               empty_accessor(),
               PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR))
@@ -266,26 +267,26 @@ void run_mobilenet()
               0.001f)
 
           << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f))
-          << get_dwsc_node("Conv2d_1", 64, PadStrideInfo(1, 1, 1, 1), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_2", 128, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_3", 128, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_4", 256, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_5", 256, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_6", 512, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_7", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_8", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_9", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_10", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_11", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_12", 1024, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << get_dwsc_node("Conv2d_13", 1024, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_1", (unsigned int )(64 * alpha), PadStrideInfo(1, 1, 1, 1), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_2", (unsigned int )(128 * alpha), PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_3", (unsigned int )(128 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_4", (unsigned int )(256 * alpha), PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_5", (unsigned int )(256 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_6", (unsigned int )(512 * alpha), PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_7", (unsigned int )(512 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_8", (unsigned int )(512 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_9", (unsigned int )(512 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_10", (unsigned int )(512 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_11", (unsigned int )(512 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_12", (unsigned int )(1024 * alpha), PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << get_dwsc_node("Conv2d_13", (unsigned int )(1024 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
           << PoolingLayer(PoolingLayerInfo(PoolingType::AVG))
           << ConvolutionLayer(
-              1U, 1U, 1001U,
+              1U, 1U, (unsigned int )(1001 * alpha),
               weights_accessor("Logits_Conv2d_1c_1x1_weights.npy"),
               weights_accessor("Logits_Conv2d_1c_1x1_biases.npy"),
               PadStrideInfo(1, 1, 0, 0))
-          << ReshapeLayer(TensorShape(1001U))
+          << ReshapeLayer(TensorShape((unsigned int )(1001*alpha)))
           << SoftmaxLayer()
           << Tensor(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
     xopenme_clock_end(X_TIMER_SETUP);
