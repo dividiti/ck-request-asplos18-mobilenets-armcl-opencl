@@ -29,7 +29,8 @@ function Convert() {
   echo ""
   echo "Converting weights ..."
 
-  python ${ORIGINAL_PACKAGE_DIR}/convert_weights.py
+  THIS_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  python ${THIS_SCRIPT_DIR}/convert_weights.py
   CheckStatus "Conversion"
 }
 
