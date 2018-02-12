@@ -10,7 +10,7 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 * **Transformations:** 
 * **Binary:** will be compiled on a target platform
 * **Data set:** ImageNet
-* **Run-time environment:** Linux
+* **Run-time environment:** Linux; OpenCL drivers v1.2+
 * **Hardware:** HiKey 960 Development Board (or any similar)
 * **Run-time state:** 
 * **Execution:** CPU and GPU frequency set to maximum
