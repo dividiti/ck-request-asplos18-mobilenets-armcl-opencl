@@ -1,5 +1,25 @@
 # [dividiti](http://dividiti.com)'s submission to [ReQuEST @ ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
 
+## Artifact check-list (meta-information)
+
+We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submission_extra.html) from CGO, PPoPP, PACT and SuperComputing and other systems conferences.
+
+* **Algorithm:** image classification
+* **Program:** Arm Compute Library v18+ with MobileNets
+* **Compilation:** GCC v6+
+* **Transformations:** 
+* **Binary:** will be compiled on a target platform
+* **Data set:** ImageNet
+* **Run-time environment:** Linux
+* **Hardware:** HiKey 960 Development Board (or any similar)
+* **Run-time state:** 
+* **Execution:** CPU and GPU frequency set to maximum
+* **Metrics:** total execution time; accuracy after validating some(all) images from the data set
+* **Output:** classification result; execution time; accuracy
+* **Experiments:** CK command line 
+* **Collective Knowledge workflow framework used?:** Yes
+* **Publicly available?:** Yes
+
 ## Installation
 
 ### Install Collective Knowledge
@@ -22,7 +42,7 @@ $ ck pull repo --url=https://github.com/dividiti/request-asplos18-mobilenets-arm
 $ ck install ck-caffe:package:imagenet-2012-aux
 $ ck install ck-caffe:package:imagenet-2012-val-min-resized
 $ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
-$ ck install request-asplos18:package:weights-mobilenet-v1-1.0-224-npy
+$ ck install request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
 ```
 
 ## Build and make a sample run
