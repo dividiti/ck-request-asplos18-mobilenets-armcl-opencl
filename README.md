@@ -1,4 +1,4 @@
-# dividiti's submission to ReQuEST @ ASPLOS'18
+# [dividiti](http://dividiti.com)'s submission to [ReQuEST @ ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
 
 ## Installation
 
@@ -19,10 +19,10 @@ $ ck pull repo --url=https://github.com/dividiti/request-asplos18
 **NB:** We suggest to pre-install the following dependencies to test the workflows:
 
 ```
-$ ck install request-asplos18:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON --extra_version=-graph
-$ ck install request-asplos18:package:weights-mobilenet-v1-1.0-224-npy
-$ ck install ck-caffe:package:imagenet-2012-val-min-resized
 $ ck install ck-caffe:package:imagenet-2012-aux
+$ ck install ck-caffe:package:imagenet-2012-val-min-resized
+$ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install request-asplos18:package:weights-mobilenet-v1-1.0-224-npy
 ```
 
 ## Build and make a sample run
