@@ -84,6 +84,14 @@ inline int get_image_size() {
     return getenv_i("CK_ENV_MOBILENET_RESOLUTION", 1);
 }
 
+inline float get_image_size_multiplier() {
+    return getenv_f("CK_ENV_MOBILENET_RESOLUTION_MULTIPLIER", 1.0);
+}
+
+inline float get_width_size_multiplier() {
+    return getenv_f("CK_ENV_MOBILENET_WIDTH_MULTIPLIER", 1.0);
+}
+
 inline const char* get_labels_file() {
 	return getenv("CK_CAFFE_IMAGENET_SYNSET_WORDS_TXT");
 }
@@ -132,6 +140,8 @@ public:
   size_t batch_size() const { return _batch_size; }
   size_t batch_count() const { return _batch_files.size(); }
   size_t image_size() const { return _image_size; }
+  float image_size_multiplier() const { return _rho; }
+  float image_width_multiplier() const { return _alpha; }
   float total_load_images_time() const { return _total_load_images_time; }
   float total_prediction_time() const { return _total_prediction_time; }
   
@@ -139,9 +149,11 @@ public:
     _batch_index = -1;
     _batch_size  = get_batch_size();
     _image_size  = get_image_size();
+    _alpha = get_width_size_multiplier();
+    _rho = get_image_size_multiplier();
     _total_load_images_time = 0;
     _total_prediction_time = 0;
-
+    
     load_file_list();
   }
   
@@ -178,6 +190,8 @@ private:
   int _batch_index;
   size_t _batch_size;
   size_t _image_size;
+  float _alpha;
+  float _rho;
   vector<string> _image_files;
   vector<string> _batch_files;
   float _total_load_images_time;

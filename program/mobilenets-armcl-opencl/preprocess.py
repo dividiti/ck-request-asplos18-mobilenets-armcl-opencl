@@ -21,15 +21,16 @@ def ck_preprocess(i):
   print('\n--------------------------------')
   def my_env(var): return i['env'][var]
   def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
-
   # Init variables from environment
   BATCH_COUNT = int(my_env('CK_BATCH_COUNT'))
   BATCH_SIZE = int(my_env('CK_BATCH_SIZE'))
   IMAGES_COUNT = BATCH_COUNT * BATCH_SIZE
   SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
   IMAGE_LIST = my_env('CK_IMG_LIST')
-  IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL')
+  IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL') 
   IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
+  MOBILENET_RESOLUTION_MULTIPLIER=float(my_env('CK_ENV_MOBILENET_RESOLUTION_MULTIPLIER'))
+  IMAGE_SIZE = int(IMAGE_SIZE * MOBILENET_RESOLUTION_MULTIPLIER)
   BATCHES_DIR = my_env('CK_BATCHES_DIR')
   BATCH_LIST = my_env('CK_BATCH_LIST')
   RESULTS_DIR = my_env('CK_RESULTS_DIR')

@@ -126,7 +126,8 @@ public:
       cout << endl;
       cout << "Batch " << s.batch_index()+1 << " of " << s.batch_count() << endl;
       cout << "File: " << batch_file << endl;
-      
+      cout << "Alpha: " << s.image_width_multiplier() << endl;
+      cout << "Rho: " << s.image_size_multiplier() << endl;
       s.measure_begin();
       bool ok = load_tensor_from_numpy_file(tensor, batch_file);
       auto t = s.measure_end_load_images();
@@ -239,8 +240,8 @@ void run_mobilenet()
     TargetHint            target_hint      = TargetHint::OPENCL;
     ConvolutionMethodHint convolution_hint = get_convolution_hint();
     
-    TensorShape input_shape(session().image_size(),
-                            session().image_size(),
+    TensorShape input_shape((int)(session().image_size()*session().image_size_multiplier()),
+                            (int)(session().image_size()*session().image_size_multiplier()),
                             3U,
                             session().batch_size());
 
@@ -288,7 +289,6 @@ void run_mobilenet()
           << SoftmaxLayer()
           << Tensor(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
     xopenme_clock_end(X_TIMER_SETUP);
-
     cout << "\nRun graph...\n";
     xopenme_clock_start(X_TIMER_TEST);
     graph.run();
