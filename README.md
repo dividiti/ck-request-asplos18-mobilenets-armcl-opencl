@@ -25,7 +25,7 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 
 ## Installation
 
-### Install prerequisites
+### Install global prerequisites
 
 Note that *#* sign means *sudo* on Linux
 
@@ -46,7 +46,13 @@ Note that *#* sign means *sudo* on Linux
 $ ck pull repo --url=https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl
 ```
 
-### Pre-install dependencies
+### Detect and test OpenCL driver
+
+```
+$ ck detect platform.gpgpu --opencl
+```
+
+### Pre-install CK dependencies
 
 **NB:** We suggest to pre-install the following dependencies to test the workflows:
 
