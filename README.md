@@ -6,11 +6,11 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 
 * **Algorithm:** image classification
 * **Program:** Arm Compute Library v18+ with MobileNets
-* **Compilation:** GCC v6+
+* **Compilation:** GCC v6+; Python 2.7+ or 3.4+
 * **Transformations:** 
 * **Binary:** will be compiled on a target platform
 * **Data set:** ImageNet
-* **Run-time environment:** Linux
+* **Run-time environment:** Linux; OpenCL drivers v1.2+
 * **Hardware:** HiKey 960 Development Board (or any similar)
 * **Run-time state:** 
 * **Execution:** CPU and GPU frequency set to maximum
@@ -24,6 +24,15 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 * **Publicly available?:** Yes
 
 ## Installation
+
+### Install prerequisites
+
+Note that *#* sign means *sudo* on Linux
+
+```
+# sudo apt-get install python python-pip sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev
+# pip install numpy scipy
+```
 
 ### Install Collective Knowledge
 
