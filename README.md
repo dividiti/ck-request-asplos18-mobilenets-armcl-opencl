@@ -17,6 +17,7 @@ We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submissio
 * **Metrics:** total execution time; accuracy after validating some(all) images from the data set
 * **Output:** classification result; execution time; accuracy
 * **Experiments:** CK command line 
+* **How much disk space required (approximately)?:**: 
 * **How much time is needed to prepare workflow (approximately)?:**: 20 minutes
 * **How much time is needed to complete experiments (approximately)?**:
 * **Collective Knowledge workflow framework used?:** Yes
@@ -50,8 +51,8 @@ $ ck install request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-
 ## Build and make a sample run
 
 ```
-$ ck compile request-asplos18:program:mobilenets-armcl-opencl
-$ ck run request-asplos18:program:mobilenets-armcl-opencl
+$ ck compile request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
+$ ck run request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
 ...
 --------------------------------
 Process results in predictions
