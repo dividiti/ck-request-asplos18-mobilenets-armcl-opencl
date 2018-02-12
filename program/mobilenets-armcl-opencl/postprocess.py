@@ -1,0 +1,171 @@
+#
+# Copyright (c) 2018 cTuning foundation.
+# See CK COPYRIGHT.txt for copyright details.
+#
+# SPDX-License-Identifier: BSD-3-Clause.
+# See CK LICENSE.txt for licensing details.
+#
+
+import os
+import json
+
+def ck_postprocess(i):
+  print('\n--------------------------------')
+  def my_env(var): return i['env'][var]
+  def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
+
+  # Init variables from environment
+  BATCH_COUNT = int(my_env('CK_BATCH_COUNT'))
+  BATCH_SIZE = int(my_env('CK_BATCH_SIZE'))
+  IMAGES_COUNT = BATCH_COUNT * BATCH_SIZE
+  SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
+  RESULTS_DIR = my_env('CK_RESULTS_DIR')
+  NUM_CLASSES = 1000
+  AUX_DIR = dep_env('imagenet-aux', 'CK_ENV_DATASET_IMAGENET_AUX') 
+  CLASSES_FILE = os.path.join(AUX_DIR, 'synset_words.txt')  
+  VALUES_FILE = os.path.join(AUX_DIR, 'val.txt')   
+  CLASSES_LIST = []  
+  VALUES_MAP = {}
+  TOP1 = 0
+  TOP5 = 0
+
+  def load_ImageNet_classes():
+    '''
+    Loads ImageNet classes and correct predictions
+    '''
+    classes_list = []  
+    with open(CLASSES_FILE, 'r') as classes_file:
+      classes_list = classes_file.read().splitlines()
+
+    values_map = {}
+    with open(VALUES_FILE, 'r') as values_file:
+      for _ in range(SKIP_IMAGES):
+        values_file.readline().split()
+      for _ in range(IMAGES_COUNT):
+        val = values_file.readline().split()
+        values_map[val[0]] = int(val[1])
+
+    return classes_list, values_map
+
+
+  def get_class_str(class_index):
+    '''
+    Returns printable string for ImageNet specific class
+    '''
+    obj_class = CLASSES_LIST[class_index]
+    if len(obj_class) > 50:
+        obj_class = obj_class[:50] + '...'
+    return '(%d) %s' % (class_index, obj_class)
+
+
+  def print_predictions(top5, img_file):
+    '''
+    Shows prediction results for image file
+    top5 - list of pairs (prob, class_index)
+    '''
+    class_correct = VALUES_MAP[img_file]
+    print('---------------------------------------')
+    print('%s - %s' % (img_file, get_class_str(class_correct)))
+    for prob, class_index in top5:
+      print('%.2f - %s' % (prob, get_class_str(class_index)))
+    print('---------------------------------------')       
+
+
+  def get_top5(all_probs):
+    '''
+    Returns list of pairs (prob, class_index)
+    '''
+    probs_with_classes = []
+    for class_index in range(len(all_probs)):
+      prob = all_probs[class_index]
+      probs_with_classes.append((prob, class_index))
+    sorted_probs = sorted(probs_with_classes, key = lambda pair: pair[0], reverse=True)
+    return sorted_probs[0:5]    
+
+  def check_predictions(top5, img_file):
+    '''
+    Calculates if prediction was correct for specified image file
+    top5 - list of pairs (prob, class_index)
+    '''
+    class_correct = VALUES_MAP[img_file]
+    classes = [c[1] for c in top5]
+    is_top1 = class_correct == classes[0]
+    is_top5 = class_correct in classes
+    if is_top1:
+      global TOP1
+      TOP1 += 1
+    if is_top5:
+      global TOP5
+      TOP5 += 1
+    res = {}
+    res['accuracy_top1'] = 'yes' if is_top1 else 'no'
+    res['accuracy_top5'] = 'yes' if is_top5 else 'no'
+    res['class_correct'] = class_correct
+    res['class_topmost'] = classes[0]
+    res['file_name'] = img_file
+    return res 
+
+
+  frame_predictions = []
+
+
+  def calculate_precision():
+    print('Process results in {}'.format(RESULTS_DIR))
+
+    def load_probes(filename):
+      probes = []
+      with open(os.path.join(RESULTS_DIR, filename), 'r') as f:
+        for line in f:
+          s = line.strip()
+          if s: probes.append(float(s))
+      return probes
+
+
+    for res_file in sorted(os.listdir(RESULTS_DIR)):
+      # remove trailing suffix .txt
+      img_file = res_file[:-4] 
+      
+      all_probes = load_probes(res_file)
+      if len(all_probes) != NUM_CLASSES:
+        print('WARNING: {} is invalid probes count in file {}, results ignored'.format(len(all_probes), res_file))
+        global IMAGES_COUNT
+        IMAGES_COUNT -= 1
+        continue
+        
+      top5 = get_top5(all_probes) 
+      print_predictions(top5, img_file)
+      res = check_predictions(top5, img_file)
+      frame_predictions.append(res)  
+
+
+  def calculate_avg_time():
+    # TODO
+    pass
+
+
+  CLASSES_LIST, VALUES_MAP = load_ImageNet_classes()
+  calculate_precision()
+  calculate_avg_time()
+
+  accuracy_top1 = TOP1 / float(IMAGES_COUNT)
+  accuracy_top5 = TOP5 / float(IMAGES_COUNT) 
+  print('Accuracy top 1: %f (%d of %d)' % (accuracy_top1, TOP1, IMAGES_COUNT))
+  print('Accuracy top 5: %f (%d of %d)' % (accuracy_top5, TOP5, IMAGES_COUNT))  
+
+  # Store benchmark results
+  openme = {}
+  
+  # Preserve values stored by program
+  with open('tmp-ck-timer.json', 'r') as o:
+    old_values = json.load(o)
+  for key in old_values['run_time_state']:
+    openme[key] = old_values['run_time_state'][key]
+    
+  openme['accuracy_top1'] = accuracy_top1
+  openme['accuracy_top5'] = accuracy_top5
+  openme['frame_predictions'] = frame_predictions
+  with open('tmp-ck-timer.json', 'w') as o:
+    json.dump(openme, o, indent=2, sort_keys=True)    
+
+  print('--------------------------------\n')
+  return {'return': 0}  

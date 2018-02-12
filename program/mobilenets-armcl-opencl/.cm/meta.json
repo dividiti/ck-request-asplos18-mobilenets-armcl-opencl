@@ -1,0 +1,115 @@
+{
+  "backup_data_uid": "cb287514a974a848",
+  "build_compiler_vars": {
+    "ARM_COMPUTE_CL": 1
+  },
+  "compile_deps": {
+    "compiler": {
+      "local": "yes",
+      "name": "C++ compiler",
+      "sort": 10,
+      "tags": "compiler,lang-cpp"
+    },
+    "library": {
+      "extra_ld_vars": "$<<CK_ENV_LIB_ARMCL_LFLAG_CORE>>$",
+      "local": "yes",
+      "name": "Arm Compute Library (OpenCL & Graph APIs)",
+      "sort": 5,
+      "tags": "lib,armcl,vopencl,vgraph"
+    },
+    "xopenme": {
+      "local": "yes",
+      "name": "xOpenME library",
+      "sort": 100,
+      "tags": "lib,xopenme"
+    }
+  },
+  "compiler_add_include_as_env_from_deps": [
+    "CK_ENV_LIB_STDCPP_INCLUDE",
+    "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA",
+    "CK_ENV_LIB_ARMCL_INCLUDE",
+    "CK_ENV_LIB_ARMCL_UTILS"
+  ],
+  "compiler_env": "CK_CXX",
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_CPP11>>$ -Wno-ignored-attributes",
+  "data_name": "mobilenets-armcl-opencl",
+  "linker_add_lib_as_env": [
+    "CK_CXX_EXTRA",
+    "CK_ENV_LIB_STDCPP_STATIC"
+  ],
+  "main_language": "cpp",
+  "only_for_target_os_tags": [
+    "linux"
+  ],
+  "process_in_tmp": "yes",
+  "program": "yes",
+  "run_cmds": {
+    "default": {
+      "ignore_return_code": "yes",
+      "run_time": {
+        "output_invariant_of_repeat": "yes",
+        "fine_grain_timer_file": "tmp-ck-timer.json",
+        "need_compute_device": "opencl",
+        "pre_process_via_ck": {
+          "data_uoa": "cb287514a974a848",
+          "script_name": "preprocess"
+        },
+        "post_process_via_ck": "yes",
+        "post_process_cmds": [
+          "python $#ck_take_from_{program:cb287514a974a848}#$postprocess.py"
+        ],
+        "run_cmd_main": "$#BIN_FILE#$",
+        "run_output_files": [
+          "tmp-ck-timer.json"
+        ]
+      }
+    }
+  },
+  "run_vars": {
+    "CK_IMG_LIST": "images.txt",
+    "CK_BATCH_LIST": "batches.txt",
+    "CK_BATCHES_DIR": "batches",
+    "CK_RESULTS_DIR": "predictions",
+    "CK_BATCH_COUNT": 1,
+    "CK_BATCH_SIZE": 1,
+    "CK_SKIP_IMAGES": 0
+  },
+  "run_deps": {
+    "weights": {
+      "local": "yes",
+      "name": "MobileNet weights (as NumPy arrays)",
+      "sort": 10,
+      "tags": "mobilenet,weights,npy"
+    },
+    "imagenet-aux": {
+      "local": "yes",
+      "name": "ImageNet dataset (aux)",
+      "sort": 20,
+      "tags": "dataset,imagenet,aux"
+    },
+    "imagenet-val": {
+      "local": "yes",
+      "name": "ImageNet dataset (val)",
+      "sort": 30,
+      "tags": "dataset,imagenet,raw,val"
+    }
+  },
+  "skip_bin_ext": "yes",
+  "source_files": [
+    "benchmark.cpp",
+    "mobilenets.cpp",
+    "$<<CK_ENV_LIB_ARMCL_UTILS>>$/GraphUtils.cpp",
+    "$<<CK_ENV_LIB_ARMCL_UTILS>>$/Utils.cpp"
+  ],
+  "tags": [
+    "armcl",
+    "benchmark",
+    "mobilenet",
+    "mobilenets",
+    "float",
+    "f32",
+    "vopencl"
+  ],
+  "target_file": "benchmark",
+  "version": "1.0.0"
+}
