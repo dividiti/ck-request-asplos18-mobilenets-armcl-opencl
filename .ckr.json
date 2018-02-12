@@ -1,8 +1,8 @@
 {
   "data_uid": "7698eaf859b79f2b",
-  "data_name": "https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl",
+  "data_name": "request-asplos18-mobilenets-armcl-opencl",
   "dict": {
-    "url": "https://github.com/dividiti/https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl",
+    "url": "https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl",
     "shared": "git",
     "repo_deps": [
       {
@@ -12,6 +12,6 @@
     ],
     "recache": "yes"
   },
-  "data_alias": "https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl",
-  "data_uoa": "https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl"
+  "data_alias": "request-asplos18-mobilenets-armcl-opencl",
+  "data_uoa": "request-asplos18-mobilenets-armcl-opencl"
 }
