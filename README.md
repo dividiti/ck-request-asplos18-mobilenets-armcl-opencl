@@ -43,7 +43,7 @@ Note that *#* sign means *sudo* on Linux
 ### Get submission repository
 
 ```
-$ ck pull repo --url=https://github.com/dividiti/request-asplos18-mobilenets-armcl-opencl
+$ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl
 ```
 
 ### Detect and test OpenCL driver
@@ -60,14 +60,14 @@ $ ck detect platform.gpgpu --opencl
 $ ck install ck-caffe:package:imagenet-2012-aux
 $ ck install ck-caffe:package:imagenet-2012-val-min-resized
 $ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
-$ ck install request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
+$ ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
 ```
 
 ## Build and make a sample run
 
 ```
-$ ck compile request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
-$ ck run request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
+$ ck compile ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
+$ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
 ...
 --------------------------------
 Process results in predictions
