@@ -3,7 +3,7 @@ import ck.kernel as ck
 import copy
 import re
 import argparse,json
-
+import os
 
 # Platform tag.
 platform_tags='hikey-960'
@@ -19,6 +19,11 @@ bs={
 num_repetitions=3
 
 def do(i, arg):
+    experiment_type = 'performance'
+    batch_count = 2
+    if (arg.accuracy):
+        experiment_type = 'accuracy'
+
     # Detect basic platform info.
     ii={'action':'detect',
         'module_uoa':'platform',
@@ -45,7 +50,10 @@ def do(i, arg):
     if len(rx['lst']) == 0: return rx
     # FIXME: It's probably better to use CK_ENV_DATASET_IMAGE_DIR.
     img_dir_val = rx['lst'][0]['meta']['env']['CK_CAFFE_IMAGENET_VAL']
-#    print img_dir_val
+    
+    if (arg.accuracy):
+        batch_count = len([f for f in os.listdir(img_dir_val) 
+           if f.endswith('.JPEG') and os.path.isfile(os.path.join(img_dir_val, f))])
 
     ii={'action':'show',
         'module_uoa':'env',
@@ -126,7 +134,7 @@ def do(i, arg):
 
         'env':{
           'CK_ENV_DATASET_IMAGENET_VAL':img_dir_val,
-          'CK_BATCH_COUNT': 2,
+          'CK_BATCH_COUNT': batch_count,
           'CK_BATCHES_DIR':'batches',
           'CK_BATCH_LIST':'batches.txt',
           'CK_IMG_LIST':'images.txt',
@@ -189,10 +197,10 @@ def do(i, arg):
             if r['return']>0: return r
             # Get the tags from e.g. 'Caffe model (net and weights) (deepscale, squeezenet, 1.1)'
             model_name=r['data_name']
-            alpha = r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER']
-            rho = r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION']
+            alpha = float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
+            rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
             record_repo='local'
-            record_uoa='mobilenets-'+rho+'-'+alpha+'-'+lib_tags+'-'+lib_uoa
+            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-'+lib_tags+'-'+lib_uoa
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
             ck.out('%s - %s' % (lib_name, lib_uoa))
@@ -236,8 +244,8 @@ def do(i, arg):
                ],
                'choices_selection':[
                            {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                           {'type':'loop', 'start':rho, 'stop':rho, 'step':rho, 'default':rho},
-                           {'type':'loop', 'start':alpha, 'stop':alpha, 'step':alpha, 'default':alpha},
+                           {'type':'loop', 'choice': [rho], 'default': 224},
+                           {'type':'loop', 'choice': [alpha], 'default': 1.0},
 
 
                ],
@@ -254,16 +262,16 @@ def do(i, arg):
                },
                'record_repo':record_repo,
                'record_uoa':record_uoa,
-               'tags':['explore-mobilenets-performance', lib_tags, platform_tags],
+               'tags':['explore-mobilenets-'+experiment_type, lib_tags, platform_tags, str(rho),str(alpha)],
                'pipeline':cpipeline,
                'out':'con'
             }
-            r=ck.access(ii)
-            if r['return']>0: return r
+#            r=ck.access(ii)
+#            if r['return']>0: return r
 
-            fail=r.get('fail','')
-            if fail=='yes':
-                return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
+#            fail=r.get('fail','')
+#            if fail=='yes':
+#                return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
 
  #           skip_compile='yes'
 
@@ -277,6 +285,7 @@ def do(i, arg):
 parser = argparse.ArgumentParser(description='Pipeline')
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
+parser.add_argument("--accuracy", action="store_true", default=False, dest="accuracy")
 myarg=parser.parse_args()
 
 
