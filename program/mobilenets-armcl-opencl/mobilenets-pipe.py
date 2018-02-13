@@ -255,7 +255,7 @@ def do(i, arg):
                'features_keys_to_process':['##choices#*'],
 
                'iterations':-1,
-               'repetitions':num_repetitions,
+               'repetitions': num_repetitions,
 
                'record':'yes',
                'record_failed':'yes',
@@ -264,7 +264,7 @@ def do(i, arg):
                },
                'record_repo':record_repo,
                'record_uoa':record_uoa,
-               'tags':['explore-mobilenets-'+experiment_type, lib_tags, platform_tags, str(rho),str(alpha)],
+               'tags':['explore-mobilenets-'+experiment_type, lib_tags, platform_tags, rho, alpha],
                'pipeline':cpipeline,
                'out':'con'
             }
