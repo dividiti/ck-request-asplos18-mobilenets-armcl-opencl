@@ -106,7 +106,7 @@ Accuracy top 5: 0.000000 (0 of 1)
   "test_time_s ": 0.083443
 }
 ```
-## Exploring performance of MobileNet family
+## Exploring performance and accuracy of MobileNet family
 Brief description. 
 See the the paper: [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
 ### Install MobileNet's weights
@@ -150,4 +150,22 @@ Test a scaled MobileNet architecture, please specify:
 $ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl \
       --env.CK_ENV_MOBILENET_RESOLUTION=192   \
       --env.CK_ENV_MOBILENET_WIDTH_MULTIPLIER=0.75 \
+```
+Then, select the corresponding weight. 
+
+### Performance evaluation of MobileNet family
+
+```
+$ python mobilenets-pipe.py --repetitions=3
+```
+
+### Accuracy evaluation of MobileNet family
+
+```
+$ python mobilenets-pipe.py --accuracy --repetitions=3
+```
+### Check the experiments
+
+```
+$ ck list local:experiment:*
 ```
