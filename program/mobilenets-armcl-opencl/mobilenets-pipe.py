@@ -175,7 +175,6 @@ def do(i, arg):
         if r['return']>0: return r
         # Get the tags from e.g. 'TensorFlow library (from sources, cuda)'
         lib_name=r['data_name']
-#        print lib_name
         lib_tags=re.match('ARM Compute Library \((?P<tags>.*)\)', lib_name)        
         lib_tags=lib_tags.group('tags').replace(' ', '').replace(',', '-')
         # Skip some libs with "in [..]" or "not in [..]".
@@ -193,7 +192,7 @@ def do(i, arg):
             alpha = r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER']
             rho = r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION']
             record_repo='local'
-            record_uoa='mobilenets-'+rho+'-'+alpha+'-'+lib_tags
+            record_uoa='mobilenets-'+rho+'-'+alpha+'-'+lib_tags+'-'+lib_uoa
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
             ck.out('%s - %s' % (lib_name, lib_uoa))
@@ -266,7 +265,7 @@ def do(i, arg):
             if fail=='yes':
                 return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
 
-            skip_compile='yes'
+ #           skip_compile='yes'
 
              
 
