@@ -143,7 +143,7 @@ ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet
 ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-128-npy
 ```
 ### Make a simple run
-Test a scaled MobileNet architecture, please specify:
+To test a scaled MobileNet architecture, please specify:
  - **resolution** : 224 (default), 192, 160, 128
  - **width_multiplier** : 1.0 (default), 0.75, 0.5, 0.25
 ```
