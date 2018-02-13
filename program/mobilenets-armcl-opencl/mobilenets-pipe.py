@@ -283,7 +283,7 @@ parser = argparse.ArgumentParser(description='Pipeline')
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
 parser.add_argument("--accuracy", action="store_true", default=False, dest="accuracy")
-parser.add_argument("--repetitions", action="store", default=3, type=int, dest="repetitions")
+parser.add_argument("--repetitions", action="store", default=3, dest="repetitions")
 
 myarg=parser.parse_args()
 
