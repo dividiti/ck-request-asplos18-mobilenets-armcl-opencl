@@ -259,7 +259,14 @@ def do(i, arg):
                'pipeline':cpipeline,
                'out':'con'
             }
+            r=ck.access(ii)
+            if r['return']>0: return r
 
+            fail=r.get('fail','')
+            if fail=='yes':
+                return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
+
+            skip_compile='yes'
 
              
 
