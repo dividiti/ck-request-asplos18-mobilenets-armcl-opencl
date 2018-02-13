@@ -16,13 +16,15 @@ bs={
   'default':1
 }
 
-num_repetitions=3
 
 def do(i, arg):
+#### Default values
+    num_repetitions=arg.repetitions
     experiment_type = 'performance'
     batch_count = 2
     if (arg.accuracy):
         experiment_type = 'accuracy'
+
 
     # Detect basic platform info.
     ii={'action':'detect',
@@ -266,17 +268,12 @@ def do(i, arg):
                'pipeline':cpipeline,
                'out':'con'
             }
-#            r=ck.access(ii)
-#            if r['return']>0: return r
+            r=ck.access(ii)
+            if r['return']>0: return r
 
-#            fail=r.get('fail','')
-#            if fail=='yes':
-#                return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
-
- #           skip_compile='yes'
-
-             
-
+            fail=r.get('fail','')
+            if fail=='yes':
+                return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
 
 ### end pipeline
     return {'return':0}
@@ -286,6 +283,8 @@ parser = argparse.ArgumentParser(description='Pipeline')
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
 parser.add_argument("--accuracy", action="store_true", default=False, dest="accuracy")
+parser.add_argument("--repetitions", action="store", default=3, type=int, dest="repetitions")
+
 myarg=parser.parse_args()
 
 
