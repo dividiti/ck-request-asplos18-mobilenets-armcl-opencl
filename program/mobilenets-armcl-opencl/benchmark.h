@@ -84,9 +84,6 @@ inline int get_image_size() {
     return getenv_i("CK_ENV_MOBILENET_RESOLUTION", 1);
 }
 
-inline float get_image_size_multiplier() {
-    return getenv_f("CK_ENV_MOBILENET_RESOLUTION_MULTIPLIER", 1.0);
-}
 
 inline float get_width_size_multiplier() {
     return getenv_f("CK_ENV_MOBILENET_WIDTH_MULTIPLIER", 1.0);
@@ -150,7 +147,6 @@ public:
     _batch_size  = get_batch_size();
     _image_size  = get_image_size();
     _alpha = get_width_size_multiplier();
-    _rho = get_image_size_multiplier();
     _total_load_images_time = 0;
     _total_prediction_time = 0;
     

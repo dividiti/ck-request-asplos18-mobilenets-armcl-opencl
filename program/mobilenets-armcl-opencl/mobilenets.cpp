@@ -127,7 +127,7 @@ public:
       cout << "Batch " << s.batch_index()+1 << " of " << s.batch_count() << endl;
       cout << "File: " << batch_file << endl;
       cout << "Alpha: " << s.image_width_multiplier() << endl;
-      cout << "Rho: " << s.image_size_multiplier() << endl;
+      cout << "Rho (resolution): " << s.image_size() << endl;
       s.measure_begin();
       bool ok = load_tensor_from_numpy_file(tensor, batch_file);
       auto t = s.measure_end_load_images();
@@ -240,8 +240,8 @@ void run_mobilenet()
     TargetHint            target_hint      = TargetHint::OPENCL;
     ConvolutionMethodHint convolution_hint = get_convolution_hint();
     
-    TensorShape input_shape((int)(session().image_size()*session().image_size_multiplier()),
-                            (int)(session().image_size()*session().image_size_multiplier()),
+    TensorShape input_shape(session().image_size(),
+                            session().image_size(),
                             3U,
                             session().batch_size());
 
