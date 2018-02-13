@@ -106,3 +106,48 @@ Accuracy top 5: 0.000000 (0 of 1)
   "test_time_s ": 0.083443
 }
 ```
+## Exploring performance of MobileNet family
+Brief description. 
+See the the paper: [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
+### Install MobileNet's weights
+
+To install weights for images with resolution 224x224
+```
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-224-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-224-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-224-npy
+```
+
+To install weights for images with resolution 192x192
+```
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-192-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-192-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-192-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-192-npy
+```
+
+To install weights for images with resolution 160x160
+```
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-160-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-160-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-160-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-160-npy
+```
+
+To install weights for images with resolution 128x128
+```
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-128-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-128-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-128-npy
+ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-128-npy
+```
+### Make a simple run
+Test a scaled MobileNet architecture, please specify:
+ - **resolution** : 224 (default), 192, 160, 128
+ - **width_multiplier** : 1.0 (default), 0.75, 0.5, 0.25
+```
+$ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl \
+      --env.CK_ENV_MOBILENET_RESOLUTION=192   \
+      --env.CK_ENV_MOBILENET_WIDTH_MULTIPLIER=0.75 \
+```
