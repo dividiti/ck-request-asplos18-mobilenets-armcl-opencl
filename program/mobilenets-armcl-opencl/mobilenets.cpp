@@ -282,11 +282,11 @@ void run_mobilenet()
           << get_dwsc_node("Conv2d_13", (unsigned int )(1024 * alpha), PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
           << PoolingLayer(PoolingLayerInfo(PoolingType::AVG))
           << ConvolutionLayer(
-              1U, 1U, (unsigned int )(1001 * alpha),
+              1U, 1U, (unsigned int )(1001),
               weights_accessor("Logits_Conv2d_1c_1x1_weights.npy"),
               weights_accessor("Logits_Conv2d_1c_1x1_biases.npy"),
               PadStrideInfo(1, 1, 0, 0))
-          << ReshapeLayer(TensorShape((unsigned int )(1001*alpha)))
+          << ReshapeLayer(TensorShape((unsigned int )(1001)))
           << SoftmaxLayer()
           << Tensor(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
     xopenme_clock_end(X_TIMER_SETUP);

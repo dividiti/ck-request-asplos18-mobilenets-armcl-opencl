@@ -229,7 +229,7 @@ def do(i, arg):
                                '##choices#env#CK_BATCH_SIZE'
                            ],
                            [
-                               '##choices#env#CK_ENV_MOBILENET_RESOLUTION_MULTIPLIER'
+                               '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
                            ],
                            [
                                '##choices#env#CK_ENV_MOBILENET_WIDTH_MULTIPLIER'
