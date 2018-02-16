@@ -25,93 +25,6 @@
 #include "benchmark.h"
 
 #include "arm_compute/runtime/CL/CLTensor.h"
-#include "libnpy/npy.hpp"
-
-
-bool load_tensor_from_numpy_file(ITensor &tensor, const string& filename) {
-  const TensorShape tensor_shape = tensor.info()->tensor_shape();
-
-  // Open file
-  std::ifstream stream(filename, std::ios::in | std::ios::binary);
-  if (!stream.good()) {
-    throw std::runtime_error("File not found: " + filename);
-  }
-  std::string header = npy::read_header(stream);
-
-  // Parse header
-  bool fortran_order = false;
-  std::string typestr;
-  std::vector<unsigned long> shape;
-  npy::parse_header(header, typestr, fortran_order, shape);
-
-  // Validate tensor shape
-  if (shape.size() != tensor_shape.num_dimensions()) {
-    if (shape.size() > 0 && shape[shape.size()-1] == 1) {
-      // ArmCL ignores last dimension if it is == 1 and it leads to
-      // ArmCL's tensor rank is lower than one is stored in numpy arrays,
-      // nevertheless they can contain the same data.
-    }
-    else {
-      ostringstream ss;
-      ss << "Ranks mismatch: tensor=" << tensor_shape.num_dimensions() << ", npy=" << shape.size();
-      throw runtime_error("Unable to load " + filename + ": " + ss.str());
-    }
-  }
-  // By default numpy stores array with fortran_order=False and it the same
-  // order as in ArmCL tensors. But original NumPyBinLoader thinks it should
-  // take dimensions reversed if !fortran_order. Ignore this validation.
-  for (size_t i = 0; i < shape.size(); ++i) {
-    if (tensor_shape[i] != shape[i]) {
-      ostringstream ss;
-      ss << "Dimension " << i << " mismatch: tensor=" << tensor_shape[i] << ", npy=" << shape[i];
-      throw runtime_error("Unable to load " + filename + ": " + ss.str());
-    }
-  }
-
-  // Read data
-  if(tensor.info()->padding().empty()) {
-    // If tensor has no padding read directly from stream.
-    stream.read(reinterpret_cast<char *>(tensor.buffer()), tensor.info()->total_size());
-  }
-  else {
-    // If tensor has padding accessing tensor elements through execution window.
-    Window window;
-    window.use_tensor_dimensions(tensor_shape);
-    execute_window_loop(window, [&](const Coordinates & id) {
-      stream.read(reinterpret_cast<char *>(tensor.ptr_to_element(id)), tensor.info()->element_size());
-    });
-  }
-  return true;
-}
-
-
-class CKUnityAccessor : public ITensorAccessor {
-public:
-  CKUnityAccessor() {}
-  CKUnityAccessor(CKUnityAccessor &&) = default;
-
-  bool access_tensor(ITensor &tensor) override {
-    Window window;
-    window.use_tensor_dimensions(tensor.info()->tensor_shape());
-    execute_window_loop(window, [&](const Coordinates & id) {
-      *reinterpret_cast<float *>(tensor.ptr_to_element(id)) = 1;
-    });
-  }
-};
-
-
-class CKNumPyWeightsLoader : public ITensorAccessor {
-public:
-  CKNumPyWeightsLoader(std::string filename): _filename(std::move(filename)) {}
-  CKNumPyWeightsLoader(CKNumPyWeightsLoader &&) = default;
-
-  bool access_tensor(ITensor &tensor) override {
-    return load_tensor_from_numpy_file(tensor, _filename);
-  }
-
-private:
-  const std::string _filename;
-};
 
 
 class CKNumPyInputLoader : public ITensorAccessor {
@@ -122,24 +35,25 @@ public:
   bool access_tensor(ITensor &tensor) override {
     CKPredictionSession& s = session();
     auto batch_file = s.get_next_batch_file();
-    if (! batch_file.empty()) {
-      cout << endl;
-      cout << "Batch " << s.batch_index()+1 << " of " << s.batch_count() << endl;
-      cout << "File: " << batch_file << endl;
-      cout << "Alpha: " << s.image_width_multiplier() << endl;
-      cout << "Rho (resolution): " << s.image_size() << endl;
-      s.measure_begin();
-      bool ok = load_tensor_from_numpy_file(tensor, batch_file);
-      auto t = s.measure_end_load_images();
-      cout << "Loaded in " << t << " s\n";
+    if (batch_file.empty())
+      return false;
       
-      if (ok) {
-        // Start batch timer after data was loaded
-        s.measure_begin();
-        return true;
-      }
-    }
-    return false;
+    cout << endl;
+    cout << "Batch " << s.batch_index()+1 << " of " << s.batch_count() << endl;
+    cout << "File: " << batch_file << endl;
+    cout << "Alpha: " << s.image_width_multiplier() << endl;
+    cout << "Rho (resolution): " << s.image_size() << endl;
+    
+    s.measure_begin();
+
+    NumPyBinLoader accessor(batch_file);
+    accessor.access_tensor(tensor);
+    
+    auto t = s.measure_end_load_images();
+    cout << "Loaded in " << t << " s\n";
+    
+    // Start batch timer after data was loaded
+    s.measure_begin();
   }
 };
 
@@ -185,15 +99,11 @@ inline unique_ptr<ITensorAccessor> weights_accessor(const string &file)
        cerr << "WARNING: file not found: " << full_path << ", dummy accessor will be used!\n";
        return arm_compute::support::cpp14::make_unique<DummyAccessor>();
     }
-    return arm_compute::support::cpp14::make_unique<CKNumPyWeightsLoader>(full_path);
+    return arm_compute::support::cpp14::make_unique<NumPyBinLoader>(full_path);
 }
 
 inline unique_ptr<ITensorAccessor> empty_accessor() {
     return std::unique_ptr<ITensorAccessor>(nullptr);
-}
-
-inline unique_ptr<ITensorAccessor> unity_accessor() {
-    return arm_compute::support::cpp14::make_unique<CKUnityAccessor>();
 }
 
 
@@ -212,8 +122,7 @@ BranchLayer get_dwsc_node(std::string &&param_path,
        << BatchNormalizationLayer(
            weights_accessor(total_path + "depthwise_BatchNorm_moving_mean.npy"),
            weights_accessor(total_path + "depthwise_BatchNorm_moving_variance.npy"),
-           //weights_accessor(data_path, total_path + "depthwise_BatchNorm_gamma.npy"),
-           unity_accessor(),
+           weights_accessor(total_path + "depthwise_BatchNorm_gamma.npy"),
            weights_accessor(total_path + "depthwise_BatchNorm_beta.npy"),
            0.001f)
        << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f))
@@ -225,8 +134,7 @@ BranchLayer get_dwsc_node(std::string &&param_path,
        << BatchNormalizationLayer(
            weights_accessor(total_path + "pointwise_BatchNorm_moving_mean.npy"),
            weights_accessor(total_path + "pointwise_BatchNorm_moving_variance.npy"),
-           //weights_accessor(total_path + "pointwise_BatchNorm_gamma.npy"),
-           unity_accessor(),
+           weights_accessor(total_path + "pointwise_BatchNorm_gamma.npy"),
            weights_accessor(total_path + "pointwise_BatchNorm_beta.npy"),
            0.001f)
        << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f));
@@ -261,8 +169,7 @@ void run_mobilenet()
           << BatchNormalizationLayer(
               weights_accessor("Conv2d_0_BatchNorm_moving_mean.npy"),
               weights_accessor("Conv2d_0_BatchNorm_moving_variance.npy"),
-              //weights_accessor("Conv2d_0_BatchNorm_gamma.npy"),
-              unity_accessor(),
+              weights_accessor("Conv2d_0_BatchNorm_gamma.npy"),
               weights_accessor("Conv2d_0_BatchNorm_beta.npy"),
               0.001f)
 

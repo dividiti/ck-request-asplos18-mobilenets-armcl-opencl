@@ -11,6 +11,7 @@ import re
 import shutil  
 import numpy as np
 import scipy.io
+from scipy.ndimage import zoom
 
 def recreate_dir(d):
   if os.path.isdir(d):
@@ -68,10 +69,6 @@ def ck_preprocess(i):
         f.write('{}\n'.format(img))
 
     # Preprocess and convert images
-    MEAN_R = 122.679
-    MEAN_G = 116.669
-    MEAN_B = 104.006
-    MEAN_PIXEL = np.array([MEAN_R, MEAN_G, MEAN_B], dtype=np.float32)
     
     dst_images = []
 
@@ -80,18 +77,33 @@ def ck_preprocess(i):
       dst_img_path = os.path.join(BATCHES_DIR, img_file) + '.npy'
 
       img = scipy.misc.imread(src_img_path)
-      img = scipy.misc.imresize(img, (IMAGE_SIZE, IMAGE_SIZE))
-      img = img.astype(np.float)
-      img = np.array(img)
-      img = img - MEAN_PIXEL
+      # The same image preprocessing steps are used for MobileNet as for Inseption:
+      # https://github.com/tensorflow/models/blob/master/research/slim/preprocessing/inception_preprocessing.py
 
-      # Convert to BGR
-      tmp_img = np.array(img)
-      img[:, :, 0] = tmp_img[:, :, 2]
-      img[:, :, 2] = tmp_img[:, :, 0] 
+      # Crop the central region of the image with an area containing 87.5% of the original image.
+      new_w = int(img.shape[0] * 0.875)
+      new_h = int(img.shape[1] * 0.875)
+      offset_w = (img.shape[0] - new_w)/2
+      offset_h = (img.shape[1] - new_h)/2
+      img = img[offset_w:new_w+offset_w, offset_h:new_h+offset_h, :]
 
-      # Each image is a batch
-      img = np.expand_dims(img, 3)
+      # Convert to float and normalize
+      img = img.astype(np.float32)
+      img = img / 255.0
+
+      # Zoom to target size
+      zoom_w = float(IMAGE_SIZE)/float(img.shape[0])
+      zoom_h = float(IMAGE_SIZE)/float(img.shape[1])
+      img = zoom(img, [zoom_w, zoom_h, 1])
+
+      # Shift and scale
+      img = img - 0.5
+      img = img * 2   
+      
+      # Each image is a batch in NCHW format
+      img = img.transpose(2, 0, 1)
+      img = np.expand_dims(img, 0)
+      img = np.ascontiguousarray(img)  
 
       np.save(dst_img_path, img) 
       dst_images.append(dst_img_path)
