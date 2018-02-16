@@ -154,32 +154,36 @@ $ ck install package:weights-mobilenet-v1-0.50-128-npy
 $ ck install package:weights-mobilenet-v1-0.25-128-npy
 ```
 
+To view all installed weights:
+```
+$ ck show env --tags=mobilenet,weights,npy
+```
+
 ### Make a sample run
 To test a scaled MobileNet architecture, please specify:
  - **resolution** : 224 (default), 192, 160, 128;
  - **width_multiplier** : 1.0 (default), 0.75, 0.5, 0.25.
 
 ```
-$ ck run program:mobilenets-armcl-opencl \
+$ ck benchmark program:mobilenets-armcl-opencl \
   --env.CK_ENV_MOBILENET_RESOLUTION=192 \
   --env.CK_ENV_MOBILENET_WIDTH_MULTIPLIER=0.75
 ```
-Then, select the corresponding weight. 
+Then, select the desired ArmCL and MobileNets variants.
 
-### Performance evaluation of MobileNets family
-
+### Performance evaluation of the MobileNets family
 ```
-$ python mobilenets-pipe.py --repetitions=3
+$ cd `ck find script:mobilenets-armcl-opencl`
+$ python benchmark.py --repetitions=3
 ```
 
-### Accuracy evaluation of MobileNets family
-
+### Accuracy evaluation of the MobileNets family
 ```
-$ python mobilenets-pipe.py --repetitions=1 --accuracy
+$ cd `ck find script:mobilenets-armcl-opencl`
+$ python benchmark.py --repetitions=1 --accuracy
 ```
 
 ### Check the experimental data
-
 ```
 $ ck list local:experiment:*
 ```
