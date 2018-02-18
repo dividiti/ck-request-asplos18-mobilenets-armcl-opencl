@@ -52,6 +52,24 @@ $ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-
 $ ck detect platform.gpgpu --opencl
 ```
 
+When you run CK for the very first time, you may be asked 
+to select to most close CK platform description 
+shared by CK users. In our case it should be *hikey960-linux*. 
+
+CK workflows will then use various platform-specific scripts 
+from the *platform.init:hikey960-linux* such as monitoring 
+or setting up CPU/GPU frequency:
+```
+$ ls `ck find platform.init:hikey960-linux
+```
+
+You can later change it as following:
+```
+$ ck ls platform.init | sort
+$ ck detect platform.os --update_platform_init \
+  --platform_init_uoa={one of above CK entries}
+```
+
 ### Pre-install CK dependencies
 
 **NB:** We suggest to pre-install the following dependencies to test the workflows:
