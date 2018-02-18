@@ -5,6 +5,10 @@ import re
 import argparse,json
 import os
 
+# ReQuEST tournament tag
+request_tag1='request'
+request_tag2='request-asplos18'
+
 # Platform tag.
 platform_tags='hikey-960'
 
@@ -264,7 +268,7 @@ def do(i, arg):
                },
                'record_repo':record_repo,
                'record_uoa':record_uoa,
-               'tags':['explore-mobilenets-'+experiment_type, lib_tags, platform_tags, rho, alpha],
+               'tags':[request_tag1, request_tag2, 'explore-mobilenets-'+experiment_type, lib_tags, platform_tags, rho, alpha],
                'pipeline':cpipeline,
                'out':'con'
             }
