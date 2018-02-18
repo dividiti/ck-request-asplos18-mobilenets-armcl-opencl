@@ -2,36 +2,37 @@
 
 ## Artifact check-list (meta-information)
 
-We use standard [Artifact Evaluation check-list](http://ctuning.org/ae/submission_extra.html) from CGO, PPoPP, PACT and SuperComputing and other systems conferences.
+We use the standard [Artifact Evaluation check-list](http://ctuning.org/ae/submission_extra.html) from CGO, PPoPP, PACT, SuperComputing and other systems conferences.
 
 * **Algorithm:** image classification
-* **Program:** Arm Compute Library v18+ with MobileNets
-* **Compilation:** GCC v6+; Python 2.7+ or 3.4+
-* **Transformations:** 
+* **Program:** Arm Compute Library v18.01+ with MobileNets
+* **Compilation:** GCC v6+ (recommended v7+); Python 2.7+ or 3.4+
+* **Transformations:**
 * **Binary:** will be compiled on a target platform
-* **Data set:** ImageNet
-* **Run-time environment:** Linux; OpenCL drivers v1.2+
-* **Hardware:** HiKey 960 Development Board (or any similar)
+* **Data set:** ImageNet 2012 validation (50,000 images)
+* **Run-time environment:** Linux; OpenCL v1.2+
+* **Hardware:** HiKey 960 development board (or similar)
 * **Run-time state:** 
-* **Execution:** CPU and GPU frequency set to maximum
-* **Metrics:** total execution time; accuracy after validating some(all) images from the data set
+* **Execution:** CPU and GPU frequencies set to the maximum
+* **Metrics:** total execution time; top1/top5 accuracy over some (all) images from the data set
 * **Output:** classification result; execution time; accuracy
-* **Experiments:** CK command line 
-* **How much disk space required (approximately)?:**: 
-* **How much time is needed to prepare workflow (approximately)?:**: 20 minutes
-* **How much time is needed to complete experiments (approximately)?**:
-* **Collective Knowledge workflow framework used?:** Yes
+* **Experiments:** CK command line
+* **How much disk space required (approximately)?** TBC
+* **How much time is needed to prepare workflow (approximately)?** 20 minutes
+* **How much time is needed to complete experiments (approximately)?**
+* **Collective Knowledge workflow framework used?** Yes
 * **Publicly available?:** Yes
 
 ## Installation
 
-### Install global prerequisites
+### Install global prerequisites (Ubuntu)
 
-Note that *#* sign means *sudo* on Linux
+**NB:** The `#` sign means `sudo`.
 
 ```
-# sudo apt-get install python python-pip sudo apt-get install libblas-dev liblapack-dev libatlas-base-dev python-numpy python-scipy
-# sudo pip install pillow
+# apt install python python-pip
+# apt install libblas-dev liblapack-dev libatlas-base-dev python-numpy python-scipy
+# pip install pillow
 ```
 
 ### Install Collective Knowledge
@@ -124,66 +125,83 @@ Accuracy top 5: 0.000000 (0 of 1)
   "test_time_s ": 0.083443
 }
 ```
-## Exploring performance and accuracy of MobileNet family
-Brief description. 
-See the the paper: [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
-### Install MobileNet's weights
+## Exploring performance and accuracy of the MobileNets family
+**Reference:** [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
 
-To install weights for images with resolution 224x224
+### Install ArmCL variants
+
 ```
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-224-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-224-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-224-npy
+$ ck install package:lib-armcl-opencl-17.12 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install package:lib-armcl-opencl-request
 ```
 
-To install weights for images with resolution 192x192
+**NB:** It is necessary to specify `--env.USE_GRAPH=ON --env.USE_NEON=ON` for packages from `repo:ck-math` (here: `package:lib-armcl-opencl-17.12` and `package:lib-armcl-opencl-18.01`), but not for `package:lib-armcl-opencl-request`.
+
+### Install MobileNets weights
+
+To install weights for images with resolution `224x224`:
 ```
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-192-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-192-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-192-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-192-npy
+$ ck install package:weights-mobilenet-v1-1.0-224-npy
+$ ck install package:weights-mobilenet-v1-0.75-224-npy
+$ ck install package:weights-mobilenet-v1-0.50-224-npy
+$ ck install package:weights-mobilenet-v1-0.25-224-npy
 ```
 
-To install weights for images with resolution 160x160
+To install weights for images with resolution `192x192`:
 ```
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-160-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-160-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-160-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-160-npy
+$ ck install package:weights-mobilenet-v1-1.0-192-npy
+$ ck install package:weights-mobilenet-v1-0.75-192-npy
+$ ck install package:weights-mobilenet-v1-0.50-192-npy
+$ ck install package:weights-mobilenet-v1-0.25-192-npy
 ```
 
-To install weights for images with resolution 128x128
+To install weights for images with resolution `160x160`:
 ```
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-128-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.75-128-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.50-128-npy
-ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-0.25-128-npy
+$ ck install package:weights-mobilenet-v1-1.0-160-npy
+$ ck install package:weights-mobilenet-v1-0.75-160-npy
+$ ck install package:weights-mobilenet-v1-0.50-160-npy
+$ ck install package:weights-mobilenet-v1-0.25-160-npy
 ```
-### Make a simple run
+
+To install weights for images with resolution `128x128`:
+```
+$ ck install package:weights-mobilenet-v1-1.0-128-npy
+$ ck install package:weights-mobilenet-v1-0.75-128-npy
+$ ck install package:weights-mobilenet-v1-0.50-128-npy
+$ ck install package:weights-mobilenet-v1-0.25-128-npy
+```
+
+To view all installed weights:
+```
+$ ck show env --tags=mobilenet,weights,npy
+```
+
+### Make a sample run
 To test a scaled MobileNet architecture, please specify:
- - **resolution** : 224 (default), 192, 160, 128
- - **width_multiplier** : 1.0 (default), 0.75, 0.5, 0.25
-```
-$ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl \
-      --env.CK_ENV_MOBILENET_RESOLUTION=192   \
-      --env.CK_ENV_MOBILENET_WIDTH_MULTIPLIER=0.75 \
-```
-Then, select the corresponding weight. 
-
-### Performance evaluation of MobileNet family
+ - **resolution** : 224 (default), 192, 160, 128;
+ - **width_multiplier** : 1.0 (default), 0.75, 0.5, 0.25.
 
 ```
-$ python mobilenets-pipe.py --repetitions=3
+$ ck benchmark program:mobilenets-armcl-opencl \
+  --env.CK_ENV_MOBILENET_RESOLUTION=192 \
+  --env.CK_ENV_MOBILENET_WIDTH_MULTIPLIER=0.75
+```
+Then, select the desired ArmCL and MobileNets variants.
+
+### Performance evaluation of the MobileNets family
+```
+$ cd `ck find script:mobilenets-armcl-opencl`
+$ python benchmark.py --repetitions=3
 ```
 
-### Accuracy evaluation of MobileNet family
-
+### Accuracy evaluation of the MobileNets family
 ```
-$ python mobilenets-pipe.py --accuracy --repetitions=3
+$ cd `ck find script:mobilenets-armcl-opencl`
+$ python benchmark.py --repetitions=1 --accuracy
 ```
-### Check the experiments
 
+### Check the experimental data
 ```
 $ ck list local:experiment:*
 ```

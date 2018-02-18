@@ -9,6 +9,9 @@
 import os
 import json
 
+TOP1 = 0
+TOP5 = 0
+
 def ck_postprocess(i):
   print('\n--------------------------------')
   def my_env(var): return i['env'][var]
@@ -26,8 +29,6 @@ def ck_postprocess(i):
   VALUES_FILE = os.path.join(AUX_DIR, 'val.txt')   
   CLASSES_LIST = []  
   VALUES_MAP = {}
-  TOP1 = 0
-  TOP5 = 0
 
   def load_ImageNet_classes():
     '''
@@ -81,6 +82,7 @@ def ck_postprocess(i):
       probs_with_classes.append((prob, class_index))
     sorted_probs = sorted(probs_with_classes, key = lambda pair: pair[0], reverse=True)
     return sorted_probs[0:5]    
+
 
   def check_predictions(top5, img_file):
     '''
@@ -138,14 +140,8 @@ def ck_postprocess(i):
       frame_predictions.append(res)  
 
 
-  def calculate_avg_time():
-    # TODO
-    pass
-
-
   CLASSES_LIST, VALUES_MAP = load_ImageNet_classes()
   calculate_precision()
-  calculate_avg_time()
 
   accuracy_top1 = TOP1 / float(IMAGES_COUNT)
   accuracy_top5 = TOP5 / float(IMAGES_COUNT) 

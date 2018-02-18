@@ -17,6 +17,7 @@ import shutil
 import tensorflow as tf
 import numpy as np
 import mobilenet_v1
+from tensorflow.contrib import slim
 
 SOURCE_PATH = ''
 TARGET_PATH = os.path.join('.', 'npy')
@@ -30,10 +31,11 @@ os.mkdir(TARGET_PATH)
 with tf.Session() as sess:
   input_shape = (None, int(RESOLUTION), int(RESOLUTION), 3)
   input_node = tf.placeholder(tf.float32, shape=input_shape, name="input")
-  mobilenet_v1.mobilenet_v1(input_node, 
-                            num_classes = 1001, 
-                            is_training = False, 
-                            depth_multiplier = float(MULTIPLIER))
+  with slim.arg_scope(mobilenet_v1.mobilenet_v1_arg_scope(is_training = False)):
+    mobilenet_v1.mobilenet_v1(input_node, 
+                              num_classes = 1001, 
+                              is_training = False, 
+                              depth_multiplier = float(MULTIPLIER))
 
   saver = tf.train.Saver()
   ckpt_file_prefix = 'mobilenet_v1_{}_{}.ckpt'.format(MULTIPLIER, RESOLUTION)
@@ -49,5 +51,9 @@ with tf.Session() as sess:
       varname = varname[:-2]
     target_file = os.path.join(TARGET_PATH, varname)
     print("Saving variable {0} with shape {1} ...".format(varname, t.shape))
-    np.save(target_file, sess.run(t))
+    v = sess.run(t)
+    if len(v.shape) > 1:
+      v = v.transpose(3, 2, 0, 1)
+      v = np.ascontiguousarray(v)
+    np.save(target_file, v)
 
