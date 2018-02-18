@@ -59,9 +59,9 @@ shared by CK users. In our case it should be *hikey960-linux*.
 
 CK workflows will then use various platform-specific scripts 
 from the *platform.init:hikey960-linux* such as monitoring 
-or setting up CPU/GPU frequency:
+or setting up CPU and GPU frequency:
 ```
-$ ls `ck find platform.init:hikey960-linux
+$ ls `ck find platform.init:hikey960-linux`
 ```
 
 You can later change it as following:
