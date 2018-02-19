@@ -160,6 +160,13 @@ def ck_postprocess(i):
   openme['accuracy_top1'] = accuracy_top1
   openme['accuracy_top5'] = accuracy_top5
   openme['frame_predictions'] = frame_predictions
+
+  t1=openme.get('setup_time_s',0.0)
+  t2=openme.get('images_load_time_s',0.0)
+  t3=openme.get('prediction_time_total_s',0.0)
+
+  openme['execution_time']=t1+t2+t3
+
   with open('tmp-ck-timer.json', 'w') as o:
     json.dump(openme, o, indent=2, sort_keys=True)    
 
