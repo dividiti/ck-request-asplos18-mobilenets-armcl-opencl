@@ -204,4 +204,23 @@ $ python benchmark.py --repetitions=1 --accuracy
 ### Check the experimental data
 ```
 $ ck list local:experiment:*
+ or
+$ ck search experiment --tags=request-asplos18
+ or
+$ ck search experiment --tags=request-asplos18,performance
+```
+
+If something goes wrong, you can remove experimental results 
+before starting new exploration as following:
+
+```
+$ ck rm experiment:* --tags=request-asplos18
+ or
+$ ck rm experiment:* --tags=request-asplos18 --force
+
+```
+
+You can also pack all experimental results to share with colleagues
+```
+$ ck zip local:experiment:*
 ```
