@@ -280,7 +280,7 @@ def do(i, arg):
                'record_repo':record_repo,
                'record_uoa':record_uoa,
 
-               'tags':[request_tag1, request_tag2, experiment_type, 'explore-mobilenets-'+experiment_type, lib_tags, platform_tags, rho, alpha],
+               'tags':[request_tag1, request_tag2, experiment_type, 'explore-mobilenets-'+experiment_type, lib_tags, platform_tags, str(rho), str(alpha)],
 
                'pipeline':cpipeline,
                'out':'con'
