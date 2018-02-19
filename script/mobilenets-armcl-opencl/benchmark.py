@@ -113,7 +113,8 @@ def do(i, arg):
         'target_os':tos,
         'device_id':tdid,
         'out':'con',
-        'deps':{'weights':copy.deepcopy(depm)}
+        'deps':{'weights':copy.deepcopy(depm)},
+        'quiet':'yes'
     }
     r=ck.access(ii)
     if r['return']>0: return r
