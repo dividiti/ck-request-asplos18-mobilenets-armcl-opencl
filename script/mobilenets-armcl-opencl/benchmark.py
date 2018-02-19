@@ -268,8 +268,13 @@ def do(i, arg):
                    'search_point_by_features':'yes'
                },
 
-               "record_dict":{"subview_uoa":"f84ca49f79a1446a"},  # ReQuEST default table view from ck-autotuning repo
-                                                                  # ck-autotuning:experiment.view:request-default
+               'record_dict':{
+                     'subview_uoa':'f84ca49f79a1446a',    # ReQuEST default table view from ck-autotuning repo
+                                                          # ck-autotuning:experiment.view:request-default
+
+                     'program_species':'4b8bbc192ec57f63' # ck-autotuning:program.species:image.classification
+                                                          # common class of apps
+               },  
 
                'record_repo':record_repo,
                'record_uoa':record_uoa,

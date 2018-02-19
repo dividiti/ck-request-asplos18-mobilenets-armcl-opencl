@@ -10,8 +10,7 @@
         "repo_url": "https://github.com/dividiti/ck-caffe"
       },
       {
-        "repo_uoa": "ck-math",
-        "repo_url": "https://github.com/ctuning/ck-math"
+        "repo_uoa": "ck-math"
       }
     ],
     "recache": "yes"
