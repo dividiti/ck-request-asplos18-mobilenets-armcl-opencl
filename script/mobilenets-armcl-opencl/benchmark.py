@@ -263,12 +263,19 @@ def do(i, arg):
 
                'record':'yes',
                'record_failed':'yes',
+
                'record_params':{
                    'search_point_by_features':'yes'
                },
+
+               "record_dict":{"subview_uoa":"f84ca49f79a1446a"},  # ReQuEST default table view from ck-autotuning repo
+                                                                  # ck-autotuning:experiment.view:request-default
+
                'record_repo':record_repo,
                'record_uoa':record_uoa,
+
                'tags':[request_tag1, request_tag2, 'explore-mobilenets-'+experiment_type, lib_tags, platform_tags, rho, alpha],
+
                'pipeline':cpipeline,
                'out':'con'
             }
