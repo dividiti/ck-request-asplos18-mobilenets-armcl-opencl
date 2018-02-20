@@ -36,11 +36,14 @@ def do(i, arg):
     batch_count = 2
     if (arg.accuracy):
         experiment_type = 'accuracy'
+    random_name=arg.random_name
+    share_platform=arg.share_platform
 
     # Detect basic platform info.
     ii={'action':'detect',
         'module_uoa':'platform',
-        'out':'out'}
+        'out':'con'}
+    if share_platform: ii['exchange']='yes'
     r=ck.access(ii)
     if r['return']>0: return r
 
@@ -217,6 +220,7 @@ def do(i, arg):
             rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
             record_repo='local'
             record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-'+lib_tags+'-'+lib_uoa
+
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
             ck.out('%s - %s' % (lib_name, lib_uoa))
@@ -246,15 +250,26 @@ def do(i, arg):
             cpipeline['no_compile']=skip_compile
 
             # Prepare common meta for ReQuEST tournament
+            features=copy.deepcopy(cpipeline['features'])
+            platform_dict['features'].update(features)
+
             r=ck.access({'action':'prepare_common_meta',
                          'module_uoa':'request.asplos18',
                          'platform_dict':platform_dict,
+                         'deps':cpipeline['dependencies'],
                          'request_dict':request_dict})
             if r['return']>0: return r
 
             record_dict=r['record_dict']
 
             meta=r['meta']
+
+#            record_uoa+='-'+meta['stimestamp']
+
+            if random_name:
+               rx=ck.gen_uid({})
+               if rx['return']>0: return rx
+               record_uoa=rx['data_uid']
 
             tags=r['tags']
 
@@ -326,6 +341,8 @@ parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
 parser.add_argument("--accuracy", action="store_true", default=False, dest="accuracy")
 parser.add_argument("--repetitions", action="store", default=3, dest="repetitions")
+parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
+parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 
 myarg=parser.parse_args()
 
