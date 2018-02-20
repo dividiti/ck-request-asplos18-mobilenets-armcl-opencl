@@ -4,22 +4,19 @@ import copy
 import re
 import argparse,json
 import os
-from time import strftime, gmtime
 
 # ReQuEST description
-request_tag1='request'
-request_tag2='request-asplos18'
+request_dict={
+  'report_uid':'08da9685582866a0', # unique UID for a given ReQuEST submission generated manually by user (ck uid)
+                                   # the same UID will be for the report (in the same repo)
 
-request_report_uid='08da9685582866a0' # unique UID for a given ReQuEST submission generated manually by user (ck uid)
-                                      # the same UID will be for the report (in the same repo)
+  'repo_uoa':'ck-request-asplos18-mobilenets-armcl-opencl',
+  'repo_uid':'7698eaf859b79f2b',
 
-request_repo_uoa='ck-request-asplos18-mobilenets-armcl-opencl'
-request_repo_uid='7698eaf859b79f2b'
+  'algorithm_species':'4b8bbc192ec57f63'
+}
 
-request_subview_uoa='f84ca49f79a1446a' # for tables ...
-
-program_species='4b8bbc192ec57f63' # image classification
-
+# User vars
 # Platform tag.
 platform_tags='hikey-960'
 
@@ -33,17 +30,6 @@ bs={
 
 def do(i, arg):
 #### Default values
-    # Get current timestamp
-    r=ck.get_current_date_time({})
-    if r['return']>0: return r
-    timestamp=r['iso_datetime']
-
-    #striped timestamp
-    j=timestamp.find('.')
-    if j>0: timestamp=timestamp[:j]
-
-    stimestamp=timestamp.replace('-','').replace(':','').replace('T','')
-
     # Process vars
     num_repetitions=arg.repetitions
     experiment_type = 'performance'
@@ -59,7 +45,7 @@ def do(i, arg):
     if r['return']>0: return r
 
     # Keep to prepare ReQuEST meta
-    platform=copy.deepcopy(r)
+    platform_dict=copy.deepcopy(r)
 
     # Host and target OS params.
     hos=r['host_os_uoa']
@@ -259,6 +245,27 @@ def do(i, arg):
             cpipeline['no_clean']=skip_compile
             cpipeline['no_compile']=skip_compile
 
+            # Prepare common meta for ReQuEST tournament
+            r=ck.access({'action':'prepare_common_meta',
+                         'module_uoa':'request.asplos18',
+                         'platform_dict':platform_dict,
+                         'request_dict':request_dict})
+            if r['return']>0: return r
+
+            record_dict=r['record_dict']
+
+            meta=r['meta']
+
+            tags=r['tags']
+
+            tags.append(experiment_type)
+
+            tags.append('explore-mobilenets-'+experiment_type)
+            tags.append(lib_tags)
+            tags.append(platform_tags)
+            tags.append(str(rho))
+            tags.append(str(alpha))
+
             ii={'action':'autotune',
                'module_uoa':'pipeline',
                'data_uoa':'program',
@@ -292,24 +299,13 @@ def do(i, arg):
                    'search_point_by_features':'yes'
                },
 
-               'record_dict':{
-                     'subview_uoa':request_subview_uoa,      # ReQuEST default table view from ck-autotuning repo
-                                                            # ck-autotuning:experiment.view:request-default
+               'tags':tags,
+               'meta':meta,
 
-                     'program_species':program_species,  # ck-autotuning:program.species:image.classification
-                                                         # common class of apps
-
-                     'request_submission_uid':request_report_uid, 
-
-                     'request_repo_uoa':request_repo_uoa,
-                     'request_repo_uid':request_repo_uid
-               },
+               'record_dict':record_dict,
 
                'record_repo':record_repo,
                'record_uoa':record_uoa,
-
-               'tags':[request_tag1, request_tag2, experiment_type, 'explore-mobilenets-'+experiment_type, 
-                       lib_tags, platform_tags, str(rho), str(alpha), timestamp, stimestamp],
 
                'pipeline':cpipeline,
                'out':'con'
