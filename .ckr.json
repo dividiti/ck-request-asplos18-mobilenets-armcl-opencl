@@ -11,6 +11,9 @@
       },
       {
         "repo_uoa": "ck-math"
+      },
+      {
+        "repo_uoa": "ck-request"
       }
     ],
     "recache": "yes"
