@@ -13,6 +13,8 @@ request_dict={
   'repo_uoa':'ck-request-asplos18-mobilenets-armcl-opencl',
   'repo_uid':'7698eaf859b79f2b',
 
+  'repo_cmd':'ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl',
+
   'algorithm_species':'4b8bbc192ec57f63'
 }
 
