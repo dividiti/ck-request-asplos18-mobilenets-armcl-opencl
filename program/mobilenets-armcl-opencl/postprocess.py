@@ -165,7 +165,8 @@ def ck_postprocess(i):
   t2=openme.get('images_load_time_s',0.0)
   t3=openme.get('prediction_time_total_s',0.0)
 
-  openme['execution_time']=t1+t2+t3
+  openme['execution_time']=t3 # only prediction time (what we are interested in)
+  openme['execution_time_sum']=t1+t2+t3 # only prediction time (what we are interested in)
 
   with open('tmp-ck-timer.json', 'w') as o:
     json.dump(openme, o, indent=2, sort_keys=True)    
