@@ -17,11 +17,15 @@ def recreate_dir(d):
   if os.path.isdir(d):
     shutil.rmtree(d)
   os.mkdir(d)
-  
+
 def ck_preprocess(i):
+
+  nenv={} # new environment to be added to the run script
+
   print('\n--------------------------------')
   def my_env(var): return i['env'][var]
   def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
+
   # Init variables from environment
   BATCH_COUNT = int(my_env('CK_BATCH_COUNT'))
   BATCH_SIZE = int(my_env('CK_BATCH_SIZE'))
@@ -29,9 +33,17 @@ def ck_preprocess(i):
   SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
   IMAGE_LIST = my_env('CK_IMG_LIST')
   IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL') 
-#  IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
-  IMAGE_SIZE = int(my_env('CK_ENV_MOBILENET_RESOLUTION')) 
-  MOBILENET_WIDTH_MULTIPLIER = float(my_env('CK_ENV_MOBILENET_WIDTH_MULTIPLIER'))
+
+  S_IMAGE_SIZE=dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION')
+  IMAGE_SIZE = int(S_IMAGE_SIZE)
+#  IMAGE_SIZE = int(my_env('CK_ENV_MOBILENET_RESOLUTION')) 
+  nenv['CK_ENV_MOBILENET_RESOLUTION']=S_IMAGE_SIZE
+
+  S_MOBILENET_WIDTH_MULTIPLIER = dep_env('weights', 'CK_ENV_MOBILENET_MULTIPLIER')
+  MOBILENET_WIDTH_MULTIPLIER = float(S_MOBILENET_WIDTH_MULTIPLIER)
+#  MOBILENET_WIDTH_MULTIPLIER = float(my_env('CK_ENV_MOBILENET_WIDTH_MULTIPLIER'))
+  nenv['CK_ENV_MOBILENET_WIDTH_MULTIPLIER']=S_MOBILENET_WIDTH_MULTIPLIER
+
   BATCHES_DIR = my_env('CK_BATCHES_DIR')
   BATCH_LIST = my_env('CK_BATCH_LIST')
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
@@ -121,5 +133,5 @@ def ck_preprocess(i):
   prepare_batches()
 
   print('--------------------------------\n')
-  return {'return': 0}
+  return {'return': 0, 'new_env':nenv}
 

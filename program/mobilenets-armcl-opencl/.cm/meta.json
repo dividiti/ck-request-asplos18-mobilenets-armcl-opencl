@@ -71,9 +71,7 @@
     "CK_RESULTS_DIR": "predictions",
     "CK_BATCH_COUNT": 1,
     "CK_BATCH_SIZE": 1,
-    "CK_SKIP_IMAGES": 0,
-    "CK_ENV_MOBILENET_WIDTH_MULTIPLIER": 1.0,
-    "CK_ENV_MOBILENET_RESOLUTION": 224
+    "CK_SKIP_IMAGES": 0
   },
   "run_deps": {
     "weights": {
