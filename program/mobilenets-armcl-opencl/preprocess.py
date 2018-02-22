@@ -12,13 +12,13 @@ import json
 import shutil
 import numpy as np
 import scipy.io
-from scipy.ndimage import zoom  
+from scipy.ndimage import zoom
 
 def recreate_dir(d):
   if os.path.isdir(d):
     shutil.rmtree(d)
   os.mkdir(d)
-  
+
 def ck_preprocess(i):
   print('\n--------------------------------')
   def my_env(var): return i['env'][var]
@@ -38,7 +38,7 @@ def ck_preprocess(i):
   PREPARE_ALWAYS = my_env('CK_PREPARE_ALWAYS')
   PREPARED_INFO_FILE = 'prepared_info.json'
 
-  def prepare_batches():  
+  def prepare_batches():
     print('Prepare images...')
     print('Batch size: {}'.format(BATCH_SIZE))
     print('Batch count: {}'.format(BATCH_COUNT))
@@ -81,7 +81,7 @@ def ck_preprocess(i):
       if len(img.shape) == 2:
         img = np.dstack((img,img,img))
 
-      # The same image preprocessing steps are used for MobileNet as for Inseption:
+      # The same image preprocessing steps are used for MobileNet as for Inception:
       # https://github.com/tensorflow/models/blob/master/research/slim/preprocessing/inception_preprocessing.py
 
       # Crop the central region of the image with an area containing 87.5% of the original image.
@@ -107,9 +107,9 @@ def ck_preprocess(i):
       # Each image is a batch in NCHW format
       img = img.transpose(2, 0, 1)
       img = np.expand_dims(img, 0)
-      img = np.ascontiguousarray(img)  
+      img = np.ascontiguousarray(img)
 
-      np.save(dst_img_path, img) 
+      np.save(dst_img_path, img)
       dst_images.append(dst_img_path)
 
       if len(dst_images) % 10 == 0:
