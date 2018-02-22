@@ -8,20 +8,18 @@
 
 import os
 import re
-import shutil  
+import json
+import shutil
 import numpy as np
 import scipy.io
-from scipy.ndimage import zoom
+from scipy.ndimage import zoom  
 
 def recreate_dir(d):
   if os.path.isdir(d):
     shutil.rmtree(d)
   os.mkdir(d)
-
+  
 def ck_preprocess(i):
-
-  nenv={} # new environment to be added to the run script
-
   print('\n--------------------------------')
   def my_env(var): return i['env'][var]
   def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
@@ -32,21 +30,13 @@ def ck_preprocess(i):
   IMAGES_COUNT = BATCH_COUNT * BATCH_SIZE
   SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
   IMAGE_LIST = my_env('CK_IMG_LIST')
-  IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL') 
-
-  S_IMAGE_SIZE=dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION')
-  IMAGE_SIZE = int(S_IMAGE_SIZE)
-#  IMAGE_SIZE = int(my_env('CK_ENV_MOBILENET_RESOLUTION')) 
-  nenv['CK_ENV_MOBILENET_RESOLUTION']=S_IMAGE_SIZE
-
-  S_MOBILENET_WIDTH_MULTIPLIER = dep_env('weights', 'CK_ENV_MOBILENET_MULTIPLIER')
-  MOBILENET_WIDTH_MULTIPLIER = float(S_MOBILENET_WIDTH_MULTIPLIER)
-#  MOBILENET_WIDTH_MULTIPLIER = float(my_env('CK_ENV_MOBILENET_WIDTH_MULTIPLIER'))
-  nenv['CK_ENV_MOBILENET_WIDTH_MULTIPLIER']=S_MOBILENET_WIDTH_MULTIPLIER
-
+  IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL')
+  IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
   BATCHES_DIR = my_env('CK_BATCHES_DIR')
   BATCH_LIST = my_env('CK_BATCH_LIST')
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
+  PREPARE_ALWAYS = my_env('CK_PREPARE_ALWAYS')
+  PREPARED_INFO_FILE = 'prepared_info.json'
 
   def prepare_batches():  
     print('Prepare images...')
@@ -80,8 +70,6 @@ def ck_preprocess(i):
       for img in images:
         f.write('{}\n'.format(img))
 
-    # Preprocess and convert images
-    
     dst_images = []
 
     for img_file in images:
@@ -89,6 +77,10 @@ def ck_preprocess(i):
       dst_img_path = os.path.join(BATCHES_DIR, img_file) + '.npy'
 
       img = scipy.misc.imread(src_img_path)
+      # check if grayscale and convert to RGB
+      if len(img.shape) == 2:
+        img = np.dstack((img,img,img))
+
       # The same image preprocessing steps are used for MobileNet as for Inseption:
       # https://github.com/tensorflow/models/blob/master/research/slim/preprocessing/inception_preprocessing.py
 
@@ -110,8 +102,8 @@ def ck_preprocess(i):
 
       # Shift and scale
       img = img - 0.5
-      img = img * 2   
-      
+      img = img * 2
+
       # Each image is a batch in NCHW format
       img = img.transpose(2, 0, 1)
       img = np.expand_dims(img, 0)
@@ -120,18 +112,50 @@ def ck_preprocess(i):
       np.save(dst_img_path, img) 
       dst_images.append(dst_img_path)
 
+      if len(dst_images) % 10 == 0:
+        print('Prepared images: {} of {}'.format(len(dst_images), len(images)))
+
     # Save image list file
     assert BATCH_LIST, 'Batch list file name is not set'
     with open(BATCH_LIST, 'w') as f:
       for img in dst_images:
         f.write('{}\n'.format(img))
 
+    info = {}
+    info['resolution'] = IMAGE_SIZE
+    info['batch_count'] = BATCH_COUNT
+    with open(PREPARED_INFO_FILE, 'w') as f:
+      json.dump(info, f, indent=2, sort_keys=True)
 
-  # Prepare directories
-  recreate_dir(BATCHES_DIR)
+
+  # Prepare results directory
   recreate_dir(RESULTS_DIR)
-  prepare_batches()
+
+
+  # Prepare batches or use prepared
+  do_prepare_batches = True
+  if PREPARE_ALWAYS != 'YES':
+    do_prepare_batches = False
+
+  if not do_prepare_batches:
+    if not os.path.isfile(PREPARED_INFO_FILE):
+      do_prepare_batches = True
+    else:
+      with open(PREPARED_INFO_FILE, 'r') as f:
+        info = json.load(f)
+        if int(info['resolution']) != IMAGE_SIZE \
+        or int(info['batch_count'] != BATCH_COUNT):
+          do_prepare_batches = True
+
+  if not do_prepare_batches:
+    print('Batches preparation is skipped, use previous batches')
+
+  if do_prepare_batches:
+    recreate_dir(BATCHES_DIR)
+    if os.path.isfile(PREPARED_INFO_FILE):
+      os.remove(PREPARED_INFO_FILE)
+    prepare_batches()
 
   print('--------------------------------\n')
-  return {'return': 0, 'new_env':nenv}
+  return {'return': 0}
 

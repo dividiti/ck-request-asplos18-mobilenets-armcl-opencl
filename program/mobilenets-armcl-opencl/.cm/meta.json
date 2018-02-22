@@ -71,7 +71,8 @@
     "CK_RESULTS_DIR": "predictions",
     "CK_BATCH_COUNT": 1,
     "CK_BATCH_SIZE": 1,
-    "CK_SKIP_IMAGES": 0
+    "CK_SKIP_IMAGES": 0,
+    "CK_PREPARE_ALWAYS": "NO"
   },
   "run_deps": {
     "weights": {
