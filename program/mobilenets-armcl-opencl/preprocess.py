@@ -11,17 +11,14 @@ import re
 import shutil  
 import numpy as np
 import scipy.io
-from scipy.ndimage import zoom
+from scipy.ndimage import zoom  
 
 def recreate_dir(d):
   if os.path.isdir(d):
     shutil.rmtree(d)
   os.mkdir(d)
-
+  
 def ck_preprocess(i):
-
-  nenv={} # new environment to be added to the run script
-
   print('\n--------------------------------')
   def my_env(var): return i['env'][var]
   def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
@@ -32,18 +29,8 @@ def ck_preprocess(i):
   IMAGES_COUNT = BATCH_COUNT * BATCH_SIZE
   SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
   IMAGE_LIST = my_env('CK_IMG_LIST')
-  IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL') 
-
-  S_IMAGE_SIZE=dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION')
-  IMAGE_SIZE = int(S_IMAGE_SIZE)
-#  IMAGE_SIZE = int(my_env('CK_ENV_MOBILENET_RESOLUTION')) 
-  nenv['CK_ENV_MOBILENET_RESOLUTION']=S_IMAGE_SIZE
-
-  S_MOBILENET_WIDTH_MULTIPLIER = dep_env('weights', 'CK_ENV_MOBILENET_MULTIPLIER')
-  MOBILENET_WIDTH_MULTIPLIER = float(S_MOBILENET_WIDTH_MULTIPLIER)
-#  MOBILENET_WIDTH_MULTIPLIER = float(my_env('CK_ENV_MOBILENET_WIDTH_MULTIPLIER'))
-  nenv['CK_ENV_MOBILENET_WIDTH_MULTIPLIER']=S_MOBILENET_WIDTH_MULTIPLIER
-
+  IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL')
+  IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
   BATCHES_DIR = my_env('CK_BATCHES_DIR')
   BATCH_LIST = my_env('CK_BATCH_LIST')
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
@@ -80,8 +67,6 @@ def ck_preprocess(i):
       for img in images:
         f.write('{}\n'.format(img))
 
-    # Preprocess and convert images
-    
     dst_images = []
 
     for img_file in images:
@@ -89,6 +74,10 @@ def ck_preprocess(i):
       dst_img_path = os.path.join(BATCHES_DIR, img_file) + '.npy'
 
       img = scipy.misc.imread(src_img_path)
+      # check if grayscale and convert to RGB
+      if len(img.shape) == 2:
+        img = np.dstack((img,img,img))
+
       # The same image preprocessing steps are used for MobileNet as for Inseption:
       # https://github.com/tensorflow/models/blob/master/research/slim/preprocessing/inception_preprocessing.py
 
@@ -133,5 +122,5 @@ def ck_preprocess(i):
   prepare_batches()
 
   print('--------------------------------\n')
-  return {'return': 0, 'new_env':nenv}
+  return {'return': 0}
 
