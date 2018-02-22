@@ -112,6 +112,9 @@ def ck_preprocess(i):
       np.save(dst_img_path, img) 
       dst_images.append(dst_img_path)
 
+      if len(dst_images) % 10 == 0:
+        print('Prepared images: {} of {}'.format(len(dst_images), len(images)))
+
     # Save image list file
     assert BATCH_LIST, 'Batch list file name is not set'
     with open(BATCH_LIST, 'w') as f:
@@ -142,13 +145,15 @@ def ck_preprocess(i):
         info = json.load(f)
         if int(info['resolution']) != IMAGE_SIZE \
         or int(info['batch_count'] != BATCH_COUNT):
-          do_prepare_batches = False
+          do_prepare_batches = True
 
   if not do_prepare_batches:
     print('Batches preparation is skipped, use previous batches')
 
   if do_prepare_batches:
     recreate_dir(BATCHES_DIR)
+    if os.path.isfile(PREPARED_INFO_FILE):
+      os.remove(PREPARED_INFO_FILE)
     prepare_batches()
 
   print('--------------------------------\n')
