@@ -8,7 +8,8 @@
 
 import os
 import re
-import shutil  
+import json
+import shutil
 import numpy as np
 import scipy.io
 from scipy.ndimage import zoom  
@@ -34,6 +35,8 @@ def ck_preprocess(i):
   BATCHES_DIR = my_env('CK_BATCHES_DIR')
   BATCH_LIST = my_env('CK_BATCH_LIST')
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
+  PREPARE_ALWAYS = my_env('CK_PREPARE_ALWAYS')
+  PREPARED_INFO_FILE = 'prepared_info.json'
 
   def prepare_batches():  
     print('Prepare images...')
@@ -99,8 +102,8 @@ def ck_preprocess(i):
 
       # Shift and scale
       img = img - 0.5
-      img = img * 2   
-      
+      img = img * 2
+
       # Each image is a batch in NCHW format
       img = img.transpose(2, 0, 1)
       img = np.expand_dims(img, 0)
@@ -115,11 +118,38 @@ def ck_preprocess(i):
       for img in dst_images:
         f.write('{}\n'.format(img))
 
+    info = {}
+    info['resolution'] = IMAGE_SIZE
+    info['batch_count'] = BATCH_COUNT
+    with open(PREPARED_INFO_FILE, 'w') as f:
+      json.dump(info, f, indent=2, sort_keys=True)
 
-  # Prepare directories
-  recreate_dir(BATCHES_DIR)
+
+  # Prepare results directory
   recreate_dir(RESULTS_DIR)
-  prepare_batches()
+
+
+  # Prepare batches or use prepared
+  do_prepare_batches = True
+  if PREPARE_ALWAYS != 'YES':
+    do_prepare_batches = False
+
+  if not do_prepare_batches:
+    if not os.path.isfile(PREPARED_INFO_FILE):
+      do_prepare_batches = True
+    else:
+      with open(PREPARED_INFO_FILE, 'r') as f:
+        info = json.load(f)
+        if int(info['resolution']) != IMAGE_SIZE \
+        or int(info['batch_count'] != BATCH_COUNT):
+          do_prepare_batches = False
+
+  if not do_prepare_batches:
+    print('Batches preparation is skipped, use previous batches')
+
+  if do_prepare_batches:
+    recreate_dir(BATCHES_DIR)
+    prepare_batches()
 
   print('--------------------------------\n')
   return {'return': 0}
