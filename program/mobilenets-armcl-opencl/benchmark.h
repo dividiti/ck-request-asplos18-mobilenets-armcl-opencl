@@ -53,6 +53,15 @@ using namespace arm_compute;
 using namespace arm_compute::graph;
 using namespace arm_compute::graph_utils;
 
+inline char path_separator()
+{
+#ifdef _WIN32
+    return '\\';
+#else
+    return '/';
+#endif
+}
+
 inline int getenv_i(const char* name, int def) {
     return getenv(name) ? atoi(getenv(name)) : def;
 }
@@ -88,12 +97,12 @@ inline const char* get_labels_file() {
 	return getenv("CK_CAFFE_IMAGENET_SYNSET_WORDS_TXT");
 }
 
-inline const char* get_images_list() {
-	return getenv("CK_IMG_LIST");
+inline string get_images_list() {
+	return string(get_weights_path()) + path_separator() + getenv("CK_IMG_LIST");
 }
 
-inline const char* get_batches_list() {
-	return getenv("CK_BATCH_LIST");
+inline string get_batches_list() {
+	return string(get_weights_path()) + path_separator() + getenv("CK_BATCH_LIST");
 }
 
 inline const char* get_result_dir() {
@@ -109,14 +118,6 @@ inline ConvolutionMethodHint get_convolution_hint() {
     return (gpu_target == arm_compute::GPUTarget::BIFROST ? ConvolutionMethodHint::DIRECT : ConvolutionMethodHint::GEMM);
 }
 
-inline char path_separator()
-{
-#ifdef _WIN32
-    return '\\';
-#else
-    return '/';
-#endif
-}
 
 inline bool file_exists(const string& name) {
     ifstream f(name);

@@ -96,37 +96,39 @@ $ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-op
 Process results in predictions
 ---------------------------------------
 ILSVRC2012_val_00000001.JPEG - (65) n01751748 sea snake
-0.86 - (144) n02051845 pelican
-0.03 - (706) n03899768 patio, terrace
-0.02 - (969) n07932039 eggnog
-0.01 - (369) n02483708 siamang, Hylobates syndactylus, Symphala...
-0.01 - (455) n02877765 bottlecap
+0.73 - (65) n01751748 sea snake
+0.07 - (67) n01755581 diamondback, diamondback rattlesnake, Cr...
+0.06 - (53) n01728920 ringneck snake, ring-necked snake, ring ...
+0.04 - (60) n01740131 night snake, Hypsiglena torquata
+0.03 - (54) n01729322 hognose snake, puff adder, sand viper
 ---------------------------------------
-Accuracy top 1: 0.000000 (0 of 1)
-Accuracy top 5: 0.000000 (0 of 1)
+Accuracy top 1: 1.000000 (1 of 1)
+Accuracy top 5: 1.000000 (1 of 1)
 --------------------------------
 
 
   (reading fine grain timers from tmp-ck-timer.json ...)
 
 {
-  "accuracy_top1": 0.0,
-  "accuracy_top5": 0.0,
+  "accuracy_top1": 1.0, 
+  "accuracy_top5": 1.0, 
+  "execution_time": 0.293805, 
+  "execution_time_sum": 1.9365359999999998, 
   "frame_predictions": [
     {
-      "accuracy_top1": "no",
-      "accuracy_top5": "no",
-      "class_correct": 65,
-      "class_topmost": 144,
+      "accuracy_top1": "yes", 
+      "accuracy_top5": "yes", 
+      "class_correct": 65, 
+      "class_topmost": 65, 
       "file_name": "ILSVRC2012_val_00000001.JPEG"
     }
-  ],
-  "images_load_time_avg_s": 0.017375,
-  "images_load_time_s": 0.017375,
-  "prediction_time_avg_s": 0.058928,
-  "prediction_time_total_s": 0.058928,
-  "setup_time_s": 1.164188,
-  "test_time_s ": 0.083443
+  ], 
+  "images_load_time_avg_s": 0.017385, 
+  "images_load_time_s": 0.017385, 
+  "prediction_time_avg_s": 0.293805, 
+  "prediction_time_total_s": 0.293805, 
+  "setup_time_s": 1.625346, 
+  "test_time_s ": 0.321721
 }
 ```
 ## Exploring performance and accuracy of the MobileNets family
