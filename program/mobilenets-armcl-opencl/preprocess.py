@@ -25,18 +25,19 @@ def ck_preprocess(i):
   def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
 
   # Init variables from environment
+  MODEL_DIR = dep_env('weights', 'CK_ENV_MOBILENET')
   BATCH_COUNT = int(my_env('CK_BATCH_COUNT'))
   BATCH_SIZE = int(my_env('CK_BATCH_SIZE'))
   IMAGES_COUNT = BATCH_COUNT * BATCH_SIZE
   SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
-  IMAGE_LIST = my_env('CK_IMG_LIST')
+  IMAGE_LIST = os.path.join(MODEL_DIR, my_env('CK_IMG_LIST'))
   IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL')
   IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
-  BATCHES_DIR = my_env('CK_BATCHES_DIR')
-  BATCH_LIST = my_env('CK_BATCH_LIST')
+  BATCHES_DIR = os.path.join(MODEL_DIR, my_env('CK_BATCHES_DIR'))
+  BATCH_LIST = os.path.join(MODEL_DIR, my_env('CK_BATCH_LIST'))
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
   PREPARE_ALWAYS = my_env('CK_PREPARE_ALWAYS')
-  PREPARED_INFO_FILE = 'prepared_info.json'
+  PREPARED_INFO_FILE = os.path.join(MODEL_DIR, 'prepared_info.json')
 
   def prepare_batches():
     print('Prepare images...')
