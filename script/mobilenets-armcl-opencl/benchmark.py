@@ -76,7 +76,7 @@ def do(i, arg):
         batch_count = len([f for f in os.listdir(img_dir_val)
            if f.endswith('.JPEG') and os.path.isfile(os.path.join(img_dir_val, f))])
     else:
-        batch_count = 2
+        batch_count = 1
 
     ii={'action':'show',
         'module_uoa':'env',
@@ -339,7 +339,7 @@ parser = argparse.ArgumentParser(description='Pipeline')
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
 parser.add_argument("--accuracy", action="store_true", default=False, dest="accuracy")
-parser.add_argument("--repetitions", action="store", default=3, dest="repetitions")
+parser.add_argument("--repetitions", action="store", default=10, dest="repetitions")
 parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 
