@@ -33,13 +33,14 @@ bs={
 def do(i, arg):
 #### Default values
     # Process vars
-    num_repetitions=arg.repetitions
-    experiment_type = 'performance'
-    batch_count = 2
     if (arg.accuracy):
         experiment_type = 'accuracy'
-    random_name=arg.random_name
-    share_platform=arg.share_platform
+        num_repetitions = 1
+    else:
+        experiment_type = 'performance'
+        num_repetitions = arg.repetitions
+    random_name = arg.random_name
+    share_platform = arg.share_platform
 
     # Detect basic platform info.
     ii={'action':'detect',
@@ -49,7 +50,7 @@ def do(i, arg):
     r=ck.access(ii)
     if r['return']>0: return r
 
-    # Keep to prepare ReQuEST meta
+    # Keep to prepare ReQuEST meta.
     platform_dict=copy.deepcopy(r)
 
     # Host and target OS params.
@@ -72,8 +73,10 @@ def do(i, arg):
     img_dir_val = rx['lst'][0]['meta']['env']['CK_CAFFE_IMAGENET_VAL']
 
     if (arg.accuracy):
-        batch_count = len([f for f in os.listdir(img_dir_val) 
+        batch_count = len([f for f in os.listdir(img_dir_val)
            if f.endswith('.JPEG') and os.path.isfile(os.path.join(img_dir_val, f))])
+    else:
+        batch_count = 2
 
     ii={'action':'show',
         'module_uoa':'env',
@@ -81,7 +84,6 @@ def do(i, arg):
     rx=ck.access(ii)
     if len(rx['lst']) == 0: return rx
     img_dir_aux = rx['lst'][0]['meta']['env']['CK_ENV_DATASET_IMAGENET_AUX']
-#    print img_dir_aux
     ii={'action':'load',
         'module_uoa':'program',
         'data_uoa':program}
@@ -101,7 +103,7 @@ def do(i, arg):
     depl=copy.deepcopy(cdeps['library'])
     if (arg.tos is not None) and (arg.did is not None):
         tos=arg.tos
-        tdid=arg.did 
+        tdid=arg.did
 
     ii={'action':'resolve',
         'module_uoa':'env',
@@ -155,12 +157,12 @@ def do(i, arg):
 
         'env':{
           'CK_ENV_DATASET_IMAGENET_VAL':img_dir_val,
-          'CK_BATCH_COUNT': batch_count,
+          'CK_BATCH_COUNT':batch_count,
           'CK_BATCHES_DIR':'batches',
           'CK_BATCH_LIST':'batches.txt',
           'CK_IMG_LIST':'images.txt',
-          'CK_RESULTS_DIR': 'predictions',
-          'CK_SKIP_IMAGES': 0
+          'CK_RESULTS_DIR':'predictions',
+          'CK_SKIP_IMAGES':0
         },
 
         'cpu_freq':'max',
@@ -196,32 +198,30 @@ def do(i, arg):
 
     pipeline=copy.deepcopy(r)
     for lib_uoa in udepl:
-        # Load Tensorflow lib.
+        # Load ArmCL lib.
         ii={'action':'load',
             'module_uoa':'env',
             'data_uoa':lib_uoa}
         r=ck.access(ii)
         if r['return']>0: return r
-        # Get the tags from e.g. 'TensorFlow library (from sources, cuda)'
         lib_name=r['data_name']
-        lib_tags=re.match('ARM Compute Library \((?P<tags>.*)\)', lib_name)        
-        lib_tags=lib_tags.group('tags').replace(' ', '').replace(',', '-')
+        lib_tags=r['dict']['customize']['version']
         # Skip some libs with "in [..]" or "not in [..]".
+        if arg.accuracy and lib_tags not in [ 'request-ec86090e' ]: continue
         skip_compile='no'
-        # For each Weights .*************************************************
+        # For each MobileNets model.*************************************************
         for model_uoa in udepm:
-            # Load Caffe model.
+            # Load model.
             ii={'action':'load',
                 'module_uoa':'env',
                 'data_uoa':model_uoa}
             r=ck.access(ii)
             if r['return']>0: return r
-            # Get the tags from e.g. 'Caffe model (net and weights) (deepscale, squeezenet, 1.1)'
             model_name=r['data_name']
             alpha = float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
             rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
             record_repo='local'
-            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-'+lib_tags+'-'+lib_uoa
+            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-'+lib_tags
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
@@ -266,8 +266,6 @@ def do(i, arg):
 
             meta=r['meta']
 
-#            record_uoa+='-'+meta['stimestamp']
-
             if random_name:
                rx=ck.gen_uid({})
                if rx['return']>0: return rx
@@ -287,21 +285,20 @@ def do(i, arg):
                'module_uoa':'pipeline',
                'data_uoa':'program',
                'choices_order':[
-                           [
-                               '##choices#env#CK_BATCH_SIZE'
-                           ],
-                           [
-                               '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
-                           ],
-                           [
-                               '##choices#env#CK_ENV_MOBILENET_WIDTH_MULTIPLIER'
-                           ]
+                   [
+                       '##choices#env#CK_BATCH_SIZE'
+                   ],
+                   [
+                       '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
+                   ],
+                   [
+                       '##choices#env#CK_ENV_MOBILENET_WIDTH_MULTIPLIER'
+                   ]
                ],
                'choices_selection':[
-                           {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                           {'type':'loop', 'choice': [rho], 'default': 224},
-                           {'type':'loop', 'choice': [alpha], 'default': 1.0},
-
+                   {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
+                   {'type':'loop', 'choice': [rho], 'default': 224},
+                   {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],
 
                'features_keys_to_process':['##choices#*'],
