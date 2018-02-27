@@ -140,6 +140,10 @@ def ck_postprocess(i):
       frame_predictions.append(res)  
 
 
+  global TOP1
+  global TOP5
+  TOP1 = 0
+  TOP5 = 0
   CLASSES_LIST, VALUES_MAP = load_ImageNet_classes()
   calculate_precision()
 
