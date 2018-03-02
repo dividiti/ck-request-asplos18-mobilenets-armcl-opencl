@@ -114,10 +114,11 @@ inline float get_multiplier() {
 }
 
 inline ConvolutionMethodHint get_convolution_hint() {
-    const arm_compute::GPUTarget gpu_target = arm_compute::CLScheduler::get().target();
-    return (gpu_target == arm_compute::GPUTarget::BIFROST ? ConvolutionMethodHint::DIRECT : ConvolutionMethodHint::GEMM);
+    bool bifrost_target = (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST);
+    ConvolutionMethodHint default_hint = (bifrost_target ? ConvolutionMethodHint::DIRECT : ConvolutionMethodHint::GEMM);
+    ConvolutionMethodHint hint = static_cast<ConvolutionMethodHint>(getenv_i("CK_CONVOLUTION_METHOD_HINT", static_cast<int>(default_hint)));
+    return hint;
 }
-
 
 inline bool file_exists(const string& name) {
     ifstream f(name);
