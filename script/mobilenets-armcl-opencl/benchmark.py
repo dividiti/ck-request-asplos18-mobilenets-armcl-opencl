@@ -30,6 +30,14 @@ bs={
   'default':1
 }
 
+# ConvolutionMethodHint: 0 - GEMM, 1 - DIRECT.
+ch={
+  'start':0,
+  'stop':1,
+  'step':1,
+  'default':1
+}
+
 def do(i, arg):
 #### Default values
     # Process vars
@@ -289,6 +297,9 @@ def do(i, arg):
                        '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
+                       '##choices#env#CK_CONVOLUTION_METHOD_HINT'
+                   ],
+                   [
                        '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
                    ],
                    [
@@ -297,6 +308,7 @@ def do(i, arg):
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
+                   {'type':'loop', 'start':ch['start'], 'stop':ch['stop'], 'step':ch['step'], 'default':ch['default']},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],
