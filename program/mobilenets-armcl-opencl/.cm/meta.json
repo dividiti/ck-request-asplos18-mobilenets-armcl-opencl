@@ -17,6 +17,15 @@
       "sort": 5,
       "tags": "lib,armcl,vopencl,vgraph"
     },
+    "opencl": {
+      "local": "yes",
+      "name": "OpenCL library",
+      "skip_installed": {
+        "android": "yes"
+      },
+      "sort": 20,
+      "tags": "lib,opencl"
+    },
     "xopenme": {
       "local": "yes",
       "name": "xOpenME library",
