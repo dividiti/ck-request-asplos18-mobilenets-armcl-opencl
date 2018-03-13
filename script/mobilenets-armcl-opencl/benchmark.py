@@ -5,7 +5,7 @@ import re
 import argparse,json
 import os
 
-# ReQuEST description
+# ReQuEST description.
 request_dict={
   'report_uid':'08da9685582866a0', # unique UID for a given ReQuEST submission generated manually by user (ck uid)
                                    # the same UID will be for the report (in the same repo)
@@ -18,7 +18,6 @@ request_dict={
   'algorithm_species':'4b8bbc192ec57f63'
 }
 
-# User vars
 # Platform tag.
 platform_tags='hikey-960'
 
@@ -39,8 +38,7 @@ ch={
 }
 
 def do(i, arg):
-#### Default values
-    # Process vars
+    # Process arguments.
     if (arg.accuracy):
         experiment_type = 'accuracy'
         num_repetitions = 1
@@ -215,7 +213,7 @@ def do(i, arg):
         lib_name=r['data_name']
         lib_tags=r['dict']['customize']['version']
         # Skip some libs with "in [..]" or "not in [..]".
-        if arg.accuracy and lib_tags not in [ 'request-ec86090e' ]: continue
+        if arg.accuracy and lib_tags in [ ]: continue
         skip_compile='no'
         # For each MobileNets model.*************************************************
         for model_uoa in udepm:
