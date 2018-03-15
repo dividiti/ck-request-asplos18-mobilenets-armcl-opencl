@@ -15,7 +15,9 @@ request_dict={
 
   'repo_cmd':'ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl',
 
-  'algorithm_species':'4b8bbc192ec57f63'
+  'farm':'', # if farm of machines
+
+  'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
 
 # User vars
