@@ -5,7 +5,7 @@ import re
 import argparse,json
 import os
 
-# ReQuEST description
+# ReQuEST description.
 request_dict={
   'report_uid':'08da9685582866a0', # unique UID for a given ReQuEST submission generated manually by user (ck uid)
                                    # the same UID will be for the report (in the same repo)
@@ -20,7 +20,6 @@ request_dict={
   'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
 
-# User vars
 # Platform tag.
 platform_tags='hikey-960'
 
@@ -32,9 +31,16 @@ bs={
   'default':1
 }
 
+# ConvolutionMethodHint: 0 - GEMM, 1 - DIRECT.
+ch={
+  'start':0,
+  'stop':1,
+  'step':1,
+  'default':1
+}
+
 def do(i, arg):
-#### Default values
-    # Process vars
+    # Process arguments.
     if (arg.accuracy):
         experiment_type = 'accuracy'
         num_repetitions = 1
@@ -209,7 +215,7 @@ def do(i, arg):
         lib_name=r['data_name']
         lib_tags=r['dict']['customize']['version']
         # Skip some libs with "in [..]" or "not in [..]".
-        if arg.accuracy and lib_tags not in [ 'request-ec86090e' ]: continue
+        if arg.accuracy and lib_tags in [ ]: continue
         skip_compile='no'
         # For each MobileNets model.*************************************************
         for model_uoa in udepm:
@@ -291,6 +297,9 @@ def do(i, arg):
                        '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
+                       '##choices#env#CK_CONVOLUTION_METHOD_HINT'
+                   ],
+                   [
                        '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
                    ],
                    [
@@ -299,6 +308,7 @@ def do(i, arg):
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
+                   {'type':'loop', 'start':ch['start'], 'stop':ch['stop'], 'step':ch['step'], 'default':ch['default']},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],
