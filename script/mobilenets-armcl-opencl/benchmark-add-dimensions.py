@@ -15,19 +15,36 @@ def do(i):
     for q in lst:
         duid=q['data_uid']
         duoa=q['data_uoa']
+        ruid=q['repo_uid']
         path=q['path']
 
         ck.out(duoa)
 
         # Search matching accuracy entry
-        aduoa=duoa.replace('-performance-','-accuracy-')
-
-        r=ck.access({'action':'find',
+        r=ck.access({'action':'load',
                      'module_uoa':'experiment',
-                     'data_uoa':aduoa,
-                     'repo_uoa':'local'})
+                     'data_uoa':duid,
+                     'repo_uoa':ruid})
         if r['return']>0: return r
+
+        dd=r['dict']
+        ruid=r['repo_uid']
         apath=r['path']             
+
+        # Updating meta if needed
+        dd['meta']['scenario_module_uoa']='a555738be4b65860' # module:request.asplos18
+
+        # Updating entry
+        r=ck.access({'action':'update',
+                     'module_uoa':'experiment',
+                     'data_uoa':duid,
+                     'repo_uoa':ruid,
+                     'dict':dd,
+                     'substitute':'yes',
+                     'ignore_update':'yes',
+                     'sort_keys':'yes'
+                    })
+        if r['return']>0: return r
 
         # Checking points to aggregate
         dperf=os.listdir(path)
