@@ -26,7 +26,7 @@ We use the standard [Artifact Evaluation check-list](http://ctuning.org/ae/submi
 * **How much time is needed to complete experiments (approximately)?**
 * **Collective Knowledge workflow framework used?** Yes
 * **Publicly available?:** Yes
-* **Experimental results: https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl
+* **Experimental results:** https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl
 
 ## Installation
 
