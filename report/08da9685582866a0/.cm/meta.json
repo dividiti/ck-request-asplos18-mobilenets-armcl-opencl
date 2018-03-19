@@ -1,1 +1,46 @@
-{}
+{
+  "affiliations": {
+    "1": {
+      "name": "dividiti, UK"
+    },
+    "2": {
+      "name": "Xored, Russia"
+    },
+    "3": {
+      "name": "cTuning foundation, France"
+    }
+  },
+  "authors": [
+    {
+      "affiliation": "1,2",
+      "name": "Nikolay Chunosov"
+    },
+    {
+      "affiliation": "1",
+      "name": "Flavio Vella"
+    },
+    {
+      "affiliation": "1",
+      "name": "Anton Lokhmotov"
+    },
+    {
+      "affiliation": "1,3",
+      "name": "Grigori Fursin"
+    }
+  ],
+  "live": "yes",
+  "publish_iso_date": "2018-03-19",
+  "tags": [
+    "ck-paper",
+    "request",
+    "request-asplos18"
+  ],
+  "template": "interactive-ck-article.html",
+  "skip_discussion_link":"yes",
+  "title": "Exploring performance and accuracy of the MobileNets family using the Arm Compute Library",
+  "top": "no",
+  "type": {
+    "name": "tech.report"
+  },
+  "when": "March 2018"
+}

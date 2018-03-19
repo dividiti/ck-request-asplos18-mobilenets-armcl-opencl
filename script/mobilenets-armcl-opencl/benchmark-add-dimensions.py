@@ -41,11 +41,10 @@ def do(i):
         dd['meta']['platform_species']='embedded' # embedded vs server (maybe other classifications such as edge)
 
         dd['meta']['platform_peak_power']=4.5 #Watts
-
         dd['meta']['platform_price']=239 # $
         dd['meta']['platform_price_date']='20170425' # date
 
-        dd['meta']['artifact']='' # date
+        dd['meta']['artifact']='08da9685582866a0' # artifact description
 
         # Updating entry
         r=ck.access({'action':'update',
@@ -76,8 +75,8 @@ def do(i):
 
                if mult==0.25: size=1990786
                elif mult==0.5: size=5459810
-               elif mult=0.75: size=10498594
-               elif mult=1.0: size=17106694
+               elif mult==0.75: size=10498594
+               elif mult==1.0: size=17106694
                else:
                   return {'return':1, 'error':'unknown width multiplier "'+str(mult)+'"'}
 

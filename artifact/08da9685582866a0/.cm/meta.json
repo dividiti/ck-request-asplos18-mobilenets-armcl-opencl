@@ -1,1 +1,17 @@
-{}
+{
+  "acm_badges":{
+    "available":"yes",
+    "functional":"yes",
+    "reusable":"yes",
+    "replicated":"yes",
+    "reproduced":""
+  },
+  "dois": [
+  ],
+  "html":"",
+  "interactive_report":"08da9685582866a0",
+  "repos": [
+    {"name":"CK workflow", "url":"https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl"},
+    {"name":"CK results", "url":"https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl"}
+  ]
+}
