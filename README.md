@@ -237,6 +237,13 @@ You can also pack all experimental results to share with colleagues
 $ ck zip local:experiment:*
 ```
 
+CK will create a "ckr-local.zip" file with CK entries.
+
+You can then unzip it to the local (or other) repository on another machine via CK as following:
+```
+$ ck unzip repo:local --zip=ckr-local.zip
+```
+
 ## Shared experimental results 
 
 We shared raw experimental results in the CK format 
