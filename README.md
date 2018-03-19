@@ -248,7 +248,7 @@ $ ck unzip repo:local --zip=ckr-local.zip
 ## Shared experimental results 
 
 We shared raw experimental results in the CK format 
-in this [CK repo])(https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
+in this [CK repo](https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
 
 You can view and test them as following:
 ```
