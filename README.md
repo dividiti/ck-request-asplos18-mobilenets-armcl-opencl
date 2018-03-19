@@ -236,3 +236,16 @@ You can also pack all experimental results to share with colleagues
 ```
 $ ck zip local:experiment:*
 ```
+
+## Shared experimental results 
+
+We shared raw experimental results in the CK format 
+in this [CK repo])(https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
+
+You can view and test them as following:
+```
+$ ck pull repo:ck-request-asplos18-results-mobilenets-armcl-opencl
+$ ck ls ck-request-asplos18-results-mobilenets-armcl-opencl:experiment:* | sort
+$ ck dashboard request.apslos18
+```
+
