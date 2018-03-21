@@ -45,8 +45,6 @@ public:
     s.measure_begin();
 
     copy_int8_numpy_to_tensor(batch_file, tensor);
-    //NumPyBinLoader accessor(batch_file);
-    //accessor.access_tensor(tensor);
 
     auto t = s.measure_end_load_images();
     cout << "Loaded in " << t << " s\n";
