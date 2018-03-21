@@ -104,7 +104,7 @@ inline string get_mode_suffix() {
 }
 
 inline string get_images_list() {
-  return getenv("CK_IMG_LIST") + get_mode_suffix();
+  return getenv("CK_IMAGE_LIST") + get_mode_suffix();
 }
 
 inline string get_batches_list() {

@@ -166,9 +166,9 @@ def do(i, arg):
         'env':{
           'CK_ENV_DATASET_IMAGENET_VAL':img_dir_val,
           'CK_BATCH_COUNT':batch_count,
-          'CK_BATCHES_DIR':'batches',
-          'CK_BATCH_LIST':'batches.txt',
-          'CK_IMG_LIST':'images.txt',
+          'CK_BATCHES_DIR':'../batches',
+          'CK_BATCH_LIST':'../batches',
+          'CK_IMAGE_LIST':'../images',
           'CK_RESULTS_DIR':'predictions',
           'CK_SKIP_IMAGES':0
         },

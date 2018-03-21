@@ -32,7 +32,7 @@ def ck_preprocess(i):
   IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL')
   IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
   MODE_SUFFIX = '-{}-{}-{}'.format(IMAGE_SIZE, BATCH_SIZE, BATCH_COUNT)
-  IMAGE_LIST = my_env('CK_IMG_LIST') + MODE_SUFFIX + '.txt'
+  IMAGE_LIST = my_env('CK_IMAGE_LIST') + MODE_SUFFIX + '.txt'
   BATCHES_DIR = my_env('CK_BATCHES_DIR') + MODE_SUFFIX
   BATCH_LIST = my_env('CK_BATCH_LIST') + MODE_SUFFIX + '.txt'
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
