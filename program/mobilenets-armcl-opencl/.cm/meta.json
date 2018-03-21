@@ -74,8 +74,8 @@
     }
   },
   "run_vars": {
-    "CK_IMG_LIST": "images.txt",
-    "CK_BATCH_LIST": "batches.txt",
+    "CK_IMG_LIST": "images",
+    "CK_BATCH_LIST": "batches",
     "CK_BATCHES_DIR": "batches",
     "CK_RESULTS_DIR": "predictions",
     "CK_BATCH_COUNT": 1,

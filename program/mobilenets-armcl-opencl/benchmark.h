@@ -94,19 +94,25 @@ inline int get_image_size() {
 }
 
 inline const char* get_labels_file() {
-	return getenv("CK_CAFFE_IMAGENET_SYNSET_WORDS_TXT");
+  return getenv("CK_CAFFE_IMAGENET_SYNSET_WORDS_TXT");
+}
+
+inline string get_mode_suffix() {
+  ostringstream s;
+  s << "-" << get_image_size() << "-" << get_batch_size() << "-" << get_batch_count() << ".txt";
+  return s.str();
 }
 
 inline string get_images_list() {
-	return string(get_weights_path()) + path_separator() + getenv("CK_IMG_LIST");
+  return getenv("CK_IMG_LIST") + get_mode_suffix();
 }
 
 inline string get_batches_list() {
-	return string(get_weights_path()) + path_separator() + getenv("CK_BATCH_LIST");
+  return getenv("CK_BATCH_LIST") + get_mode_suffix();
 }
 
 inline const char* get_result_dir() {
-	return getenv("CK_RESULTS_DIR");
+  return getenv("CK_RESULTS_DIR");
 }
 
 inline float get_multiplier() {
@@ -193,13 +199,19 @@ private:
   // and additional work should be done to process real batches
   // https://github.com/ARM-software/ComputeLibrary/issues/355
   void load_file_list() {
-    ifstream img_list(get_images_list());
+    auto images_list = get_images_list();
+    ifstream img_list(images_list);
     for (string file_name; !getline(img_list, file_name).fail();)
       _image_files.emplace_back(file_name);
+    cout << "Image list file: " << images_list << endl;
+    cout << "Image count in file: " << _image_files.size() << endl;
 
-    ifstream batch_list(get_batches_list());
+    auto batches_list = get_batches_list();
+    ifstream batch_list(batches_list);
     for (string file_name; !getline(batch_list, file_name).fail();)
       _batch_files.emplace_back(file_name);
+    cout << "Batch list file: " << batches_list << endl;
+    cout << "Batch count in file: " << _batch_files.size() << endl;
 
     if (_batch_size != 1 || _image_files.size() != _batch_files.size())
        throw runtime_error("Only single image batches are currently supported");
