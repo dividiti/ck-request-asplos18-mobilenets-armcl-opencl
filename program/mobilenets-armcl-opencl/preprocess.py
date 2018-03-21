@@ -25,19 +25,18 @@ def ck_preprocess(i):
   def dep_env(dep, var): return i['deps'][dep]['dict']['env'][var]
 
   # Init variables from environment
-  MODEL_DIR = dep_env('weights', 'CK_ENV_MOBILENET')
   BATCH_COUNT = int(my_env('CK_BATCH_COUNT'))
   BATCH_SIZE = int(my_env('CK_BATCH_SIZE'))
   IMAGES_COUNT = BATCH_COUNT * BATCH_SIZE
   SKIP_IMAGES = int(my_env('CK_SKIP_IMAGES'))
-  IMAGE_LIST = os.path.join(MODEL_DIR, my_env('CK_IMG_LIST'))
   IMAGE_DIR = dep_env('imagenet-val', 'CK_ENV_DATASET_IMAGENET_VAL')
   IMAGE_SIZE = int(dep_env('weights', 'CK_ENV_MOBILENET_RESOLUTION'))
-  BATCHES_DIR = os.path.join(MODEL_DIR, my_env('CK_BATCHES_DIR'))
-  BATCH_LIST = os.path.join(MODEL_DIR, my_env('CK_BATCH_LIST'))
+  MODE_SUFFIX = '-{}-{}-{}'.format(IMAGE_SIZE, BATCH_SIZE, BATCH_COUNT)
+  IMAGE_LIST = my_env('CK_IMG_LIST') + MODE_SUFFIX + '.txt'
+  BATCHES_DIR = my_env('CK_BATCHES_DIR') + MODE_SUFFIX
+  BATCH_LIST = my_env('CK_BATCH_LIST') + MODE_SUFFIX + '.txt'
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
   PREPARE_ALWAYS = my_env('CK_PREPARE_ALWAYS')
-  PREPARED_INFO_FILE = os.path.join(MODEL_DIR, 'prepared_info.json')
 
   def prepare_batches():
     print('Prepare images...')
@@ -114,13 +113,6 @@ def ck_preprocess(i):
       for img in dst_images:
         f.write('{}\n'.format(img))
 
-    info = {}
-    info['resolution'] = IMAGE_SIZE
-    info['batch_count'] = BATCH_COUNT
-    with open(PREPARED_INFO_FILE, 'w') as f:
-      json.dump(info, f, indent=2, sort_keys=True)
-
-
   # Prepare results directory
   recreate_dir(RESULTS_DIR)
 
@@ -131,23 +123,14 @@ def ck_preprocess(i):
     do_prepare_batches = False
 
   if not do_prepare_batches:
-    if not os.path.isfile(PREPARED_INFO_FILE):
+    if not os.path.isdir(BATCHES_DIR):
       do_prepare_batches = True
-    else:
-      with open(PREPARED_INFO_FILE, 'r') as f:
-        info = json.load(f)
-        if int(info['resolution']) != IMAGE_SIZE \
-        or int(info['batch_count'] != BATCH_COUNT):
-          do_prepare_batches = True
-
-  if not do_prepare_batches:
-    print('Batches preparation is skipped, use previous batches')
 
   if do_prepare_batches:
     recreate_dir(BATCHES_DIR)
-    if os.path.isfile(PREPARED_INFO_FILE):
-      os.remove(PREPARED_INFO_FILE)
     prepare_batches()
+  else:
+    print('Batches preparation is skipped, use previous batches')
 
   print('--------------------------------\n')
   return {'return': 0}
