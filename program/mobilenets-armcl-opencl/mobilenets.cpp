@@ -25,6 +25,7 @@
 #include "benchmark.h"
 
 #include "arm_compute/runtime/CL/CLTensor.h"
+#include "utils/Utils.h"
 
 class CKNumPyInputLoader : public ITensorAccessor {
 public:
@@ -43,8 +44,9 @@ public:
     
     s.measure_begin();
 
-    NumPyBinLoader accessor(batch_file);
-    accessor.access_tensor(tensor);
+    copy_int8_numpy_to_tensor(batch_file, tensor);
+    //NumPyBinLoader accessor(batch_file);
+    //accessor.access_tensor(tensor);
 
     auto t = s.measure_end_load_images();
     cout << "Loaded in " << t << " s\n";
@@ -52,6 +54,62 @@ public:
     // Start batch timer after data was loaded
     s.measure_begin();
     return true;
+  }
+
+private:
+  void copy_int8_numpy_to_tensor(const string& file_name, ITensor &tensor) {
+    // Open file
+    ifstream stream(file_name, ios::in | ios::binary);
+    if (!stream.good())
+      raise_error(file_name, "Unable to open file");
+    string header = npy::read_header(stream);
+
+    // Parse header
+    string typestr;
+    bool fortran_order = false;
+    vector<unsigned long> shape;
+    npy::parse_header(header, typestr, fortran_order, shape);
+
+    // Check if the typestring matches the given one
+    if (typestr != arm_compute::utils::get_typestring(DataType::U8))
+      raise_error(file_name, "Typestrings mismatch");
+
+    // Reverse vector in case of non fortran order
+    if(!fortran_order)
+      reverse(shape.begin(), shape.end());
+
+    // Correct dimensions (Needs to match TensorShape dimension corrections)
+    const TensorShape tensor_shape = tensor.info()->tensor_shape();
+    if(shape.size() != tensor_shape.num_dimensions())
+      for(int i = static_cast<int>(shape.size()) - 1; i > 0; --i)
+        if(shape[i] == 1)
+          shape.pop_back();
+        else
+          break;
+
+    // Validate tensor ranks and shapes
+    if (shape.size() != tensor_shape.num_dimensions())
+      raise_error(file_name, "Tensor ranks mismatch");
+    for(size_t i = 0; i < shape.size(); ++i)
+      if (tensor_shape[i] != shape[i])
+        raise_error(file_name, "Tensor dimensions mismatch");
+
+    // Read data
+    Window window;
+    window.use_tensor_dimensions(tensor_shape);
+    execute_window_loop(window, [&](const Coordinates & id) {
+      uint8_t value_i8;
+      stream.read(reinterpret_cast<char*>(&value_i8), 1);
+      float value_f32 = (static_cast<float>(value_i8) / 255.0f - 0.5f) * 2.0f;
+      auto target_ptr = reinterpret_cast<float*>(tensor.ptr_to_element(id));
+      *target_ptr = value_f32;
+    });
+  }
+
+  void raise_error(const string& file_name, const string& msg) {
+    ostringstream s;
+    s << "Failed to read batch file " << file_name << ": " << msg;
+    throw runtime_error(s.str());
   }
 };
 
@@ -161,7 +219,7 @@ void run_mobilenet()
     xopenme_clock_start(X_TIMER_SETUP);
     graph << target_hint
           << convolution_hint
-          << Tensor(TensorInfo(input_shape, 1, DATATYPE), 
+          << arm_compute::graph::Tensor(TensorInfo(input_shape, 1, DATATYPE), 
              arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
           << ConvolutionLayer(
               3U, 3U, apply_multiplier(32U),
@@ -197,7 +255,7 @@ void run_mobilenet()
               PadStrideInfo(1, 1, 0, 0))
           << ReshapeLayer(TensorShape(1001U))
           << SoftmaxLayer()
-          << Tensor(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
+          << arm_compute::graph::Tensor(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
     xopenme_clock_end(X_TIMER_SETUP);
 
     cout << "\nRun graph...\n";

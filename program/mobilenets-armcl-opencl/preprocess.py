@@ -92,18 +92,10 @@ def ck_preprocess(i):
       offset_h = (img.shape[1] - new_h)/2
       img = img[offset_w:new_w+offset_w, offset_h:new_h+offset_h, :]
 
-      # Convert to float and normalize
-      img = img.astype(np.float32)
-      img = img / 255.0
-
       # Zoom to target size
       zoom_w = float(IMAGE_SIZE)/float(img.shape[0])
       zoom_h = float(IMAGE_SIZE)/float(img.shape[1])
       img = zoom(img, [zoom_w, zoom_h, 1])
-
-      # Shift and scale
-      img = img - 0.5
-      img = img * 2
 
       # Each image is a batch in NCHW format
       img = img.transpose(2, 0, 1)
