@@ -80,11 +80,18 @@ def do(i, arg):
     # FIXME: It's probably better to use CK_ENV_DATASET_IMAGE_DIR.
     img_dir_val = rx['lst'][0]['meta']['env']['CK_CAFFE_IMAGENET_VAL']
 
-    if (arg.accuracy):
+    if arg.accuracy:
         batch_count = len([f for f in os.listdir(img_dir_val)
            if f.endswith('.JPEG') and os.path.isfile(os.path.join(img_dir_val, f))])
     else:
         batch_count = 1
+
+    # Restrict accuracy testing to the ReQuEST fork of ArmCL and direct convolution for large datasets.
+    if arg.accuracy and batch_count > 500:
+        use_lib_tags = [ 'request-d8f69c13' ]
+        ch['start'] = 1
+    else:
+        use_lib_tags = [ 'request-d8f69c13', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
 
     ii={'action':'show',
         'module_uoa':'env',
@@ -107,7 +114,6 @@ def do(i, arg):
     for k in rdeps:
         cdeps[k]=rdeps[k]
         cdeps[k]['for_run_time']='yes'
-#    print cdeps
     depl=copy.deepcopy(cdeps['library'])
     if (arg.tos is not None) and (arg.did is not None):
         tos=arg.tos
@@ -215,7 +221,7 @@ def do(i, arg):
         lib_name=r['data_name']
         lib_tags=r['dict']['customize']['version']
         # Skip some libs with "in [..]" or "not in [..]".
-        if arg.accuracy and lib_tags in [ ]: continue
+        if arg.accuracy and lib_tags not in use_lib_tags: continue
         skip_compile='no'
         # For each MobileNets model.*************************************************
         for model_uoa in udepm:
