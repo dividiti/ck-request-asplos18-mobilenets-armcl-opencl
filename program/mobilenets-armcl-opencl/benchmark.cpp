@@ -65,6 +65,7 @@ void finish_test() {
 }
 
 int run_test() {
+    ofstream err_log("test_errors.log", ios::trunc);
     try
     {
         session().init();
@@ -75,12 +76,18 @@ int run_test() {
     }
     catch (cl::Error &err)
     {
-        std::cerr << "\nERROR: " << err.what() << " (" << err.err() << ")" << std::endl;
+        ostringstream msg;
+        msg << "\nERROR: " << err.what() << " (" << err.err() << ")";
+        cerr << msg.str() << endl;
+        err_log << msg.str() << endl;
         return EXIT_FAILURE;
     }
     catch (std::runtime_error &err)
     {
-        std::cerr << "\nERROR: " << err.what() << " " << (errno ? strerror(errno) : "") << std::endl;
+        ostringstream msg;
+        msg << "\nERROR: " << err.what() << " " << (errno ? strerror(errno) : "");
+        cerr << msg.str() << endl;
+        err_log << msg.str() << endl;
         return EXIT_FAILURE;
     }
 }
