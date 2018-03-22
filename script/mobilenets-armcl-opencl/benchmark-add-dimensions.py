@@ -7,8 +7,8 @@ def do(i):
     # List performance entries
     r=ck.access({'action':'search',
                  'module_uoa':'experiment',
-#                 'repo_uoa':'ck-request-asplos18-results'})
                  'data_uoa':'mobilenets-performance-*'})
+#                 'repo_uoa':'ck-request-asplos18-results', 'data_uoa':'*'})
     if r['return']>0: return r
     lst=r['lst']
 
@@ -48,6 +48,24 @@ def do(i):
         dd['meta']['artifact']='08da9685582866a0' # artifact description
 
         dd['meta']['model_precision']='fp32'
+
+        # Unified full name for some deps
+        ds=dd['meta']['deps_summary']
+
+        x=ds['weights']
+        r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
+        if r['return']>0: return r
+        dd['meta']['model_design_name']=r['full_name']
+
+        x=ds['compiler']
+        r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
+        if r['return']>0: return r
+        dd['meta']['compiler_name']=r['full_name']
+
+        x=ds['library']
+        r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
+        if r['return']>0: return r
+        dd['meta']['library_name']=r['full_name']
 
         # Updating entry
         r=ck.access({'action':'update',
@@ -89,8 +107,9 @@ def do(i):
 
                d['##features#model_size#min']=size
 
-               d['##features#cpu_freq#min']='807'
-               d['##features#gpu_freq#min']=''
+               d['##features#gpu_freq#min']=807
+               d['##features#cpu_freq#min']=''
+               d['##features#freq#min']=d['##features#gpu_freq#min']
 
                # Save updated dict
                r=ck.save_json_to_file({'json_file':p1, 'dict':d, 'sort_keys':'yes'})
