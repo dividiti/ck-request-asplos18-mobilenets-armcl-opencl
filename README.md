@@ -1,4 +1,4 @@
-# [dividiti](http://dividiti.com)'s submission to [ReQuEST @ ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
+# Collective Knowledge workflow for image classification submitted to [ReQuEST at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
 
 * **Title:** Exploring performance and accuracy of the [MobileNets family](https://arxiv.org/pdf/1704.04861.pdf) using the [Arm Compute Library](https://github.com/ARM-software/ComputeLibrary)
 * **Authors:** Nikolay Chunosov, Flavio Vella, Anton Lokhmotov, Grigori Fursin
@@ -6,7 +6,7 @@
 
 ## Artifact check-list (meta-information)
 
-We use the standard [Artifact Evaluation check-list](http://ctuning.org/ae/submission_extra.html) from CGO, PPoPP, PACT, SuperComputing and other systems conferences.
+We use the standard [Artifact Description check-list](http://ctuning.org/ae/submission_extra.html) from systems conferences including CGO, PPoPP, PACT and SuperComputing.
 
 * **Algorithm:** image classification
 * **Program:** Arm Compute Library v18.01+ with MobileNets
@@ -256,3 +256,16 @@ $ ck pull repo:ck-request-asplos18-results-mobilenets-armcl-opencl
 $ ck ls ck-request-asplos18-results-mobilenets-armcl-opencl:experiment:* | sort
 $ ck dashboard request.apslos18
 ```
+
+## Unify output and add extra dimensions
+
+Scripts to unify all experiments and add extra dimensions in ReQuEST format for further comparison and visualization are available in the following entry:
+```
+$ cd `ck find ck-request-asplos18-mobilenets-armcl-opencl:script:mobilenets-armcl-opencl`
+```
+
+- benchmark-merge-performance-with-accuracy.py - merges performance entries with accuracy
+- benchmark-add-dimensions.py - adds extra dimensions
+
+All updated experimental results are then moved to [ck-request-asplos18-results-mobilenets-armcl-opencl repository](https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
+The best configurations are also moved to [ck-request-asplos18-results repo](https://github.com/ctuning/ck-request-asplos18-results).
