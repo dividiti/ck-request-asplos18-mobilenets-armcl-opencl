@@ -7,8 +7,9 @@ def do(i):
     # List performance entries
     r=ck.access({'action':'search',
                  'module_uoa':'experiment',
-                 'data_uoa':'mobilenets-performance-*'})
-#                 'repo_uoa':'ck-request-asplos18-results', 'data_uoa':'*'})
+                 'data_uoa':'mobilenets-performance-*'
+#                 'repo_uoa':'ck-request-asplos18-results'
+                })
     if r['return']>0: return r
     lst=r['lst']
 
@@ -48,6 +49,8 @@ def do(i):
         dd['meta']['artifact']='08da9685582866a0' # artifact description
 
         dd['meta']['model_precision']='fp32'
+
+        dd['meta']['processed']='yes'
 
         # Unified full name for some deps
         ds=dd['meta']['deps_summary']
@@ -110,6 +113,40 @@ def do(i):
                d['##features#gpu_freq#min']=807
                d['##features#cpu_freq#min']=''
                d['##features#freq#min']=d['##features#gpu_freq#min']
+
+               d['##features#processed#min']='yes'
+
+               # Add throughput (images/second)
+               tall=d.get('##characteristics#run#prediction_time_avg_s#all',[])
+               if len(tall)>0:
+                  tnew=[]
+                  for t in tall:
+                      t1=1/t
+                      tnew.append(t1)
+                  
+                  r=ck.access({'action':'stat_analysis',
+                               'module_uoa':'experiment',
+                               'dict':d,
+                               'dict1':{'##characteristics#run#inference_throughput':tnew}
+                              })
+                  if r['return']>0: return r
+
+               # Unify batch size
+               x=d.get('##choices#env#CK_BATCH_SIZE#min','')
+               if x!=None and x!='':
+                  batch=int(x)
+                  d['##features#batch_size#min']=batch
+
+                  if batch==1:
+                     # inference latency
+                     d['##features#measuring_latency#min']='yes'
+
+                     r=ck.access({'action':'stat_analysis',
+                                  'module_uoa':'experiment',
+                                  'dict':d,
+                                  'dict1':{'##characteristics#run#inference_latency':tall}
+                                 })
+                     if r['return']>0: return r
 
                # Save updated dict
                r=ck.save_json_to_file({'json_file':p1, 'dict':d, 'sort_keys':'yes'})
