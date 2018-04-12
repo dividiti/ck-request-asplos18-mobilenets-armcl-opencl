@@ -74,6 +74,7 @@
     }
   },
   "run_vars": {
+    "CK_IMAGE_FILE": "",
     "CK_IMAGE_LIST": "../images",
     "CK_BATCH_LIST": "../batches",
     "CK_BATCHES_DIR": "../batches",
