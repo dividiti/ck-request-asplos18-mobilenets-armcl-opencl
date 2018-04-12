@@ -212,10 +212,11 @@ def do(i, arg):
         if r['return']>0: return r
         lib_name=r['data_name']
         lib_tags=r['dict']['customize']['version']
+
         # Skip some libs with "in [..]" or "not in [..]".
-        if arg.accuracy and lib_uoa in [ ]: continue
-        # FIXME: skip by tags, not by the fixed UOA (for TF 1.7 w/ XLA).
-        # if arg.accuracy and lib_uoa in [ 'a48e99c6f264d049' ]: continue
+        if lib_uoa in [ ]: continue
+        # Skip XLA libs.
+        if arg.accuracy and r['dict']['customize']['install_env']['CK_TF_ENABLE_XLA']=='YES': continue
         skip_compile='no'
         # For each TensorFlow model.*************************************************
         for model_uoa in udepm:
@@ -304,10 +305,10 @@ def do(i, arg):
                        '##choices#env#CK_CONVOLUTION_METHOD_HINT'
                    ],
                    [
-                       '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
+                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'
                    ],
                    [
-                       '##choices#env#CK_ENV_MOBILENET_WIDTH_MULTIPLIER'
+                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'
                    ]
                ],
                'choices_selection':[
@@ -340,9 +341,9 @@ def do(i, arg):
                'pipeline':cpipeline,
                'out':'con'
             }
+
             r=ck.access(ii)
             if r['return']>0: return r
-
             fail=r.get('fail','')
             if fail=='yes':
                 return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
