@@ -96,20 +96,20 @@ def do(i, arg):
     rx=ck.access(ii)
     if rx['return']>0: return rx
     mm=rx['dict']
+
     # Get compile-time and run-time deps.
     cdeps=mm.get('compile_deps',{})
     rdeps=mm.get('run_deps',{})
-
     # Merge rdeps with cdeps for setting up the pipeline (which uses
     # common deps), but tag them as "for_run_time".
     for k in rdeps:
         cdeps[k]=rdeps[k]
         cdeps[k]['for_run_time']='yes'
+
     depl=copy.deepcopy(cdeps['lib-tensorflow'])
     if (arg.tos is not None) and (arg.did is not None):
         tos=arg.tos
         tdid=arg.did
-
     ii={'action':'resolve',
         'module_uoa':'env',
         'host_os':hos,
@@ -122,12 +122,12 @@ def do(i, arg):
     r=ck.access(ii)
     if r['return']>0: return r
 
-    udepl=r['deps']['library'].get('choices',[]) # All UOAs of env for TensorFlow lib
+    udepl=r['deps']['library'].get('choices',[]) # All UOAs of env for TensorFlow libs.
     if len(udepl)==0:
-        return {'return':1, 'error':'no installed TensorFlow'}
+        return {'return':1, 'error':'no installed TensorFlow libs'}
     cdeps['lib-tensorflow']['uoa']=udepl[0]
-    depm=copy.deepcopy(cdeps['model-and-weights'])
 
+    depm=copy.deepcopy(cdeps['model-and-weights'])
     ii={'action':'resolve',
         'module_uoa':'env',
         'host_os':hos,
@@ -139,10 +139,10 @@ def do(i, arg):
     }
     r=ck.access(ii)
     if r['return']>0: return r
-
-    udepm=r['deps']['weights'].get('choices',[])
+    udepm=r['deps']['weights'].get('choices',[]) # All UOAs of env for TensorFlow models.
     if len(udepm)==0:
-        return {'return':1, 'error':'no installed weights'}
+        return {'return':1, 'error':'no installed TensorFlow models'}
+
     cdeps['lib-tensorflow']['uoa']=udepl[0]
     cdeps['model-and-weights']['uoa']=udepm[0]
 
@@ -202,6 +202,7 @@ def do(i, arg):
     if 'return' in r: del(r['return'])
 
     pipeline=copy.deepcopy(r)
+    # For each TensorFlow lib.*************************************************
     for lib_uoa in udepl:
         # Load TensorFlow lib.
         ii={'action':'load',
@@ -216,19 +217,20 @@ def do(i, arg):
         # FIXME: skip by tags, not by the fixed UOA (for TF 1.7 w/ XLA).
         # if arg.accuracy and lib_uoa in [ 'a48e99c6f264d049' ]: continue
         skip_compile='no'
-        # For each MobileNets model.*************************************************
+        # For each TensorFlow model.*************************************************
         for model_uoa in udepm:
-            # Load model.
+            # Load TensorFlow model.
             ii={'action':'load',
                 'module_uoa':'env',
                 'data_uoa':model_uoa}
             r=ck.access(ii)
             if r['return']>0: return r
             model_name=r['data_name']
-            if 'mobilenet' not in r['dict']['tags']:
-                continue
-            alpha = float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
-            rho = int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
+            # Skip non-MobileNets models.
+            if 'mobilenet' not in r['dict']['tags']: continue
+
+            alpha=float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
+            rho=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
 
             record_repo='local'
             record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-tensorflow-'+lib_tags
@@ -261,7 +263,7 @@ def do(i, arg):
             cpipeline['no_clean']=skip_compile
             cpipeline['no_compile']=skip_compile
 
-            # Prepare common meta for ReQuEST tournament
+            # Prepare common meta for ReQuEST tournament.
             features=copy.deepcopy(cpipeline['features'])
             platform_dict['features'].update(features)
 
