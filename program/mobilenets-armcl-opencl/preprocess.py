@@ -37,6 +37,7 @@ def ck_preprocess(i):
   BATCH_LIST = my_env('CK_BATCH_LIST') + MODE_SUFFIX + '.txt'
   RESULTS_DIR = my_env('CK_RESULTS_DIR')
   PREPARE_ALWAYS = my_env('CK_PREPARE_ALWAYS')
+  IMAGE_FILE = my_env('CK_IMAGE_FILE')
 
   def prepare_batches():
     print('Prepare images...')
@@ -52,17 +53,23 @@ def ck_preprocess(i):
 
     # Load processing image filenames
     images = []
-    assert os.path.isdir(IMAGE_DIR), 'Input dir does not exit'
-    files = [f for f in os.listdir(IMAGE_DIR) if os.path.isfile(os.path.join(IMAGE_DIR, f))]
-    files = [f for f in files if re.search(r'\.jpg$', f, re.IGNORECASE)
-                              or re.search(r'\.jpeg$', f, re.IGNORECASE)]
-    assert len(files) > 0, 'Input dir does not contain image files'
-    files = sorted(files)[SKIP_IMAGES:]
-    assert len(files) > 0, 'Input dir does not contain more files'
-    images = files[:IMAGES_COUNT]
-    if len(images) < IMAGES_COUNT:
-      for _ in range(IMAGES_COUNT-len(images)):
-        images.append(images[-1])
+    if IMAGE_FILE:
+      # Single file mode
+      print('Image file: {}'.format(IMAGE_FILE))
+      images.appen(IMAGE_FILE)
+    else:
+      # Directory mode
+      assert os.path.isdir(IMAGE_DIR), 'Input dir does not exit'
+      files = [f for f in os.listdir(IMAGE_DIR) if os.path.isfile(os.path.join(IMAGE_DIR, f))]
+      files = [f for f in files if re.search(r'\.jpg$', f, re.IGNORECASE)
+                                or re.search(r'\.jpeg$', f, re.IGNORECASE)]
+      assert len(files) > 0, 'Input dir does not contain image files'
+      files = sorted(files)[SKIP_IMAGES:]
+      assert len(files) > 0, 'Input dir does not contain more files'
+      images = files[:IMAGES_COUNT]
+      if len(images) < IMAGES_COUNT:
+        for _ in range(IMAGES_COUNT-len(images)):
+          images.append(images[-1])
 
     # Save image list file
     assert IMAGE_LIST, 'Image list file name is not set'
@@ -119,6 +126,15 @@ def ck_preprocess(i):
   # Prepare results directory
   recreate_dir(RESULTS_DIR)
 
+  # Single file mode
+  if IMAGE_FILE:
+    assert os.path.isfile(IMAGE_FILE)
+    PREPARE_ALWAYS = 'YES'
+    BATCH_COUNT = 1
+    BATCH_SIZE = 1
+    IMAGES_COUNT = 1
+    SKIP_IMAGES = 0
+    IMAGE_DIR, IMAGE_FILE = os.path.split(IMAGE_FILE)
 
   # Prepare batches or use prepared
   do_prepare_batches = True

@@ -29,6 +29,13 @@ def ck_postprocess(i):
   VALUES_FILE = os.path.join(AUX_DIR, 'val.txt')   
   CLASSES_LIST = []  
   VALUES_MAP = {}
+  IMAGE_FILE = my_env('CK_IMAGE_FILE')
+
+  # Single file mode
+  if IMAGE_FILE:
+    IMAGES_COUNT = 1
+    _, IMAGE_FILE = os.path.split(IMAGE_FILE)  
+
 
   def load_ImageNet_classes():
     '''
@@ -40,11 +47,20 @@ def ck_postprocess(i):
 
     values_map = {}
     with open(VALUES_FILE, 'r') as values_file:
-      for _ in range(SKIP_IMAGES):
-        values_file.readline().split()
-      for _ in range(IMAGES_COUNT):
-        val = values_file.readline().split()
-        values_map[val[0]] = int(val[1])
+      if IMAGE_FILE:
+        # Single file mode: try to find this file in values
+        for line in values_file:
+        file_name, file_class = line.split()
+        if file_name == IMAGE_FILE:
+          values_map[file_name] = int(file_class)
+          break
+      else:
+        # Directory mode: load only required amount of values
+        for _ in range(SKIP_IMAGES):
+          values_file.readline().split()
+        for _ in range(IMAGES_COUNT):
+          val = values_file.readline().split()
+          values_map[val[0]] = int(val[1])
 
     return classes_list, values_map
 
@@ -64,9 +80,12 @@ def ck_postprocess(i):
     Shows prediction results for image file
     top5 - list of pairs (prob, class_index)
     '''
-    class_correct = VALUES_MAP[img_file]
     print('---------------------------------------')
-    print('%s - %s' % (img_file, get_class_str(class_correct)))
+    if img_file in VALUES_MAP:
+      class_correct = VALUES_MAP[img_file]
+      print('%s - %s' % (img_file, get_class_str(class_correct)))
+    else:
+      print(img_file)
     for prob, class_index in top5:
       print('%.2f - %s' % (prob, get_class_str(class_index)))
     print('---------------------------------------')       
@@ -89,6 +108,10 @@ def ck_postprocess(i):
     Calculates if prediction was correct for specified image file
     top5 - list of pairs (prob, class_index)
     '''
+    if img_file not in VALUES_MAP:
+      print('Correctness information is not available') 
+      return {}
+      
     class_correct = VALUES_MAP[img_file]
     classes = [c[1] for c in top5]
     is_top1 = class_correct == classes[0]
