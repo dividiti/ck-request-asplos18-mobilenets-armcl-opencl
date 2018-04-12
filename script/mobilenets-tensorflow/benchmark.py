@@ -211,7 +211,7 @@ def do(i, arg):
         r=ck.access(ii)
         if r['return']>0: return r
         lib_name=r['data_name']
-        lib_tags=r['dict']['customize']['version']
+        lib_tags='tensorflow-'+r['dict']['customize']['version']
 
         # Skip some libs with "in [..]" or "not in [..]".
         if lib_uoa in [ ]: continue
@@ -234,7 +234,7 @@ def do(i, arg):
             rho=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
 
             record_repo='local'
-            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-tensorflow-'+lib_tags
+            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-'+lib_tags
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
@@ -285,9 +285,7 @@ def do(i, arg):
                record_uoa=rx['data_uid']
 
             tags=r['tags']
-
             tags.append(experiment_type)
-
             tags.append('explore-mobilenets-'+experiment_type)
             tags.append(lib_tags)
             tags.append(platform_tags)
