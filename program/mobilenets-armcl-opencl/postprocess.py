@@ -50,10 +50,10 @@ def ck_postprocess(i):
       if IMAGE_FILE:
         # Single file mode: try to find this file in values
         for line in values_file:
-        file_name, file_class = line.split()
-        if file_name == IMAGE_FILE:
-          values_map[file_name] = int(file_class)
-          break
+          file_name, file_class = line.split()
+          if file_name == IMAGE_FILE:
+            values_map[file_name] = int(file_class)
+            break
       else:
         # Directory mode: load only required amount of values
         for _ in range(SKIP_IMAGES):
