@@ -79,10 +79,12 @@ def do(i, arg):
     img_dir_val = rx['lst'][0]['meta']['env']['CK_CAFFE_IMAGENET_VAL']
 
     if (arg.accuracy):
+        # Use as many batches (of size 1), as there are JPEG images in the directory.
         batch_count = len([f for f in os.listdir(img_dir_val)
            if f.endswith('.JPEG') and os.path.isfile(os.path.join(img_dir_val, f))])
     else:
-        batch_count = 1
+        # Use 2 batches, using the first for warm up (excluded from the average).
+        batch_count = 2
 
     ii={'action':'show',
         'module_uoa':'env',
