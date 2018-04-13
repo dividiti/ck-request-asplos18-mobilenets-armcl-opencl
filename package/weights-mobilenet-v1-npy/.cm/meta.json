@@ -2,7 +2,7 @@
   "customize": {
     "no_os_in_suggested_path": "yes",
     "no_ver_in_suggested_path": "yes",
-    "version": "1"
+    "version": "1_all"
   },
   "deps": {
     "mobilenet-v1-0.25-128": {
@@ -107,5 +107,12 @@
   },
   "process_script": "install",
   "soft_uoa": "50b442db9bde0a0c",
-  "suggested_path": "weights-mobilenet-v1-npy"
+  "suggested_path": "weights-mobilenet-v1-npy",
+  "tags": [
+    "mobilenet",
+    "mobilenet-v1",
+    "mobilenet-v1-all",
+    "weights",
+    "npy"
+  ]
 }

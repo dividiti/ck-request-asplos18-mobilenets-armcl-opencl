@@ -147,6 +147,13 @@ $ ck install package:lib-armcl-opencl-request
 
 ### Install MobileNets weights
 
+To install all the weights in one go:
+```
+$ ck install package --tags=mobilenet-v1-all
+```
+
+Alternatively, install the weights individually as below.
+
 To install the weights for images with resolution `224x224`:
 ```
 $ ck install package:weights-mobilenet-v1-1.0-224-npy
@@ -179,13 +186,7 @@ $ ck install package:weights-mobilenet-v1-0.50-128-npy
 $ ck install package:weights-mobilenet-v1-0.25-128-npy
 ```
 
-**Hint:** To install all the weights, run:
-```
-$ ck install package --tags=mobilenet,weights,npy
-```
-16 times, each time selecting a different number from 1 to 16.
-
-To check all installed weights:
+To check all the installed weights:
 ```
 $ ck show env --tags=mobilenet,weights,npy
 ```
