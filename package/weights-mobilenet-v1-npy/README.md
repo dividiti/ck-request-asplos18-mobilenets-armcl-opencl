@@ -8,10 +8,10 @@ $ ck clean env --tags=weights,npy,mobilenet-v1 -f
 ```
 
 To install all the weights, run:
-````
+```
 $ ck install package:weights-mobilenet-v1-npy
 ```
 or:
-````
+```
 $ ck install --tags=mobilenet-v1-all
 ```
