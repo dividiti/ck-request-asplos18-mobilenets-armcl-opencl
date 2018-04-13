@@ -76,8 +76,11 @@ def setup(i):
 
     ep = cus['env_prefix']
     env[ep] = pi
-    env[ep + "_VERSION"] = ienv['MOBILENET_VERSION']
-    env[ep + "_MULTIPLIER"] = ienv['MOBILENET_MULTIPLIER']
-    env[ep + "_RESOLUTION"] = ienv['MOBILENET_RESOLUTION']
+    if 'MOBILENET_VERSION' in ienv:
+      env[ep + "_VERSION"] = ienv['MOBILENET_VERSION']
+    if 'MOBILENET_MULTIPLIER' in ienv:
+      env[ep + "_MULTIPLIER"] = ienv['MOBILENET_MULTIPLIER']
+    if 'MOBILENET_RESOLUTION' in ienv:
+      env[ep + "_RESOLUTION"] = ienv['MOBILENET_RESOLUTION']
 
     return {'return': 0, 'bat': ''}

@@ -1,35 +1,37 @@
 {
   "customize": {
-    "extra_dir": "", 
+    "extra_dir": "",
     "install_env": {
-      "MOBILENET_MULTIPLIER": "0.25", 
-      "MOBILENET_RESOLUTION": "160", 
-      "MOBILENET_VERSION": "1", 
-      "PACKAGE_NAME": "mobilenet_v1_0.25_160.npy.zip", 
-      "PACKAGE_SKIP_CLEAN_INSTALL": "YES", 
-      "PACKAGE_SKIP_CLEAN_OBJ": "YES", 
-      "PACKAGE_SKIP_LINUX_MAKE": "YES", 
-      "PACKAGE_UNZIP": "YES", 
-      "PACKAGE_URL": "https://www.dropbox.com/s/5lzc1szu7hcuf1t/mobilenet_v1_0.25_160.npy.zip", 
+      "MOBILENET_MULTIPLIER": "0.25",
+      "MOBILENET_RESOLUTION": "160",
+      "MOBILENET_VERSION": "1",
+      "PACKAGE_NAME": "mobilenet_v1_0.25_160.npy.zip",
+      "PACKAGE_SKIP_CLEAN_INSTALL": "YES",
+      "PACKAGE_SKIP_CLEAN_OBJ": "YES",
+      "PACKAGE_SKIP_LINUX_MAKE": "YES",
+      "PACKAGE_UNZIP": "YES",
+      "PACKAGE_URL": "https://www.dropbox.com/s/5lzc1szu7hcuf1t/mobilenet_v1_0.25_160.npy.zip",
       "PACKAGE_WGET": "YES"
-    }, 
-    "no_os_in_suggested_path": "yes", 
-    "no_ver_in_suggested_path": "yes", 
+    },
+    "no_os_in_suggested_path": "yes",
+    "no_ver_in_suggested_path": "yes",
     "version": "1_0.25_160"
-  }, 
+  },
   "end_full_path": {
     "linux": "Conv2d_0_BatchNorm_beta.npy"
-  }, 
-  "process_script": "install", 
-  "soft_uoa": "50b442db9bde0a0c", 
-  "suggested_path": "weights-mobilenet-v1_0.25_160-npy", 
+  },
+  "process_script": "install",
+  "soft_uoa": "50b442db9bde0a0c",
+  "suggested_path": "weights-mobilenet-v1_0.25_160-npy",
   "tags": [
-    "mobilenet", 
-    "weights", 
+    "mobilenet",
+    "mobilenet-v1",
+    "mobilenet-v1-0.25-160",
+    "weights",
     "npy"
-  ], 
+  ],
   "use_scripts_from_another_entry": {
-    "data_uoa": "cd9ccc74060b3d18", 
+    "data_uoa": "cd9ccc74060b3d18",
     "module_uoa": "script"
   }
 }
