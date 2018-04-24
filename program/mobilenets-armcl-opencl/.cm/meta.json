@@ -58,6 +58,8 @@
       "run_time": {
         "output_invariant_of_repeat": "yes",
         "fine_grain_timer_file": "tmp-ck-timer.json",
+        "run_cmd_out1": "tmp-stdout.tmp", 
+        "run_cmd_out2": "tmp-stderr.tmp", 
         "need_compute_device": "opencl",
         "pre_process_via_ck": {
           "script_name": "preprocess"
