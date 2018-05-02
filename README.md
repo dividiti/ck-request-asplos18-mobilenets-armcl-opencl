@@ -343,10 +343,10 @@ $ cd $CK_TOOLS && du -hsc tensorflowmodel-mobilenet-v1-*-2018_02_22-py
 11M     tensorflowmodel-mobilenet-v1-0.25-160-2018_02_22-py
 11M     tensorflowmodel-mobilenet-v1-0.25-192-2018_02_22-py
 11M     tensorflowmodel-mobilenet-v1-0.25-224-2018_02_22-py
-36K     tensorflowmodel-mobilenet-v1-0.50-128-2018_02_22-py
-36K     tensorflowmodel-mobilenet-v1-0.50-160-2018_02_22-py
-36K     tensorflowmodel-mobilenet-v1-0.50-192-2018_02_22-py
-36K     tensorflowmodel-mobilenet-v1-0.50-224-2018_02_22-py
+35M     tensorflowmodel-mobilenet-v1-0.50-128-2018_02_22-py
+35M     tensorflowmodel-mobilenet-v1-0.50-160-2018_02_22-py
+35M     tensorflowmodel-mobilenet-v1-0.50-192-2018_02_22-py
+35M     tensorflowmodel-mobilenet-v1-0.50-224-2018_02_22-py
 43M     tensorflowmodel-mobilenet-v1-0.75-128-2018_02_22-py
 43M     tensorflowmodel-mobilenet-v1-0.75-160-2018_02_22-py
 43M     tensorflowmodel-mobilenet-v1-0.75-192-2018_02_22-py
@@ -355,15 +355,5 @@ $ cd $CK_TOOLS && du -hsc tensorflowmodel-mobilenet-v1-*-2018_02_22-py
 69M     tensorflowmodel-mobilenet-v1-1.0-160-2018_02_22-py
 69M     tensorflowmodel-mobilenet-v1-1.0-192-2018_02_22-py
 69M     tensorflowmodel-mobilenet-v1-1.0-224-2018_02_22-py
-486M    total
-```
-
-**NB:** Something is obviously wrong with the `tensorflowmodel-mobilenet-v1-0.50-*-2018_02_22-py` models:
-
-```
---2018-05-02 11:02:09--  http://download.tensorflow.org/models/mobilenet_v1_2018_02_22/mobilenet_v1_0.50_224.tgz
-Resolving download.tensorflow.org (download.tensorflow.org)... 216.58.213.112, 2a00:1450:4009:80f::2010
-Connecting to download.tensorflow.org (download.tensorflow.org)|216.58.213.112|:80... connected.
-HTTP request sent, awaiting response... 403 Forbidden
-2018-05-02 11:02:09 ERROR 403: Forbidden.
+624M    total
 ```
