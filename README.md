@@ -220,7 +220,7 @@ Accuracy top 5: 1.000000 (1 of 1)
 ### Evaluate performance
 ```
 $ cd `ck find script:mobilenets-armcl-opencl`
-$ python benchmark.py [--repetitions=3]
+$ python benchmark.py [--repetitions=10]
 ```
 
 ### Evaluate accuracy
@@ -350,4 +350,93 @@ $ cd $CK_TOOLS && du -hsc tensorflowmodel-mobilenet-v1-*-2018_02_22-py
 69M     tensorflowmodel-mobilenet-v1-1.0-192-2018_02_22-py
 69M     tensorflowmodel-mobilenet-v1-1.0-224-2018_02_22-py
 624M    total
+```
+
+
+### Make a sample run
+
+```
+$ ck run ck-tensorflow:program:classification-tensorflow
+...
+Model module: /home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet-model.py
+Model weights: /home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet_v1_1.0_224.ckpt
+Input images dir: /home/anton/ilsvrc2012_val
+Batch size: 1
+Batch count: 1
+Net created in 2.963983s
+Restore checkpoints from /home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet_v1_1.0_224.ckpt
+Weights loaded in 2.038522s
+
+Batch 0
+Batch loaded in 0.293845s
+Batch classified in 0.506592s
+---------------------------------------
+ILSVRC2012_val_00000001.JPEG - (65) n01751748 sea snake
+0.73 - (65) n01751748 sea snake
+0.07 - (67) n01755581 diamondback, diamondback rattlesnake, Cr...
+0.06 - (53) n01728920 ringneck snake, ring-necked snake, ring ...
+0.04 - (60) n01740131 night snake, Hypsiglena torquata
+0.03 - (54) n01729322 hognose snake, puff adder, sand viper
+---------------------------------------
+
+
+Average classification time: 0.506592s
+Accuracy top 1: 1.000000 (1 of 1)
+Accuracy top 5: 1.000000 (1 of 1)
+
+
+All batches time: 5.811523s
+Execution time: 10.881770s
+
+
+  (post processing from script  /  ... )"
+
+
+  (reading fine grain timers from tmp-ck-timer.json ...)
+
+{
+  "CK_BATCH_COUNT": 1,
+  "CK_BATCH_SIZE": 1,
+  "CK_IMAGENET_SYNSET_WORDS_TXT": "/home/anton/CK_TOOLS/dataset-imagenet-ilsvrc2012-aux/synset_words.txt",
+  "CK_IMAGENET_VAL_TXT": "/home/anton/CK_TOOLS/dataset-imagenet-ilsvrc2012-aux/val.txt",
+  "CK_MODEL_MODULE": "/home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet-model.py",
+  "CK_MODEL_WEIGHTS": "/home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet_v1_1.0_224.ckpt",
+  "accuracy_top1": 1.0,
+  "accuracy_top5": 1.0,
+  "avg_fps": 1.9739749745976212,
+  "avg_time_ms": 506.5920352935791,
+  "batch_size": 1,
+  "batch_time_ms": 506.5920352935791,
+  "execution_time": 10.881769895553589,
+  "frame_predictions": [
+    {
+      "accuracy_top1": "yes",
+      "accuracy_top5": "yes",
+      "class_correct": 65,
+      "class_topmost": 65,
+      "file_name": "ILSVRC2012_val_00000001.JPEG"
+    }
+  ],
+  "images_load_time_s": 0.29384493827819824,
+  "net_create_time_s": 2.9639828205108643,
+  "prediction_time_avg_s": 0.5065920352935791,
+  "prediction_time_total_s": 0.5065920352935791,
+  "total_time_ms": 5811.522960662842,
+  "weights_load_time_s": 2.0385220050811768
+}
+
+
+Execution time: 10.882 sec.
+```
+
+### Evaluate performance
+```
+$ cd `ck find script:mobilenets-tensorflow`
+$ python benchmark.py [--repetitions=10]
+```
+
+### Evaluate accuracy
+```
+$ cd `ck find script:mobilenets-tensorflow`
+$ python benchmark.py --accuracy
 ```
