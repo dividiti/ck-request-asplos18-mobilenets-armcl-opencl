@@ -35,21 +35,23 @@ We use the standard [Artifact Description check-list](http://ctuning.org/ae/subm
 **NB:** Execute commands prefixed with `#` sign under `root` or using `sudo`.
 
 ```
-# apt install python python-pip
-# apt install libblas-dev liblapack-dev libatlas-base-dev python-numpy python-scipy
+# apt install libblas-dev liblapack-dev libatlas-base-dev
+# apt install python python-pip python-numpy python-scipy
 # pip install pillow
 ```
 
-### Install Collective Knowledge
+### Install Collective Knowledge (CK)
 
 ```
 # pip install ck
 ```
 
-### Get submission repository
+### Install CK repositories and a sample dataset
 
 ```
 $ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl
+$ ck install ck-caffe:package:imagenet-2012-val-min-resized
+$ ck install ck-caffe:package:imagenet-2012-aux
 ```
 
 ### Detect and test OpenCL driver
@@ -58,97 +60,56 @@ $ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-
 $ ck detect platform.gpgpu --opencl
 ```
 
-When you run CK for the very first time, you may be asked 
-to select to most close CK platform description 
-shared by CK users. In our case it should be *hikey960-linux*. 
+If you are prompted to choose a platform description, select the one the name of which is the same or similar to your platform (e.g. `hikey960-linux`) or `generic-linux`.
 
-CK workflows will then use various platform-specific scripts 
-from the *platform.init:hikey960-linux* such as monitoring 
-or setting up CPU and GPU frequency:
+You can later change it as follows:
+```
+$ ck ls platform.init | sort
+$ ck detect platform.os --update_platform_init --platform_init_uoa=<one of the listed CK entries>
+```
+
+For example, for HiKey960 choose `hikey960-linux`, for RK3399 choose `firefly-linux`.
+
+CK workflows will then use various platform-specific scripts such as for monitoring or setting up the CPU and GPU frequencies:
 ```
 $ ls `ck find platform.init:hikey960-linux`
 ```
 
-You can later change it as following:
-```
-$ ck ls platform.init | sort
-$ ck detect platform.os --update_platform_init \
-  --platform_init_uoa={one of above CK entries}
-```
 
-### Pre-install CK dependencies
-
-**NB:** We suggest to pre-install the following dependencies to test the workflows:
-
-```
-$ ck install ck-caffe:package:imagenet-2012-aux
-$ ck install ck-caffe:package:imagenet-2012-val-min-resized
-$ ck install ck-math:package:lib-armcl-opencl-18.03 --env.USE_GRAPH=ON --env.USE_NEON=ON
-$ ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
-```
-
-### Build and make a sample run
-
-```
-$ ck compile ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
-$ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
-...
---------------------------------
-Process results in predictions
----------------------------------------
-ILSVRC2012_val_00000001.JPEG - (65) n01751748 sea snake
-0.73 - (65) n01751748 sea snake
-0.07 - (67) n01755581 diamondback, diamondback rattlesnake, Cr...
-0.06 - (53) n01728920 ringneck snake, ring-necked snake, ring ...
-0.04 - (60) n01740131 night snake, Hypsiglena torquata
-0.03 - (54) n01729322 hognose snake, puff adder, sand viper
----------------------------------------
-Accuracy top 1: 1.000000 (1 of 1)
-Accuracy top 5: 1.000000 (1 of 1)
---------------------------------
-
-
-  (reading fine grain timers from tmp-ck-timer.json ...)
-
-{
-  "accuracy_top1": 1.0, 
-  "accuracy_top5": 1.0, 
-  "execution_time": 0.293805, 
-  "execution_time_sum": 1.9365359999999998, 
-  "frame_predictions": [
-    {
-      "accuracy_top1": "yes", 
-      "accuracy_top5": "yes", 
-      "class_correct": 65, 
-      "class_topmost": 65, 
-      "file_name": "ILSVRC2012_val_00000001.JPEG"
-    }
-  ], 
-  "images_load_time_avg_s": 0.017385, 
-  "images_load_time_s": 0.017385, 
-  "prediction_time_avg_s": 0.293805, 
-  "prediction_time_total_s": 0.293805, 
-  "setup_time_s": 1.625346, 
-  "test_time_s ": 0.321721
-}
-```
-
-## Exploring performance and accuracy of MobileNets using Arm Compute Library (ArmCL)
+## Exploring performance and accuracy of MobileNets using the Arm Compute Library (ArmCL)
 
 ### Install ArmCL variants
 
+Install [dividiti](http://dividiti.com)'s fork of [ArmCL 18.03](https://github.com/ARM-software/ComputeLibrary/releases/tag/v18.03) with a [new direct convolution kernel](https://github.com/ARM-software/ComputeLibrary/pull/432):
+
 ```
-$ ck install ck-math:package:lib-armcl-opencl-17.12 --env.USE_GRAPH=ON --env.USE_NEON=ON
-$ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
-$ ck install ck-math:package:lib-armcl-opencl-18.03 --env.USE_GRAPH=ON --env.USE_NEON=ON
 $ ck install package:lib-armcl-opencl-request
 ```
 
-**NB:** It is necessary to specify `--env.USE_GRAPH=ON --env.USE_NEON=ON` for packages from `repo:ck-math`, but not for `package:lib-armcl-opencl-request`.
+Optionally, install one or more of the official ArmCL releases:
+
+```
+$ ck install ck-math:package:lib-armcl-opencl-18.03 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install ck-math:package:lib-armcl-opencl-17.12 --env.USE_GRAPH=ON --env.USE_NEON=ON
+```
+
+**NB:** It is necessary to specify `--env.USE_GRAPH=ON --env.USE_NEON=ON` for the official release packages (from `repo:ck-math`), but not for `package:lib-armcl-opencl-request`.
+
+To check all the installed ArmCL variants:
+```
+$ ck show env --tags=armcl
+Env UID:         Target OS: Bits: Name:                         Version:         Tags:
+
+fbf64d81a58d1c44   linux-64    64 ARM Compute Library (request) request-d8f69c13 64bits,arm,arm-compute-library,armcl,host-os-linux-64,lib,target-os-linux-64,v0,v0.0,vgraph,vneon,vopencl,vrequest
+0241079df9c64221   linux-64    64 ARM Compute Library (opencl)  18.03-e40997bb   64bits,arm,arm-compute-library,armcl,channel-stable,host-os-linux-64,lib,target-os-linux-64,v18,v18.03,v18.3,v18.3.0,vdefault,vgraph,vneon,vopencl
+8d8a8e65584dac8e   linux-64    64 ARM Compute Library (opencl)  18.01-f45d5a9b   64bits,arm,arm-compute-library,armcl,channel-stable,host-os-linux-64,lib,target-os-linux-64,v18,v18.01,v18.1,v18.1.0,vdefault,vgraph,vneon,vopencl
+4cc4967546a67c59   linux-64    64 ARM Compute Library (opencl)  17.12-48bc34ea   64bits,arm,arm-compute-library,armcl,channel-stable,host-os-linux-64,lib,target-os-linux-64,v17,v17.12,v17.12.0,vdefault,vgraph,vneon,vopencl
+```
 
 ### Install MobileNets weights
 
-To install all the weights in one go:
+To install all the MobileNets-v1 weights in one go:
 ```
 $ ck install package --tags=mobilenet-v1-all,npy
 $ cd $CK_TOOLS && du -hcs weights-mobilenet-v1_*
@@ -210,64 +171,97 @@ To check all the installed weights:
 $ ck show env --tags=mobilenet,weights,npy
 ```
 
-### Make a sample run
-To test a scaled MobileNet architecture, please specify:
- - **resolution** : 224 (default), 192, 160, 128;
- - **width_multiplier** : 1.0 (default), 0.75, 0.5, 0.25.
+### Build and make a sample run
 
 ```
-$ ck benchmark program:mobilenets-armcl-opencl \
-  --env.CK_ENV_MOBILENET_RESOLUTION=192 \
-  --env.CK_ENV_MOBILENET_WIDTH_MULTIPLIER=0.75
-```
-Then, select the desired ArmCL and MobileNets variants.
+$ ck compile ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
+$ ck run ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
+...
+--------------------------------
+Process results in predictions
+---------------------------------------
+ILSVRC2012_val_00000001.JPEG - (65) n01751748 sea snake
+0.73 - (65) n01751748 sea snake
+0.07 - (67) n01755581 diamondback, diamondback rattlesnake, Cr...
+0.06 - (53) n01728920 ringneck snake, ring-necked snake, ring ...
+0.04 - (60) n01740131 night snake, Hypsiglena torquata
+0.03 - (54) n01729322 hognose snake, puff adder, sand viper
+---------------------------------------
+Accuracy top 1: 1.000000 (1 of 1)
+Accuracy top 5: 1.000000 (1 of 1)
+--------------------------------
 
-### Performance evaluation of the MobileNets family
+
+  (reading fine grain timers from tmp-ck-timer.json ...)
+
+{
+  "accuracy_top1": 1.0, 
+  "accuracy_top5": 1.0, 
+  "execution_time": 0.293805, 
+  "execution_time_sum": 1.9365359999999998, 
+  "frame_predictions": [
+    {
+      "accuracy_top1": "yes", 
+      "accuracy_top5": "yes", 
+      "class_correct": 65, 
+      "class_topmost": 65, 
+      "file_name": "ILSVRC2012_val_00000001.JPEG"
+    }
+  ], 
+  "images_load_time_avg_s": 0.017385, 
+  "images_load_time_s": 0.017385, 
+  "prediction_time_avg_s": 0.293805, 
+  "prediction_time_total_s": 0.293805, 
+  "setup_time_s": 1.625346, 
+  "test_time_s ": 0.321721
+}
+```
+
+### Evaluate performance
 ```
 $ cd `ck find script:mobilenets-armcl-opencl`
-$ python benchmark.py --repetitions=3
+$ python benchmark.py [--repetitions=3]
 ```
 
-### Accuracy evaluation of the MobileNets family
+### Evaluate accuracy
 ```
 $ cd `ck find script:mobilenets-armcl-opencl`
-$ python benchmark.py --repetitions=1 --accuracy
+$ python benchmark.py --accuracy
 ```
 
-### Check the experimental data
+### Check experimental results
 ```
 $ ck list local:experiment:*
- or
+```
+ or:
+```
 $ ck search experiment --tags=request-asplos18
- or
+```
+ or:
+```
 $ ck search experiment --tags=request-asplos18,performance
 ```
 
-If something goes wrong, you can remove experimental results 
-before starting new exploration as following:
+If something goes wrong, we suggest you remove experimental results before starting new exploration as follows:
 
 ```
-$ ck rm experiment:* --tags=request-asplos18
- or
-$ ck rm experiment:* --tags=request-asplos18 --force
-
+$ ck rm experiment:* --tags=request-asplos18 [--force]
 ```
 
-You can also pack all experimental results to share with colleagues
-```
-$ ck zip local:experiment:*
-```
+You can also create a compressed file with experimental results as follows (by default, `ckr-local.zip`):
 
-CK will create a "ckr-local.zip" file with CK entries.
-
-You can then unzip it to the local (or other) repository on another machine via CK as following:
 ```
-$ ck unzip repo:local --zip=ckr-local.zip
+$ ck zip local:experiment:* [--archive_name=<archive name>.zip]
 ```
 
-## Shared experimental results 
+You can then copy the resulting file to another machine, and extract it into a CK repository as follows:
+```
+$ ck unzip repo:<repo name> --zip=<archive name>.zip
+```
 
-We shared raw experimental results in the CK format 
+### Shared experimental results 
+
+We have shared raw experimental results in the CK format 
 in this [CK repo](https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
 
 You can view and test them as following:
@@ -277,15 +271,15 @@ $ ck ls ck-request-asplos18-results-mobilenets-armcl-opencl:experiment:* | sort
 $ ck dashboard request.apslos18
 ```
 
-## Unify output and add extra dimensions
+### Unify output and add extra dimensions
 
-Scripts to unify all experiments and add extra dimensions in ReQuEST format for further comparison and visualization are available in the following entry:
+Scripts to unify all experiments and add extra dimensions in the ReQuEST format for further comparison and visualization are available here:
 ```
-$ cd `ck find ck-request-asplos18-mobilenets-armcl-opencl:script:mobilenets-armcl-opencl`
+$ ck find ck-request-asplos18-mobilenets-armcl-opencl:script:mobilenets-armcl-opencl
 ```
 
-- benchmark-merge-performance-with-accuracy.py - merges performance entries with accuracy
-- benchmark-add-dimensions.py - adds extra dimensions
+- `benchmark-merge-performance-with-accuracy.py`: merges separately obtained performance and accuracy data together;
+- `benchmark-add-dimensions.py`: adds extra dimensions (e.g. cost, peak power consumption).
 
 All updated experimental results are then moved to [ck-request-asplos18-results-mobilenets-armcl-opencl repository](https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
 The best configurations are also moved to [ck-request-asplos18-results repo](https://github.com/ctuning/ck-request-asplos18-results).
