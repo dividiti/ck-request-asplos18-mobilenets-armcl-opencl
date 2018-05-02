@@ -83,11 +83,11 @@ $ ck detect platform.os --update_platform_init \
 ```
 $ ck install ck-caffe:package:imagenet-2012-aux
 $ ck install ck-caffe:package:imagenet-2012-val-min-resized
-$ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install ck-math:package:lib-armcl-opencl-18.03 --env.USE_GRAPH=ON --env.USE_NEON=ON
 $ ck install ck-request-asplos18-mobilenets-armcl-opencl:package:weights-mobilenet-v1-1.0-224-npy
 ```
 
-## Build and make a sample run
+### Build and make a sample run
 
 ```
 $ ck compile ck-request-asplos18-mobilenets-armcl-opencl:program:mobilenets-armcl-opencl
@@ -132,24 +132,43 @@ Accuracy top 5: 1.000000 (1 of 1)
   "test_time_s ": 0.321721
 }
 ```
-## Exploring performance and accuracy of the MobileNets family
-**Reference:** [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/pdf/1704.04861.pdf)
+
+## Exploring performance and accuracy of MobileNets using Arm Compute Library (ArmCL)
 
 ### Install ArmCL variants
 
 ```
-$ ck install package:lib-armcl-opencl-17.12 --env.USE_GRAPH=ON --env.USE_NEON=ON
-$ ck install package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install ck-math:package:lib-armcl-opencl-17.12 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install ck-math:package:lib-armcl-opencl-18.01 --env.USE_GRAPH=ON --env.USE_NEON=ON
+$ ck install ck-math:package:lib-armcl-opencl-18.03 --env.USE_GRAPH=ON --env.USE_NEON=ON
 $ ck install package:lib-armcl-opencl-request
 ```
 
-**NB:** It is necessary to specify `--env.USE_GRAPH=ON --env.USE_NEON=ON` for packages from `repo:ck-math` (here: `package:lib-armcl-opencl-17.12` and `package:lib-armcl-opencl-18.01`), but not for `package:lib-armcl-opencl-request`.
+**NB:** It is necessary to specify `--env.USE_GRAPH=ON --env.USE_NEON=ON` for packages from `repo:ck-math`, but not for `package:lib-armcl-opencl-request`.
 
 ### Install MobileNets weights
 
 To install all the weights in one go:
 ```
-$ ck install package --tags=mobilenet-v1-all
+$ ck install package --tags=mobilenet-v1-all,npy
+$ cd $CK_TOOLS && du -hcs weights-mobilenet-v1_*
+2.4M    weights-mobilenet-v1_0.25_128-npy
+2.4M    weights-mobilenet-v1_0.25_160-npy
+2.4M    weights-mobilenet-v1_0.25_192-npy
+2.4M    weights-mobilenet-v1_0.25_224-npy
+5.6M    weights-mobilenet-v1_0.50_128-npy
+5.6M    weights-mobilenet-v1_0.50_160-npy
+5.6M    weights-mobilenet-v1_0.50_192-npy
+5.6M    weights-mobilenet-v1_0.50_224-npy
+11M     weights-mobilenet-v1_0.75_128-npy
+11M     weights-mobilenet-v1_0.75_160-npy
+11M     weights-mobilenet-v1_0.75_192-npy
+11M     weights-mobilenet-v1_0.75_224-npy
+17M     weights-mobilenet-v1_1.0_128-npy
+17M     weights-mobilenet-v1_1.0_160-npy
+17M     weights-mobilenet-v1_1.0_192-npy
+17M     weights-mobilenet-v1_1.0_224-npy
+140M    total
 ```
 
 Alternatively, install the weights individually as below.
@@ -270,3 +289,81 @@ $ cd `ck find ck-request-asplos18-mobilenets-armcl-opencl:script:mobilenets-armc
 
 All updated experimental results are then moved to [ck-request-asplos18-results-mobilenets-armcl-opencl repository](https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
 The best configurations are also moved to [ck-request-asplos18-results repo](https://github.com/ctuning/ck-request-asplos18-results).
+
+
+## Exploring performance and accuracy of MobileNets using TensorFlow
+
+### Install TensorFlow dependencies
+
+```
+# apt install liblapack-dev libatlas-dev
+# pip install enum34 mock pillow wheel absl-py scipy
+```
+
+### Install CK-TensorFlow
+
+```
+$ ck pull repo:ck-tensorflow
+$ ck install ck-env:package:tool-bazel-0.11.1-linux
+$ ck install package:lib-tensorflow-1.7.0-src-cpu [--env.CK_HOST_CPU_NUMBER_OF_PROCESSORS=1]
+```
+
+**NB:** You may want to restrict the number of build threads to 1 or 2 on a platform with less than 4 GB RAM. For example, add `--env.CK_HOST_CPU_NUMBER_OF_PROCESSORS=2` on HiKey960 (3 GB RAM with swap enabled) or `--env.CK_HOST_CPU_NUMBER_OF_PROCESSORS=1` on Tegra TX1 (4 GB RAM without swap enabled).
+
+### Install MobileNets weights
+
+To install all the pretrained MobileNets-v1 weights shared in 2017 (which were used for this evaluation):
+```
+$ ck install package --tags=mobilenet-v1-all,tensorflowmodel,2017_06_14
+$ cd $CK_TOOLS && du -hsc tensorflowmodel-mobilenet-v1-*-py
+12M     tensorflowmodel-mobilenet-v1-0.25-128-py
+12M     tensorflowmodel-mobilenet-v1-0.25-160-py
+12M     tensorflowmodel-mobilenet-v1-0.25-192-py
+12M     tensorflowmodel-mobilenet-v1-0.25-224-py
+25M     tensorflowmodel-mobilenet-v1-0.50-128-py
+25M     tensorflowmodel-mobilenet-v1-0.50-160-py
+25M     tensorflowmodel-mobilenet-v1-0.50-192-py
+25M     tensorflowmodel-mobilenet-v1-0.50-224-py
+44M     tensorflowmodel-mobilenet-v1-0.75-128-py
+44M     tensorflowmodel-mobilenet-v1-0.75-160-py
+44M     tensorflowmodel-mobilenet-v1-0.75-192-py
+44M     tensorflowmodel-mobilenet-v1-0.75-224-py
+69M     tensorflowmodel-mobilenet-v1-1.0-128-py
+69M     tensorflowmodel-mobilenet-v1-1.0-160-py
+69M     tensorflowmodel-mobilenet-v1-1.0-192-py
+69M     tensorflowmodel-mobilenet-v1-1.0-224-py
+595M    total
+```
+
+To install the pretrained MobileNets-v1 weights shared in 2018:
+```
+$ ck install package --tags=mobilenet-v1-all,tensorflowmodel,2018_02_22
+$ cd $CK_TOOLS && du -hsc tensorflowmodel-mobilenet-v1-*-2018_02_22-py
+11M     tensorflowmodel-mobilenet-v1-0.25-128-2018_02_22-py
+11M     tensorflowmodel-mobilenet-v1-0.25-160-2018_02_22-py
+11M     tensorflowmodel-mobilenet-v1-0.25-192-2018_02_22-py
+11M     tensorflowmodel-mobilenet-v1-0.25-224-2018_02_22-py
+36K     tensorflowmodel-mobilenet-v1-0.50-128-2018_02_22-py
+36K     tensorflowmodel-mobilenet-v1-0.50-160-2018_02_22-py
+36K     tensorflowmodel-mobilenet-v1-0.50-192-2018_02_22-py
+36K     tensorflowmodel-mobilenet-v1-0.50-224-2018_02_22-py
+43M     tensorflowmodel-mobilenet-v1-0.75-128-2018_02_22-py
+43M     tensorflowmodel-mobilenet-v1-0.75-160-2018_02_22-py
+43M     tensorflowmodel-mobilenet-v1-0.75-192-2018_02_22-py
+43M     tensorflowmodel-mobilenet-v1-0.75-224-2018_02_22-py
+69M     tensorflowmodel-mobilenet-v1-1.0-128-2018_02_22-py
+69M     tensorflowmodel-mobilenet-v1-1.0-160-2018_02_22-py
+69M     tensorflowmodel-mobilenet-v1-1.0-192-2018_02_22-py
+69M     tensorflowmodel-mobilenet-v1-1.0-224-2018_02_22-py
+486M    total
+```
+
+**NB:** Something is obviously wrong with the `tensorflowmodel-mobilenet-v1-0.50-*-2018_02_22-py` models:
+
+```
+--2018-05-02 11:02:09--  http://download.tensorflow.org/models/mobilenet_v1_2018_02_22/mobilenet_v1_0.50_224.tgz
+Resolving download.tensorflow.org (download.tensorflow.org)... 216.58.213.112, 2a00:1450:4009:80f::2010
+Connecting to download.tensorflow.org (download.tensorflow.org)|216.58.213.112|:80... connected.
+HTTP request sent, awaiting response... 403 Forbidden
+2018-05-02 11:02:09 ERROR 403: Forbidden.
+```
