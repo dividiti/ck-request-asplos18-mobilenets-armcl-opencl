@@ -21,7 +21,7 @@ request_dict={
 }
 
 # Platform tag.
-platform_tags='hikey-960'
+platform_tags='firefly-rk3399'
 
 # Batch size.
 bs={
@@ -231,6 +231,8 @@ def do(i, arg):
             model_name=r['data_name']
             # Skip non-MobileNets models.
             if 'mobilenet' not in r['dict']['tags']: continue
+            # Skip aggregate MobileNets packages.
+            if 'mobilenet-all' in r['dict']['tags']: continue
 
             alpha=float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
             rho=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
