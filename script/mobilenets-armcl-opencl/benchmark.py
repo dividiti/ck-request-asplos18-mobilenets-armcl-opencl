@@ -21,7 +21,7 @@ request_dict={
 }
 
 # Platform tag.
-platform_tags='hikey-960'
+platform_tags='firefly-rk3399'
 
 # Batch size.
 bs={
@@ -131,9 +131,9 @@ def do(i, arg):
     r=ck.access(ii)
     if r['return']>0: return r
 
-    udepl=r['deps']['library'].get('choices',[]) # All UOAs of env for ARM Compute libs.
+    udepl=r['deps']['library'].get('choices',[]) # All UOAs of env for Arm Compute Libraries.
     if len(udepl)==0:
-        return {'return':1, 'error':'no installed ARM Compute libs'}
+        return {'return':1, 'error':'no installed Arm Compute Libraries'}
     cdeps['library']['uoa']=udepl[0]
     depm=copy.deepcopy(cdeps['weights'])
 
@@ -231,8 +231,10 @@ def do(i, arg):
                 'data_uoa':model_uoa}
             r=ck.access(ii)
             if r['return']>0: return r
-            if 'mobilenet-all' in r['dict']['tags']: continue
             model_name=r['data_name']
+            # Skip aggregate MobileNets packages.
+            if 'mobilenet-all' in r['dict']['tags']: continue
+
             alpha = float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
             rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
             record_repo='local'
