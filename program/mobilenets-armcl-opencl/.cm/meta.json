@@ -91,7 +91,8 @@
       "local": "yes",
       "name": "MobileNet weights (as NumPy arrays)",
       "sort": 10,
-      "tags": "mobilenet,weights,npy"
+      "tags": "mobilenet,weights,npy",
+      "no_tags": "mobilenet-all"
     },
     "imagenet-aux": {
       "local": "yes",
