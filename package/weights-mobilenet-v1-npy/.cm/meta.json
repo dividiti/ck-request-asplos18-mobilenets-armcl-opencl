@@ -110,6 +110,7 @@
   "suggested_path": "weights-mobilenet-v1-npy",
   "tags": [
     "mobilenet",
+    "mobilenet-all",
     "mobilenet-v1",
     "mobilenet-v1-all",
     "weights",
