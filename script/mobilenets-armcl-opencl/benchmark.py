@@ -20,7 +20,7 @@ request_dict={
   'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
 
-# Platform tag.
+# Platform tag: 'hikey-960', 'firefly-rk3399', etc.
 platform_tags='firefly-rk3399'
 
 # Batch size.
@@ -92,6 +92,9 @@ def do(i, arg):
         ch['start'] = 1
     else:
         use_lib_tags = [ 'request-d8f69c13', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
+    # On Firefly-RK3399, the version hash has only 7 characters, not 8.
+    if platform_tags=='firefly-rk3399':
+        use_lib_tags = [ tag[:-1] for tag in use_lib_tags ]
 
     ii={'action':'show',
         'module_uoa':'env',
