@@ -2,6 +2,9 @@
 import ck.kernel as ck
 import os
 
+match_keys=['##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER', '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION']
+
+
 def do(i):
 
     # List performance entries
@@ -48,9 +51,12 @@ def do(i):
                if r['return']>0: return r
                df=r['dict']
 
-               # Remove batch
-               del(df['##choices#env#CK_BATCH_COUNT'])
-               
+               # Remove non matching keys
+               keys=list(df.keys())
+               for k in keys:
+                   if k not in match_keys:
+                      del(df[k])
+
                # Find matching features file to merge
                dacc=os.listdir(apath)
                matched=False
@@ -60,8 +66,11 @@ def do(i):
                       if r['return']>0: return r
                       adf=r['dict']
 
-                      # Remove batch
-                      del(adf['##choices#env#CK_BATCH_COUNT'])
+                      # Remove non matching keys
+                      keys=list(adf.keys())
+                      for k in keys:
+                          if k not in match_keys:
+                             del(adf[k])
 
                       # Compare dicts
                       r=ck.compare_dicts({'dict1':df, 'dict2':adf})

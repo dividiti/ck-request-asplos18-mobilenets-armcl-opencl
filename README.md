@@ -27,6 +27,7 @@ We use the standard [Artifact Description check-list](http://ctuning.org/ae/subm
 * **Collective Knowledge workflow framework used?** Yes
 * **Publicly available?:** Yes
 * **Experimental results:** https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl
+* **Scoreboard:** http://cKnowledge.org/request-results
 
 ## Installation
 

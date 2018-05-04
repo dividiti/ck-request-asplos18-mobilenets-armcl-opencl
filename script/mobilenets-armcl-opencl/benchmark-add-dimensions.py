@@ -7,7 +7,8 @@ def do(i):
     # List performance entries
     r=ck.access({'action':'search',
                  'module_uoa':'experiment',
-                 'data_uoa':'mobilenets-performance-*'
+                 'data_uoa':'mobilenets-performance-*',
+                 'repo_uoa':'local'
 #                 'repo_uoa':'ck-request-asplos18-results'
                 })
     if r['return']>0: return r
@@ -60,15 +61,18 @@ def do(i):
         if r['return']>0: return r
         dd['meta']['model_design_name']=r['full_name']
 
-        x=ds['compiler']
-        r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
-        if r['return']>0: return r
-        dd['meta']['compiler_name']=r['full_name']
+        if 'compiler' in ds:
+           x=ds['compiler']
+           r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
+           if r['return']>0: return r
+           dd['meta']['compiler_name']=r['full_name']
 
-        x=ds['library']
-        r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
-        if r['return']>0: return r
-        dd['meta']['library_name']=r['full_name']
+        if 'library' in ds:
+           x=ds['library']
+
+           r=ck.access({'action':'make_deps_full_name','module_uoa':'request.asplos18','deps':x})
+           if r['return']>0: return r
+           dd['meta']['library_name']=r['full_name']
 
         # Updating entry
         r=ck.access({'action':'update',
@@ -99,7 +103,9 @@ def do(i):
                if r['return']>0: return r
                d=r['dict']
 
-               mult=d.get('##choices#env#CK_ENV_MOBILENET_WIDTH_MULTIPLIER#min','')
+               mult=d.get('##choices#env#CK_ENV_MOBILENET_WIDTH_MULTIPLIER#min',None)
+               if mult==None:
+                  mult=d.get('##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER#min',None)
 
                if mult==0.25: size=1990786
                elif mult==0.5: size=5459810
@@ -110,8 +116,13 @@ def do(i):
 
                d['##features#model_size#min']=size
 
-               d['##features#gpu_freq#min']=807
-               d['##features#cpu_freq#min']=''
+               if dd['meta'].get('opencl','')!='':
+                  d['##features#gpu_freq#min']=807
+                  d['##features#cpu_freq#min']=''
+               else:
+                  d['##features#gpu_freq#min']=2362
+                  d['##features#cpu_freq#min']=''
+
                d['##features#freq#min']=d['##features#gpu_freq#min']
 
                d['##features#processed#min']='yes'
