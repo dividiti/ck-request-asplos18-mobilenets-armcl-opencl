@@ -48,7 +48,7 @@ The minimal installation requires:
 * Python 2.7 or 3.3+ (limitation is mainly due to unitests)
 * Git command line client.
 
-You can install CK in your local user space as following:
+You can install CK in your local user space as follows:
 
 ```
 $ git clone http://github.com/ctuning/ck
@@ -280,7 +280,7 @@ $ ck unzip repo:<repo name> --zip=<archive name>.zip
 We have shared raw experimental results in the CK format 
 in this [CK repo](https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl).
 
-You can view and test them as following:
+You can view and test them as follows:
 ```
 $ ck pull repo:ck-request-asplos18-results-mobilenets-armcl-opencl
 $ ck ls ck-request-asplos18-results-mobilenets-armcl-opencl:experiment:* | sort
