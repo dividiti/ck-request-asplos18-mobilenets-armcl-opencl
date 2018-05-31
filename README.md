@@ -42,8 +42,8 @@ Details: [Link](http://cTuning.org/ae/submission_extra.html)
 * **Publicly available?:** Yes
 * **Code license(s)?:** BSD 3-clause
 * **CK workflow framework used?** Yes
-* **CK workflow URL:** \url{https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl}
-* **CK results URL:** \url{https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl}
+* **CK workflow URL:** https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl
+* **CK results URL:** https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl
 
 ## Installation
 
