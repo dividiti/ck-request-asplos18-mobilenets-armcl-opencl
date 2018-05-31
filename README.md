@@ -2,7 +2,7 @@
 
 This repository contains experimental workflow and all related artifacts 
 as portable, customizable and reusable [Collective Knowledge components](https://github.com/ctuning/ck)
-for image classification from the [ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html) 
+for image classification from the [1st ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html) 
 on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs).
 
 ## References

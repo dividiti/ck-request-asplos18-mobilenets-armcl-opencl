@@ -1,0 +1,190 @@
+%CK_APPENDIX={A}%
+\onecolumn
+
+\section{Artifact Appendix}
+\label{artifact_appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Abstract}
+
+This Artifact Appendix describes experimental workflow,
+artifacts and results from this paper evaluated 
+during the 1st reproducible ReQuEST tournament at the ACM ASPLOS'18:
+
+\begin{packed_itemize}
+  \item {\bf Live CK workflow:} \url{https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl}
+  \item {\bf CK results:} \url{https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl}
+  \item {\bf Artifact DOI:} \url{https://doi.org/10.1145/3229773}
+  \item {\bf ReQuEST submission and reviewing guidelines:} \url{http://cknowledge.org/request-cfp-asplos2018.html} (\cite{request-asplos18})
+  \item {\bf ReQuEST goals:} \cite{cm:29db2248aba45e59:0c7348dfbadd5b95}
+  \item {\bf ReQuEST workflows:} \url{https://github.com/ctuning/ck-request-asplos18-results}
+  \item {\bf ReQuEST scoreboard:} \url{http://cKnowledge.org/request-results}
+\end{packed_itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Description}
+
+\subsubsection{Artifact check-list}
+
+Details: \url{http://cTuning.org/ae/submission_extra.html}
+
+\begin{packed_itemize}
+  \item {\bf Algorithm:} image classification
+  \item {\bf Program:} MobileNets using Arm Compute Library v17.12+ and TensorFlow 1.7.0+
+  \item {\bf Compilation:} GCC v6+ (recommended v7+); Python 2.7+ or 3.4+
+  \item {\bf Transformations:}
+  \item {\bf Binary:} compiled from source on a target platform
+  \item {\bf Data set:} ImageNet 2012 validation (50,000 images)
+  \item {\bf Run-time environment:} Linux; OpenCL v1.2+
+  \item {\bf Hardware:} Linaro HiKey960, Firefly RK3399 development boards (or similar)
+  \item {\bf Run-time state:} CPU and GPU frequencies set to the maximum
+  \item {\bf Execution:} 
+  \item {\bf Metrics:} total execution time; top1/top5 accuracy over some (all) images from the data set
+  \item {\bf Output:} classification result; execution time (throughput/latency) versus accuracy
+  \item {\bf Experiments:} automated via CK command line
+  \item {\bf How much disk space required (approximately)?} 4..20GB depending on library installations
+  \item {\bf How much time is needed to prepare workflow (approximately)?} from 30 minutes to 1 day (if natively building TF)
+  \item {\bf How much time is needed to complete experiments (approximately)?} from 30 minutes to 1 week (if validating accuracy on complete data set)
+  \item {\bf Publicly available?:} Yes
+  \item {\bf Code license(s)?:} BSD 3-clause
+  \item {\bf CK workflow framework used?} Yes
+  \item {\bf CK workflow URL:} \url{https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl}
+  \item {\bf CK results URL:} \url{https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl}
+\end{packed_itemize}
+
+%-------------------------------------------------------------------------------
+\subsubsection{How software can be obtained?}
+
+\textbf{NB:} Execute commands prefixed with `\#` sign under `root` or using `sudo`.
+
+First, install CK workflow framework:
+
+\begin{verbatim}
+# apt install python python-pip
+# pip install ck
+\end{verbatim}
+
+Alternatively, you can install latest CK version in a user space from GitHub:
+\begin{verbatim}
+$ git clone http://github.com/ctuning/ck
+$ export PATH=$PWD/ck/bin:$PATH
+$ export PYTHONPATH=$PWD/ck:$PYTHONPATH
+\end{verbatim}
+
+\noindent Then, install CK repositories:
+\begin{verbatim}
+$ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl
+$ ck pull repo:ck-tensorflow
+\end{verbatim}
+
+%-------------------------------------------------------------------------------
+\subsubsection{Hardware dependencies}
+
+The new direct convolution kernel optimized for the Arm Mali Bifrost GPU
+architecture can be evaluated on a Mali-G71 GPU (e.g.\ found in the HiSilicon
+Kirin 960 chip) or Mali-G72 GPU (e.g.\ found in the HiSilicon Kirin 970 chip).
+%
+The workflow, however, can also be tested on any Arm Mali GPU with the Arm Mali
+Midgard GPU architecture (e.g.\ Mali-T880 found in the Rockchip RK3399 chip).
+
+%-------------------------------------------------------------------------------
+\subsubsection{Software dependencies}
+
+Software dependencies for CK workflows are automatically installed and rebuilt 
+via shared CK packages: \url{https://github.com/ctuning/ck/wiki/Shared-packages}.
+
+However, they may still require some native packages:
+
+\paragraph{ArmCL}
+
+\begin{verbatim}
+# apt install libblas-dev liblapack-dev libatlas-base-dev
+# apt install python-numpy python-scipy
+# pip install pillow
+\end{verbatim}
+
+\paragraph{TensorFlow}
+
+\begin{verbatim}
+# apt install liblapack-dev libatlas-dev
+# pip install enum34 mock pillow wheel absl-py scipy
+$ ck install ck-env:package:jdk-8u131-universal
+$ ck install ck-env:package:tool-bazel-0.11.1-linux
+\end{verbatim}
+
+%-------------------------------------------------------------------------------
+\subsubsection{Data sets}
+
+\begin{verbatim}
+$ ck install package:imagenet-2012-val-min-resized
+$ ck install package:imagenet-2012-aux
+\end{verbatim}
+
+\paragraph{ArmCL}
+
+\begin{verbatim}
+$ ck install package --tags=mobilenet-v1-all,npy
+\end{verbatim}
+
+\paragraph{TensorFlow}
+
+\begin{verbatim}
+$ ck install package \
+  --tags=mobilenet-v1-all,tensorflowmodel,2017_06_14 
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Installation}
+
+\paragraph{ArmCL}
+
+\begin{verbatim}
+$ ck install package:lib-armcl-opencl-request
+$ ck install package:lib-armcl-opencl-18.03 \
+  --env.USE_GRAPH=ON --env.USE_NEON=ON
+\end{verbatim}
+
+\paragraph{TensorFlow}
+
+\begin{verbatim}
+$ ck install package:lib-tensorflow-1.7.0-src-cpu \
+  --env.CK_HOST_CPU_NUMBER_OF_PROCESSORS=1
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experiment workflow}
+
+\paragraph{ArmCL}
+
+\begin{verbatim}
+$ cd `ck find script:mobilenets-armcl-opencl`
+$ python benchmark.py [--repetitions=10]
+$ python benchmark.py --accuracy
+\end{verbatim}
+
+\paragraph{TensorFlow}
+
+\begin{verbatim}
+$ cd `ck find script:mobilenets-tensorflow`
+$ python benchmark.py [--repetitions=10]
+$ python benchmark.py --accuracy
+\end{verbatim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Evaluation and expected result}
+
+\begin{verbatim}
+$ ls `ck find jnotebook:mobilenets-armcl-opencl`
+analysis.ipynb
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Notes}
+
+We suggest to check the ReadME from the live CK workflow 
+for the latest installation and usage instructions: 
+
+\url{https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl} .
