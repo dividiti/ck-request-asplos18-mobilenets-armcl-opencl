@@ -15,9 +15,9 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 * [Zenodo artifact (previous version)](https://doi.org/10.5281/zenodo.1203659)
 
 * [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
-* [ReQuEST submission and reviewing guidelines:](http://cknowledge.org/request-cfp-asplos2018.html)
-* [ReQuEST workflows:](https://github.com/ctuning/ck-request-asplos18)
-* [ReQuEST scoreboard:](http://cKnowledge.org/request-results)
+* [ReQuEST submission and reviewing guidelines](http://cknowledge.org/request-cfp-asplos2018.html)
+* [ReQuEST workflows](https://github.com/ctuning/ck-request-asplos18)
+* [ReQuEST scoreboard](http://cKnowledge.org/request-results)
 
 ## Artifact check-list
 
