@@ -1,13 +1,3 @@
 #!/bin/bash
 
-echo "Cleaning..."
-
-rm -f paper.aux 
-rm -f paper.bbl
-rm -f paper.blg
-rm -f paper.dvi
-rm -f paper.log
-rm -f paper.out
-rm -f paper.pdf
-rm -f *.xcp
-rm -f *.out
+rm -f *.aux *.dvi *.log *.pdf *.blg *.bbl *.xcp *.out *.cut

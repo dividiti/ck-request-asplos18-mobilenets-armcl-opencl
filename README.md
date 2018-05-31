@@ -1,14 +1,22 @@
 [![logo](https://github.com/ctuning/ck-guide-images/blob/master/logo-powered-by-ck.png)](https://github.com/ctuning/ck)
 
-# Collective Knowledge workflow for image classification submitted to the [ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
+This repository contains experimental workflow and all related artifacts 
+as portable, customizable and reusable [Collective Knowledge components](https://github.com/ctuning/ck)
+for the image classification workflow from the [ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html) 
+on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs).
 
-* **Title:** Optimizing [MobileNets-v1](https://arxiv.org/pdf/1704.04861.pdf) on Arm Mali GPUs
-* **Authors:** Nikolay Chunosov, Flavio Vella, Anton Lokhmotov, Grigori Fursin
-* **License:** [Collective Knowledge](https://github.com/ctuning/ck/blob/master/LICENSE.txt) (3-clause BSD)
+## References
 
-## Artifact check-list (meta-information)
+* **Title:** Multi-objective autotuning of MobileNets\\ across the full software/hardware stack
+* **Authors:**  Anton Lokhmotov, Nikolay Chunosov, Flavio Vella, Grigori Fursin
 
-We use the standard [Artifact Description check-list](http://ctuning.org/ae/submission_extra.html) from systems conferences including CGO, PPoPP, PACT and SuperComputing.
+* [ACM paper](https://doi.org/10.1145/3229762.3229767)
+* [ACM artifact](https://doi.org/10.1145/3229773)
+* [Zenodo artifact (previous version)](https://doi.org/10.5281/zenodo.1203659)
+
+* [arXiv ReQuEST intro](https://arxiv.org/abs/1801.06378)
+
+## Artifact check-list ([details](http://ctuning.org/ae/submission_extra.html))
 
 * **Algorithm:** image classification
 * **Program:** [MobileNets-v1](https://github.com/tensorflow/models/blob/1630da3434974e9ad5a0b6d887ac716a97ce03d3/research/slim/nets/mobilenet_v1.md#pre-trained-models) using [Arm Compute Library](https://github.com/ARM-software/ComputeLibrary) v17.12+ and [TensorFlow](https://github.com/tensorflow/tensorflow) v1.7.0+

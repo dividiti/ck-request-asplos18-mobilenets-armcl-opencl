@@ -1,4 +1,5 @@
 #!/bin/bash
+
 source ./_clean.sh
 
 echo "Compiling article ..."

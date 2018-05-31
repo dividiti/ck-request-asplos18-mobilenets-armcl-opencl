@@ -1,1 +1,1 @@
-del *.aux *.dvi *.log *.pdf *.blg *.bbl *.xcp *.out
+del *.aux *.dvi *.log *.pdf *.blg *.bbl *.xcp *.out *.cut
