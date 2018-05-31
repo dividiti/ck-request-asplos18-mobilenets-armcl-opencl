@@ -16,7 +16,7 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 
 * [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
 * [ReQuEST submission and reviewing guidelines](http://cknowledge.org/request-cfp-asplos2018.html)
-* [ReQuEST workflows](https://github.com/ctuning/ck-request-asplos18)
+* [ReQuEST workflows](https://github.com/ctuning/ck-request-asplos18-results)
 * [ReQuEST scoreboard](http://cKnowledge.org/request-results)
 
 ## Artifact check-list
@@ -28,21 +28,22 @@ Details: [Link](http://cTuning.org/ae/submission_extra.html)
 * **Compilation:** GCC v6+ (recommended v7+); Python 2.7+ or 3.4+
 * **Transformations:**
 * **Binary:** compiled from source on a target platform
-* **Data set:** [ImageNet](http://www.image-net.org) 2012 validation (50,000 images)
+* **Data set:** ImageNet 2012 validation (50,000 images)
 * **Run-time environment:** Linux; OpenCL v1.2+
 * **Hardware:** [Linaro HiKey960](https://www.96boards.org/product/hikey960/), [Firefly RK3399](http://en.t-firefly.com/product/rk3399.html) development boards (or similar)
-* **Run-time state:** 
-* **Execution:** CPU and GPU frequencies set to the maximum
+* **Run-time state:** CPU and GPU frequencies set to the maximum
+* **Execution:** 
 * **Metrics:** total execution time; top1/top5 accuracy over some (all) images from the data set
-* **Output:** classification result; execution time; accuracy
-* **Experiments:** CK command line
-* **How much disk space required (approximately)?** TBC
-* **How much time is needed to prepare workflow (approximately)?** 20 minutes
-* **How much time is needed to complete experiments (approximately)?**
-* **Collective Knowledge workflow framework used?** Yes
+* **Output:** classification result; execution time (throughput/latency) versus accuracy
+* **Experiments:** automated via CK command line
+* **How much disk space required (approximately)?** 4..20GB depending on library installations
+* **How much time is needed to prepare workflow (approximately)?** from 30 minutes to 1 day (if natively building TF)
+* **How much time is needed to complete experiments (approximately)?** from 30 minutes to 1 week (if validating accuracy on complete data set)
 * **Publicly available?:** Yes
-* **Experimental results:** https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl
-* **Scoreboard:** http://cKnowledge.org/request-results
+* **Code license(s)?:** BSD 3-clause
+* **CK workflow framework used?** Yes
+* **CK workflow URL:** \url{https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl}
+* **CK results URL:** \url{https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl}
 
 ## Installation
 
