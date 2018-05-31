@@ -14,9 +14,14 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 * [ACM artifact](https://doi.org/10.1145/3229773)
 * [Zenodo artifact (previous version)](https://doi.org/10.5281/zenodo.1203659)
 
-* [arXiv ReQuEST intro](https://arxiv.org/abs/1801.06378)
+* [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
+* [ReQuEST submission and reviewing guidelines:](http://cknowledge.org/request-cfp-asplos2018.html)
+* [ReQuEST workflows:](https://github.com/ctuning/ck-request-asplos18)
+* [ReQuEST scoreboard:](http://cKnowledge.org/request-results)
 
-## Artifact check-list ([details](http://ctuning.org/ae/submission_extra.html))
+## Artifact check-list
+
+Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
 * **Algorithm:** image classification
 * **Program:** [MobileNets-v1](https://github.com/tensorflow/models/blob/1630da3434974e9ad5a0b6d887ac716a97ce03d3/research/slim/nets/mobilenet_v1.md#pre-trained-models) using [Arm Compute Library](https://github.com/ARM-software/ComputeLibrary) v17.12+ and [TensorFlow](https://github.com/tensorflow/tensorflow) v1.7.0+
