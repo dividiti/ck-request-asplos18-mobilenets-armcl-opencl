@@ -15,6 +15,7 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 * [Zenodo artifact (previous version)](https://doi.org/10.5281/zenodo.1203659)
 
 * [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
+
 * [ReQuEST submission and reviewing guidelines](http://cknowledge.org/request-cfp-asplos2018.html)
 * [ReQuEST workflows](https://github.com/ctuning/ck-request-asplos18-results)
 * [ReQuEST scoreboard](http://cKnowledge.org/request-results)
@@ -472,3 +473,13 @@ $ python benchmark.py [--repetitions=10]
 $ cd `ck find script:mobilenets-tensorflow`
 $ python benchmark.py --accuracy
 ```
+
+## See accepted results on the live scoreboard
+
+[Link](http://cKnowledge.org/request-results)
+
+## Further discussions
+
+* [Collective Knowledge mailing list](http://groups.google.com/group/collective-knowledge)
+* [Collective Knowledge slack](https://collective-knowledge.slack.com)
+* [Artifact evaluation mailing list](http://groups.google.com/group/artifact-evaluation)
