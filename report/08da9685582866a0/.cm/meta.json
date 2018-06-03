@@ -32,7 +32,7 @@
   "publish_iso_date": "2018-03-19",
   "tags": [
     "ck-paper",
-    "request",
+    "request-tournament",
     "request-asplos18"
   ],
   "template": "interactive-ck-article.html",
