@@ -2,7 +2,7 @@
   "data_uid": "7698eaf859b79f2b",
   "data_name": "ck-request-asplos18-mobilenets-armcl-opencl",
   "dict": {
-    "artifact":"08da9685582866a0",
+    "ck_artifact":"08da9685582866a0",
     "url": "https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl",
     "shared": "git",
     "repo_deps": [

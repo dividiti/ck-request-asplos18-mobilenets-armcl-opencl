@@ -1,22 +1,45 @@
 {
-  "acm_badges":{
-    "available":"yes",
-    "functional":"yes",
-    "reusable":"yes",
-    "replicated":"yes",
-    "reproduced":""
+  "acm_badges": {
+    "available": "yes",
+    "functional": "yes",
+    "replicated": "yes",
+    "reproduced": "",
+    "reusable": "yes"
   },
+  "artifact_doi": "https://doi.org/10.1145/3229773",
   "dois": [
-    {"name":"- CK workflow [FigShare]", "url":"https://doi.org/10.6084/m9.figshare.6001961.v1"},
-    {"name":"- CK results [Zenodo]", "url":"https://doi.org/10.5281/zenodo.1203659"}
+    {
+      "name": "- CK workflow [FigShare]",
+      "url": "https://doi.org/10.6084/m9.figshare.6001961.v1"
+    },
+    {
+      "name": "- CK results [Zenodo]",
+      "url": "https://doi.org/10.5281/zenodo.1203659"
+    }
   ],
-  "html":"",
-  "interactive_report":"08da9685582866a0",
+  "html": "",
+  "interactive_report": "08da9685582866a0",
+  "paper_doi": "https://doi.org/10.1145/3229762.3229767",
   "repos": [
-    {"name":"CK workflow", "url":"https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl"},
-    {"name":"- Docker 1", "url":"https://hub.docker.com/r/ctuning/request-asplos18-mobilenets-armcl-opencl-ubuntu-16.04-py27"},
-    {"name":"- Docker 2", "url":"https://hub.docker.com/r/ctuning/request-asplos18-mobilenets-armcl-opencl-ubuntu-16.04-py27-py35"},
-    {"name":"- Docker 3", "url":"https://hub.docker.com/r/ctuning/request-asplos18-mobilenets-armcl-opencl-ubuntu-16.04-py35"},
-    {"name":"CK results", "url":"https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl"}
+    {
+      "name": "CK workflow",
+      "url": "https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl"
+    },
+    {
+      "name": "- Docker 1",
+      "url": "https://hub.docker.com/r/ctuning/request-asplos18-mobilenets-armcl-opencl-ubuntu-16.04-py27"
+    },
+    {
+      "name": "- Docker 2",
+      "url": "https://hub.docker.com/r/ctuning/request-asplos18-mobilenets-armcl-opencl-ubuntu-16.04-py27-py35"
+    },
+    {
+      "name": "- Docker 3",
+      "url": "https://hub.docker.com/r/ctuning/request-asplos18-mobilenets-armcl-opencl-ubuntu-16.04-py35"
+    },
+    {
+      "name": "CK results",
+      "url": "https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl"
+    }
   ]
 }
