@@ -2,23 +2,20 @@ We present a customizable Collective Knowledge workflow with
 an integrated scoreboard to automate multi-objective benchmarking,
 exploration and co-design of diverse machine learning models,
 frameworks, libraries and platforms.
-%
 We demonstrate how it can help to automatically find 
 the most efficient stack for image classification 
 on a Pareto frontier of accuracy, speed and size 
 across MobileNets, TensorFlow, ArmCL OpenCL libraries,
 and Arm Mali GPUs.
-%
 All artifacts, workflows and results from this paper
 are shared as open-source, reproducible and reusable components
 with a common JSON API for further validation, comparison
 and improvement by the community.
-
+<par>
 These customizable and portable workflows can help enhance 
-existing benchmarks such as MLPerf with plug\&play components 
+existing benchmarks such as MLPerf with plug&play components 
 and a live dashboard for a collaborative, reproducible and 
 fair comparison of novel techniques, frameworks and platforms.
-%
 Such approach can help to guide further software and hardware improvements, 
 automate Artifact Evaluation at conferences such as SysML, 
 and accelerate technology transfer to industry.
