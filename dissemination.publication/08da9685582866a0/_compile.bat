@@ -1,13 +1,13 @@
 call _clean.bat
 
-echo Preprocessing tex paper sources via CK: paper.tex
-
-call ck preprocess # --doc=paper.tex
-if %errorlevel% neq 0 (
-  echo.
-  echo Error: CK preprocessing failed!
-  exit /b 1
-)
+rem echo Preprocessing tex paper sources via CK: paper.tex
+rem 
+rem call ck preprocess # --doc=paper.tex
+rem if %errorlevel% neq 0 (
+rem  echo.
+rem  echo Error: CK preprocessing failed!
+rem  exit /b 1
+rem )
 
 echo Compiling paper ...
 
