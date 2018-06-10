@@ -10,6 +10,8 @@
   "ck_repo_results": "ck-request-asplos18-results-mobilenets-armcl-opencl", 
   "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-mobilenets-armcl-opencl", 
   "ck_workflow": "https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl", 
+  "copyright_holder_name": "dividiti", 
+  "copyright_holder_year": "2018", 
   "dois": [
     {
       "name": "- CK workflow [FigShare]", 
@@ -34,6 +36,7 @@
     "crowdtuning", 
     "live scoreboard"
   ], 
+  "license": "authors' code and CK workflow are available under BSD 3-clause license", 
   "original_repo": "", 
   "paper_doi": "https://doi.org/10.1145/3229762.3229767", 
   "repos": [
