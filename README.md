@@ -78,11 +78,28 @@ You can also install CK via PIP with sudo to avoid setting up environment variab
 ```
 $ sudo pip install ck
 ```
-
-### Install CK repositories and a sample dataset
+### Install this CK repository
 
 ```
 $ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl
+```
+
+### Install this CK workflow from the ACM Digital Library snapshot
+
+It is possible to install and test the snapshot of this workflow 
+from the ACM Digital Library without interfering with your current CK installation.
+Download related file "request-asplos18-artifact-?-ck-workflow.zip"
+to a temporary directory, unzip it and then execute the following commands:
+```
+$ . ./prepare_virtual_ck.sh
+$ . ./start_virtual_ck.sh
+```
+All CK repositories will be installed in your current directory.
+You can now proceed with further evaluation as described below.
+
+### Install a sample dataset
+
+```
 $ ck install ck-caffe:package:imagenet-2012-val-min-resized
 $ ck install ck-caffe:package:imagenet-2012-aux
 ```

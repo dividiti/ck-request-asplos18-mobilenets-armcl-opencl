@@ -67,7 +67,7 @@ First, install CK workflow framework:
 # pip install ck
 \end{verbatim}
 
-Alternatively, you can install latest CK version in a user space from GitHub:
+Alternatively, you can install the latest CK version in a user space from GitHub:
 \begin{verbatim}
 $ git clone http://github.com/ctuning/ck
 $ export PATH=$PWD/ck/bin:$PATH
@@ -77,8 +77,22 @@ $ export PYTHONPATH=$PWD/ck:$PYTHONPATH
 \noindent Then, install CK repositories:
 \begin{verbatim}
 $ ck pull repo --url=https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl
-$ ck pull repo:ck-tensorflow
 \end{verbatim}
+
+\subsubsection{Install this CK workflow from the ACM Digital Library snapshot}
+
+It is possible to install and test the snapshot of this workflow 
+from the ACM Digital Library without interfering with your current CK installation.
+Download related file "request-asplos18-artifact-?-ck-workflow.zip"
+to a temporary directory, unzip it and then execute the following commands:
+
+\begin{verbatim}
+$ . ./prepare_virtual_ck.sh
+$ . ./start_virtual_ck.sh
+\end{verbatim}
+
+All CK repositories will be installed in your current directory.
+You can now proceed with further evaluation as described below.
 
 %-------------------------------------------------------------------------------
 \subsubsection{Hardware dependencies}
