@@ -1,24 +1,14 @@
-We present a customizable Collective Knowledge workflow with
-an integrated scoreboard to automate multi-objective benchmarking,
-exploration and co-design of diverse machine learning models,
-frameworks, libraries and platforms.
+We present a customizable Collective Knowledge workflow to study the execution
+time vs.\ accuracy trade-offs for the MobileNets CNN family.
 %
-We demonstrate how it can help to automatically find 
-the most efficient stack for image classification 
-on a Pareto frontier of accuracy, speed and size 
-across MobileNets, TensorFlow, ArmCL OpenCL libraries,
-and Arm Mali GPUs.
+We use this workflow to evaluate MobileNets on Arm Cortex CPUs using TensorFlow
+and Arm Mali GPUs using several versions of the Arm Compute Library.
 %
-All artifacts, workflows and results from this paper
-are shared as open-source, reproducible and reusable components
-with a common JSON API for further validation, comparison
-and improvement by the community.
-
-These customizable and portable workflows can help enhance 
-existing benchmarks such as MLPerf with plug\&play components 
-and a live dashboard for a collaborative, reproducible and 
-fair comparison of novel techniques, frameworks and platforms.
+Our optimizations for the Arm Bifrost GPU architecture reduce the execution
+time by 2--3 times, while lying on a Pareto-optimal frontier.
 %
-Such approach can help to guide further software and hardware improvements, 
-automate Artifact Evaluation at conferences such as SysML, 
-and accelerate technology transfer to industry.
+We also highlight the challenge of maintaining the accuracy when deploying CNN
+models across diverse platforms.
+%
+We make all the workflow components (models, programs, scripts, etc.) publicly
+available to encourage further exploration by the community.
