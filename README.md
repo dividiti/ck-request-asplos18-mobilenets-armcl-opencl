@@ -406,7 +406,7 @@ $ cd $CK_TOOLS && du -hsc tensorflowmodel-mobilenet-v1-*-2018_02_22-py
 ### Make a sample run
 
 ```
-$ ck run ck-tensorflow:program:classification-tensorflow
+$ ck run ck-tensorflow:program:image-classification-tf-py
 ...
 Model module: /home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet-model.py
 Model weights: /home/anton/CK_TOOLS/tensorflowmodel-mobilenet-v1-1.0-224-py/mobilenet_v1_1.0_224.ckpt

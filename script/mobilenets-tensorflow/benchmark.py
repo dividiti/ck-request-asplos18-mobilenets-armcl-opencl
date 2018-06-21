@@ -69,7 +69,7 @@ def do(i, arg):
     tosd=r['os_dict']
     tdid=r['device_id']
 
-    program='classification-tensorflow'
+    program='image-classification-tf-py'
     ii={'action':'show',
         'module_uoa':'env',
         'tags':'dataset,imagenet,raw,val'}
