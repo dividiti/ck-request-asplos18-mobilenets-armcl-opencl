@@ -10,33 +10,6 @@
 
 void run_mobilenet();
 
-void printf_callback(const char *buffer, unsigned int len, size_t complete, void *user_data) {
-    printf("%.*s", len, buffer);
-}
-
-void set_kernel_path() {
-     const char* kernel_path = getenv("CK_ENV_LIB_ARMCL_CL_KERNELS");
-     if (kernel_path) {
-         printf("Kernel path: %s\n", kernel_path);
-         arm_compute::CLKernelLibrary::get().set_kernel_path(kernel_path);
-     }
-}
-
-void init_armcl(arm_compute::ICLTuner *cl_tuner = nullptr) {
-    cl_context_properties properties[] =
-    {
-        CL_PRINTF_CALLBACK_ARM, reinterpret_cast<cl_context_properties>(printf_callback),
-        CL_PRINTF_BUFFERSIZE_ARM, static_cast<cl_context_properties>(0x100000),
-        CL_CONTEXT_PLATFORM, reinterpret_cast<cl_context_properties>(cl::Platform::get()()),
-        0
-    };
-    cl::Context::setDefault(cl::Context(CL_DEVICE_TYPE_DEFAULT, properties));
-    arm_compute::CLScheduler::get().default_init(cl_tuner);
-
-    // Should be called after initialization
-    set_kernel_path();
-}
-
 void finish_test() {
     int batch_count = session().batch_count();
     float total_load_images_time = session().total_load_images_time();

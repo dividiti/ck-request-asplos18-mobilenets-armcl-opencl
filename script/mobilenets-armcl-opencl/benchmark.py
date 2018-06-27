@@ -31,7 +31,7 @@ bs={
   'default':1
 }
 
-# ConvolutionMethodHint: 0 - GEMM, 1 - DIRECT.
+# ConvolutionMethodHint: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
 ch={
   'start':0,
   'stop':1,

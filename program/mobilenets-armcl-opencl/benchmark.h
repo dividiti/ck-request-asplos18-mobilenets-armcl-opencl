@@ -9,19 +9,7 @@
 #ifndef BENCHMARK_H
 #define BENCHMARK_H
 
-#include <arm_compute/graph/Graph.h>
-#include <arm_compute/graph/Nodes.h>
-#include <arm_compute/runtime/CL/CLScheduler.h>
-#include <arm_compute/runtime/CPP/CPPScheduler.h>
-#include <arm_compute/runtime/Scheduler.h>
-#include <support/ToolchainSupport.h>
-#include <arm_compute/runtime/CL/CLTuner.h>
-#include <arm_compute/core/Helpers.h>
-#include <arm_compute/core/ITensor.h>
-
-#include "GraphTypePrinter.h"
-#include "GraphUtils.h"
-#include "Utils.h"
+#include "armcl_graph_common.h"
 
 #include <xopenme.h>
 
@@ -49,9 +37,6 @@ enum GLOBAL_VAR {
 };
 
 using namespace std;
-using namespace arm_compute;
-using namespace arm_compute::graph;
-using namespace arm_compute::graph_utils;
 
 inline char path_separator()
 {
@@ -119,21 +104,10 @@ inline float get_multiplier() {
   return getenv_f("CK_ENV_MOBILENET_MULTIPLIER", 1);
 }
 
-inline ConvolutionMethodHint get_convolution_hint() {
-    bool bifrost_target = (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST);
-    ConvolutionMethodHint default_hint = (bifrost_target ? ConvolutionMethodHint::DIRECT : ConvolutionMethodHint::GEMM);
-    ConvolutionMethodHint hint = static_cast<ConvolutionMethodHint>(getenv_i("CK_CONVOLUTION_METHOD_HINT", static_cast<int>(default_hint)));
-    return hint;
-}
-
 inline bool file_exists(const string& name) {
     ifstream f(name);
     return f.good();
 }
-
-#ifndef DATATYPE
-#define DATATYPE DataType::F32
-#endif
 
 class CKPredictionSession {
 public:

@@ -123,6 +123,12 @@
     "f32",
     "vopencl"
   ],
+  "use_preprocess_compilation_scripts": {
+    "data_uoa": "3144372763a44cd2",
+    "module_uoa": "84e27ad9dd12e734",
+    "script_func": "ck_preprocess",
+    "script_name": "compile-preprocess"
+  },
   "target_file": "benchmark",
   "version": "1.0.0"
 }
