@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 ARM Limited.
+ * Copyright (c) 2017-2018 ARM Limited.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -24,8 +24,15 @@
 
 #include "benchmark.h"
 
-#include "arm_compute/runtime/CL/CLTensor.h"
-#include "utils/Utils.h"
+#include <GraphUtils.h>
+#include <utils/Utils.h>
+
+using namespace arm_compute;
+using namespace arm_compute::graph;
+using namespace arm_compute::graph_utils;
+#if defined(ARMCL_18_05_PLUS)
+using namespace arm_compute::graph::frontend;
+#endif
 
 class CKNumPyInputLoader : public ITensorAccessor {
 public:
@@ -160,65 +167,76 @@ inline unique_ptr<ITensorAccessor> empty_accessor() {
     return std::unique_ptr<ITensorAccessor>(nullptr);
 }
 
-
 unsigned int apply_multiplier(unsigned int size) {
     return static_cast<unsigned int>(size * get_multiplier());
 }
 
-BranchLayer get_dwsc_node(std::string &&param_path,
-                          unsigned int  conv_filt,
-                          PadStrideInfo dwc_pad_stride_info, PadStrideInfo conv_pad_stride_info)
-{
-    conv_filt = apply_multiplier(conv_filt);
-    std::string total_path = param_path + "_";
-    SubGraph    sg;
-    sg << DepthwiseConvolutionLayer(
-           3U, 3U,
-           weights_accessor(total_path + "depthwise_depthwise_weights.npy"),
-           empty_accessor(),
-           dwc_pad_stride_info,
-           true)
-       << BatchNormalizationLayer(
-           weights_accessor(total_path + "depthwise_BatchNorm_moving_mean.npy"),
-           weights_accessor(total_path + "depthwise_BatchNorm_moving_variance.npy"),
-           weights_accessor(total_path + "depthwise_BatchNorm_gamma.npy"),
-           weights_accessor(total_path + "depthwise_BatchNorm_beta.npy"),
-           0.001f)
-       << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f))
-       << ConvolutionLayer(
-           1U, 1U, conv_filt,
-           weights_accessor(total_path + "pointwise_weights.npy"),
-           empty_accessor(),
-           conv_pad_stride_info)
-       << BatchNormalizationLayer(
-           weights_accessor(total_path + "pointwise_BatchNorm_moving_mean.npy"),
-           weights_accessor(total_path + "pointwise_BatchNorm_moving_variance.npy"),
-           weights_accessor(total_path + "pointwise_BatchNorm_gamma.npy"),
-           weights_accessor(total_path + "pointwise_BatchNorm_beta.npy"),
-           0.001f)
-       << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f));
-
-    return BranchLayer(std::move(sg));
-}
 } // namespace
 
 void run_mobilenet()
 {
-    TargetHint            target_hint      = TargetHint::OPENCL;
-    ConvolutionMethodHint convolution_hint = get_convolution_hint();
-    
+    auto target_hint        = get_target_hint();
+    auto convolution_method = get_convolution_method();
+
+#if defined(ARMCL_18_05_PLUS)
+  auto depthwise_convolution_method = DepthwiseConvolutionMethod::OPTIMIZED_3x3;
+#endif
+
     TensorShape input_shape(session().image_size(),
                             session().image_size(),
                             3U,
                             session().batch_size());
 
-    Graph graph;
-    cout << "\nPrepare graph...\n";
+    GRAPH(graph, "MobileNetV1");
+
+    auto get_dwsc_node = [&](std::string &&param_path,
+                             unsigned int  conv_filt,
+                             PadStrideInfo dwc_pad_stride_info,
+                             PadStrideInfo conv_pad_stride_info) {
+#if defined(ARMCL_18_05_PLUS)
+      SubStream sg(graph);
+#else
+      SubGraph sg;
+#endif   
+      sg << DepthwiseConvolutionLayer(
+             3U, 3U,
+             weights_accessor(param_path + "_depthwise_depthwise_weights.npy"),
+             empty_accessor(),
+             dwc_pad_stride_info)
+         << BatchNormalizationLayer(
+             weights_accessor(param_path + "_depthwise_BatchNorm_moving_mean.npy"),
+             weights_accessor(param_path + "_depthwise_BatchNorm_moving_variance.npy"),
+             weights_accessor(param_path + "_depthwise_BatchNorm_gamma.npy"),
+             weights_accessor(param_path + "_depthwise_BatchNorm_beta.npy"),
+             0.001f)
+         << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f))
+         << ConvolutionLayer(
+             1U, 1U, apply_multiplier(conv_filt),
+             weights_accessor(param_path + "_pointwise_weights.npy"),
+             empty_accessor(),
+             conv_pad_stride_info)
+         << BatchNormalizationLayer(
+             weights_accessor(param_path + "_pointwise_BatchNorm_moving_mean.npy"),
+             weights_accessor(param_path + "_pointwise_BatchNorm_moving_variance.npy"),
+             weights_accessor(param_path + "_pointwise_BatchNorm_gamma.npy"),
+             weights_accessor(param_path + "_pointwise_BatchNorm_beta.npy"),
+             0.001f)
+         << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f));
+      return BranchLayer(std::move(sg));
+    };
+
+    std::cout << "\nPrepare graph...\n";
     xopenme_clock_start(X_TIMER_SETUP);
     graph << target_hint
-          << convolution_hint
+          << convolution_method
+#if defined(ARMCL_18_05_PLUS)
+          << depthwise_convolution_method
+          << InputLayer(TensorDescriptor(input_shape, DATATYPE),
+                arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
+#else
           << arm_compute::graph::Tensor(TensorInfo(input_shape, 1, DATATYPE), 
-             arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
+                arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
+#endif
           << ConvolutionLayer(
               3U, 3U, apply_multiplier(32U),
               weights_accessor("Conv2d_0_weights.npy"),
@@ -253,10 +271,20 @@ void run_mobilenet()
               PadStrideInfo(1, 1, 0, 0))
           << ReshapeLayer(TensorShape(1001U))
           << SoftmaxLayer()
+#if defined(ARMCL_18_05_PLUS)
+          << OutputLayer(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
+#else
           << arm_compute::graph::Tensor(arm_compute::support::cpp14::make_unique<CKOutputAccessor>());
+#endif
     xopenme_clock_end(X_TIMER_SETUP);
 
-    cout << "\nRun graph...\n";
+#if defined(ARMCL_18_05_PLUS)
+    // Finalize graph
+    GraphConfig config {};
+    graph.finalize(target_hint, config);
+#endif
+
+    std::cout << "\nRun graph...\n";
     xopenme_clock_start(X_TIMER_TEST);
     graph.run();
     xopenme_clock_end(X_TIMER_TEST);
