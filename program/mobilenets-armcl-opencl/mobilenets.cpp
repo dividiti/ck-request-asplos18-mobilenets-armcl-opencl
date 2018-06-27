@@ -153,19 +153,13 @@ std::string get_convolution_methods_file() {
   return filename ? std::string(filename) : std::string("conv_methods.txt");
 }
 
-std::vector<int> load_convolution_methods() {
+template <typename TConvolutionMethod>
+std::vector<TConvolutionMethod> load_convolution_methods(TConvolutionMethod defaut_method) {
   const int convolutions_count = 15;
-  const int defaut_method = static_cast<int>(get_convolution_method());
 
-  std::vector<int> methods;
-  methods.push_back(defaut_method);
-  for (int i = 1; i < convolutions_count-1; i++)
-#if defined(ARMCL_18_05_PLUS)
-    methods.push_back(static_cast<int>(DepthwiseConvolutionMethod::OPTIMIZED_3x3));
-#else
-    methods.push_back(static_cast<int>(defaut_method));
-#endif
-  methods.push_back(defaut_method);
+  std::vector<TConvolutionMethod> methods;
+  for (int i = 1; i < convolutions_count; i++)
+    methods.push_back(defaut_method);
 
   auto filename = get_convolution_methods_file();
   std::ifstream file(filename);
@@ -175,13 +169,7 @@ std::vector<int> load_convolution_methods() {
     std::string line;
     while (std::getline(file, line) && index < convolutions_count) {
       if (!line.empty()) {
-        auto s = line.c_str();
-#if defined(ARMCL_18_05_PLUS)
-        if (index > 0 || index < convolutions_count-1)
-          methods[index] = static_cast<int>(str_to_dwsc_convolution_method(s));
-        else
-#endif
-          methods[index] = static_cast<int>(str_to_convolution_method(s));
+        methods[index] = str_to_convolution_method(line.c_str());
         std::cout << "    " << index << ": " << line << std::endl;
       }
       index++;
@@ -263,35 +251,20 @@ void run_mobilenet()
     };
 
 
-    std::vector<int> convolution_methods = load_convolution_methods();
-
-    auto convolution_method = [&](int index){
-#if defined(ARMCL_18_05_PLUS)
-      return static_cast<arm_compute::graph::ConvolutionMethod>(convolution_methods[index]);
-#else
-      return static_cast<arm_compute::graph::ConvolutionMethodHint>(convolution_methods[index]);
-#endif
-    };
-    
-    auto dwsc_convolution_method = [&](int index){
-#if defined(ARMCL_18_05_PLUS)
-      return static_cast<arm_compute::graph::DepthwiseConvolutionMethod>(convolution_methods[index]);
-#else
-      return static_cast<arm_compute::graph::ConvolutionMethodHint>(convolution_methods[index]);
-#endif
-    };
+    auto convolution_method = load_convolution_methods(get_convolution_method());
 
     std::cout << "\nPrepare graph...\n";
     xopenme_clock_start(X_TIMER_SETUP);
     graph << target_hint
 #if defined(ARMCL_18_05_PLUS)
+          << DepthwiseConvolutionMethod::OPTIMIZED_3x3
           << InputLayer(TensorDescriptor(input_shape, DATATYPE),
                 arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
 #else
           << arm_compute::graph::Tensor(TensorInfo(input_shape, 1, DATATYPE), 
                 arm_compute::support::cpp14::make_unique<CKNumPyInputLoader>())
 #endif
-          << convolution_method(0) << ConvolutionLayer(
+          << convolution_method[0] << ConvolutionLayer(
               3U, 3U, apply_multiplier(32U),
               weights_accessor("Conv2d_0_weights.npy"),
               empty_accessor(),
@@ -304,21 +277,21 @@ void run_mobilenet()
               0.001f)
 
           << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f))
-          << dwsc_convolution_method(1) << get_dwsc_node("Conv2d_1", 64, PadStrideInfo(1, 1, 1, 1), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(2) << get_dwsc_node("Conv2d_2", 128, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(3) << get_dwsc_node("Conv2d_3", 128, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(4) << get_dwsc_node("Conv2d_4", 256, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(5) << get_dwsc_node("Conv2d_5", 256, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(6) << get_dwsc_node("Conv2d_6", 512, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(7) << get_dwsc_node("Conv2d_7", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(8) << get_dwsc_node("Conv2d_8", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(9) << get_dwsc_node("Conv2d_9", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(10) << get_dwsc_node("Conv2d_10", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(11) << get_dwsc_node("Conv2d_11", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(12) << get_dwsc_node("Conv2d_12", 1024, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
-          << dwsc_convolution_method(13) << get_dwsc_node("Conv2d_13", 1024, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[1] << get_dwsc_node("Conv2d_1", 64, PadStrideInfo(1, 1, 1, 1), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[2] << get_dwsc_node("Conv2d_2", 128, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[3] << get_dwsc_node("Conv2d_3", 128, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[4] << get_dwsc_node("Conv2d_4", 256, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[5] << get_dwsc_node("Conv2d_5", 256, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[6] << get_dwsc_node("Conv2d_6", 512, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[7] << get_dwsc_node("Conv2d_7", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[8] << get_dwsc_node("Conv2d_8", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[9] << get_dwsc_node("Conv2d_9", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[10] << get_dwsc_node("Conv2d_10", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[11] << get_dwsc_node("Conv2d_11", 512, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[12] << get_dwsc_node("Conv2d_12", 1024, PadStrideInfo(2, 2, 0, 1, 0, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
+          << convolution_method[13] << get_dwsc_node("Conv2d_13", 1024, PadStrideInfo(1, 1, 1, 1, 1, 1, DimensionRoundingType::FLOOR), PadStrideInfo(1, 1, 0, 0))
           << PoolingLayer(PoolingLayerInfo(PoolingType::AVG))
-          << convolution_method(14) << ConvolutionLayer(
+          << convolution_method[14] << ConvolutionLayer(
               1U, 1U, 1001U,
               weights_accessor("Logits_Conv2d_1c_1x1_weights.npy"),
               weights_accessor("Logits_Conv2d_1c_1x1_biases.npy"),
