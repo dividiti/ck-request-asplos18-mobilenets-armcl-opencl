@@ -78,17 +78,6 @@ inline arm_compute::graph::ConvolutionMethod str_to_convolution_method(const cha
   return arm_compute::graph::ConvolutionMethod::DEFAULT;
 }
 
-inline arm_compute::graph::ConvolutionMethod get_convolution_method() {
-  auto method_name = getenv("CK_CONVOLUTION_METHOD");
-  if (method_name)
-    return str_to_convolution_method(method_name);
-
-  if (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST)
-    return arm_compute::graph::ConvolutionMethod::DIRECT;
-        
-  return arm_compute::graph::ConvolutionMethod::GEMM;
-}
-
 inline arm_compute::graph::Target get_target_hint() {
   return arm_compute::graph::Target::CL;
 }
@@ -109,20 +98,9 @@ inline arm_compute::graph::ConvolutionMethodHint str_to_convolution_method(const
   // Try to get convolution method as integer value.
   switch (atoi(method_name)) {
     case 0: return arm_compute::graph::ConvolutionMethodHint::GEMM;
-    case 1: arm_compute::graph::ConvolutionMethodHint::DIRECT;
+    case 1: return arm_compute::graph::ConvolutionMethodHint::DIRECT;
   }
   
-  return arm_compute::graph::ConvolutionMethodHint::GEMM;
-}
-
-inline arm_compute::graph::ConvolutionMethodHint get_convolution_method() {
-  auto method_name = getenv("CK_CONVOLUTION_METHOD");
-  if (method_name)
-    return str_to_convolution_method(method_name);
-
-  if (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST)
-    return arm_compute::graph::ConvolutionMethodHint::DIRECT;
-        
   return arm_compute::graph::ConvolutionMethodHint::GEMM;
 }
 
@@ -134,3 +112,14 @@ inline arm_compute::graph::TargetHint get_target_hint() {
   arm_compute::graph::Graph graph_var;
 
 #endif // ArmCL < 18.05
+
+inline auto get_convolution_method() -> decltype(str_to_convolution_method("")) {
+  auto method_name = getenv("CK_CONVOLUTION_METHOD");
+  if (method_name)
+    return str_to_convolution_method(method_name);
+
+  if (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST)
+    return decltype(str_to_convolution_method(""))::DIRECT;
+        
+  return decltype(str_to_convolution_method(""))::GEMM;
+}
