@@ -180,9 +180,8 @@ std::vector<int> load_convolution_methods() {
         if (index > 0 || index < convolutions_count-1)
           methods[index] = static_cast<int>(str_to_dwsc_convolution_method(s));
         else
-#else
-          methods[index] = static_cast<int>(str_to_convolution_method(s));
 #endif
+          methods[index] = static_cast<int>(str_to_convolution_method(s));
         std::cout << "    " << index << ": " << line << std::endl;
       }
       index++;

@@ -64,7 +64,7 @@ inline arm_compute::graph::DepthwiseConvolutionMethod str_to_dwsc_convolution_me
   if (strcmp(method_name, "GEMV") == 0) return arm_compute::graph::DepthwiseConvolutionMethod::GEMV;
   if (strcmp(method_name, "OPTIMIZED_3x3") == 0) return arm_compute::graph::DepthwiseConvolutionMethod::OPTIMIZED_3x3;
   // Try to get convolution method as integer value.
-  return static_cast<arm_compute::graph::DepthwiseConvolutionMethod>(atoi(method_name)+1);
+  return static_cast<arm_compute::graph::DepthwiseConvolutionMethod>(atoi(method_name));
 }
 
 inline arm_compute::graph::ConvolutionMethod str_to_convolution_method(const char *method_name) {
@@ -74,9 +74,7 @@ inline arm_compute::graph::ConvolutionMethod str_to_convolution_method(const cha
   if (strcmp(method_name, "DIRECT") == 0) return arm_compute::graph::ConvolutionMethod::DIRECT;
   if (strcmp(method_name, "WINOGRAD") == 0) return arm_compute::graph::ConvolutionMethod::WINOGRAD;
   // Try to get convolution method as integer value.
-  // ConvolutionMethod enum has additional item comparing to ConvolutionMethodHint.
-  // So we shift int value here to be consistent with old version: 0 = GEMM, 1 = DIRECT
-  return static_cast<arm_compute::graph::ConvolutionMethod>(atoi(method_name)+1);
+  return static_cast<arm_compute::graph::ConvolutionMethod>(atoi(method_name));
 }
 
 inline arm_compute::graph::ConvolutionMethod get_convolution_method() {
