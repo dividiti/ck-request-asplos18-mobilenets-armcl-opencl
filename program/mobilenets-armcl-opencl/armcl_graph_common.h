@@ -80,11 +80,13 @@ inline arm_compute::graph::ConvolutionMethod str_to_convolution_method(const cha
 
 inline arm_compute::graph::ConvolutionMethod get_convolution_method() {
   auto method_name = getenv("CK_CONVOLUTION_METHOD");
-  if (!method_name) {
-      bool bifrost_target = (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST);
-      return (bifrost_target ? arm_compute::graph::ConvolutionMethod::DIRECT : arm_compute::graph::ConvolutionMethod::GEMM);
-  }
-  return str_to_convolution_method(method_name);
+  if (method_name)
+    return str_to_convolution_method(method_name);
+
+  if (arm_compute::CLScheduler::get().target() == arm_compute::GPUTarget::BIFROST)
+    return arm_compute::graph::ConvolutionMethod::DIRECT;
+        
+  return arm_compute::graph::ConvolutionMethod::GEMM;
 }
 
 inline arm_compute::graph::Target get_target_hint() {
