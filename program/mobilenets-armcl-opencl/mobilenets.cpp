@@ -158,7 +158,7 @@ std::vector<TConvolutionMethod> load_convolution_methods(TConvolutionMethod defa
   const int convolutions_count = 15;
 
   std::vector<TConvolutionMethod> methods;
-  for (int i = 1; i < convolutions_count; i++)
+  for (int i = 0; i < convolutions_count; i++)
     methods.push_back(defaut_method);
 
   auto filename = get_convolution_methods_file();
