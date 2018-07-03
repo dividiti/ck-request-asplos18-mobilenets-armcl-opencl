@@ -12,7 +12,9 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 
 * [ACM paper](https://doi.org/10.1145/3229762.3229767)
 * [ACM artifact](https://doi.org/10.1145/3229773)
-* [Zenodo artifact (previous version)](https://doi.org/10.5281/zenodo.1203659)
+* [Zenodo artifact](https://doi.org/10.5281/zenodo.1203659) (previous version)
+
+* [Jupyter notebook](https://nbviewer.jupyter.org/urls/dl.dropbox.com/s/6sh7h4sbkdwobwx/ck-request-asplos18-mobilenets-armcl-opencl-analysis.ipynb) ([snapshot from 3 July 2018](https://github.com/dividiti/ck-request-asplos18-mobilenets-armcl-opencl/commit/886ee8da458f36617258fd72405d3687b15c77dc))
 
 * [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
 
