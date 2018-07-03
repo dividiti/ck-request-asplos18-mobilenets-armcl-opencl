@@ -21,7 +21,7 @@ request_dict={
 }
 
 # Platform tag: 'hikey-960', 'firefly-rk3399', etc.
-platform_tags='firefly-rk3399'
+platform_tags='hikey-960'
 
 # Batch size.
 bs={
@@ -91,7 +91,7 @@ def do(i, arg):
         use_lib_tags = [ 'request-d8f69c13' ]
         ch['start'] = 1
     else:
-        use_lib_tags = [ 'request-d8f69c13', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
+        use_lib_tags = [ 'request-d8f69c13', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
     # On Firefly-RK3399, the version hash has only 7 characters, not 8.
     if platform_tags=='firefly-rk3399':
         use_lib_tags = [ tag[:-1] for tag in use_lib_tags ]
@@ -226,6 +226,8 @@ def do(i, arg):
         # Skip some libs with "in [..]" or "not in [..]".
         if arg.accuracy and lib_tags not in use_lib_tags: continue
         skip_compile='no'
+        # Adjust the last convolution method depending on the library. (Only 18.05 supports Winograd convolutions.)
+        ch['stop']=2 if lib_tags=='18.05-b3a371bc' else 1
         # For each MobileNets model.*************************************************
         for model_uoa in udepm:
             # Load model.
@@ -242,6 +244,7 @@ def do(i, arg):
             rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
             record_repo='local'
             record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-armcl-opencl-'+lib_tags
+
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
