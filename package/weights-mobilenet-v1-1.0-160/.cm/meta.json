@@ -20,9 +20,7 @@
       "tags": "lib,tensorflow"
     }
   }, 
-  "end_full_path": {
-    "linux": "mobilenet_v1_1.0_160.ckpt.index"
-  }, 
+  "end_full_path_universal": "mobilenet_v1_1.0_160.ckpt.index",
   "process_script": "install", 
   "soft_uoa": "50b442db9bde0a0c", 
   "suggested_path": "weights-mobilenet-v1_1.0_160", 

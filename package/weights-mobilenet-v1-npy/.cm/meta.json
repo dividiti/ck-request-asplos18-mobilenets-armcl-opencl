@@ -102,9 +102,7 @@
       "sort": 15
     }
   },
-  "end_full_path": {
-    "linux": "README.md"
-  },
+  "end_full_path_universal": "README.md",
   "process_script": "install",
   "soft_uoa": "50b442db9bde0a0c",
   "suggested_path": "weights-mobilenet-v1-npy",

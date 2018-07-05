@@ -17,9 +17,7 @@
     "no_ver_in_suggested_path": "yes",
     "version": "1_0.75_160"
   },
-  "end_full_path": {
-    "linux": "Conv2d_0_BatchNorm_beta.npy"
-  },
+  "end_full_path_universal": "Conv2d_0_BatchNorm_beta.npy",
   "process_script": "install",
   "soft_uoa": "50b442db9bde0a0c",
   "suggested_path": "weights-mobilenet-v1_0.75_160-npy",
