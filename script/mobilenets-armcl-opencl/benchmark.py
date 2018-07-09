@@ -31,7 +31,7 @@ bs={
   'default':1
 }
 
-# ConvolutionMethodHint: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
+# ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
 ch={
   'start':0,
   'stop':1,
@@ -312,7 +312,7 @@ def do(i, arg):
                        '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
-                       '##choices#env#CK_CONVOLUTION_METHOD_HINT'
+                       '##choices#env#CK_CONVOLUTION_METHOD'
                    ],
                    [
                        '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
