@@ -31,7 +31,8 @@ bs={
   'default':1
 }
 
-# ConvolutionMethodHint: 0 - GEMM, 1 - DIRECT.
+# ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
+# NB: Assume TensorFlow only supports DIRECT.
 ch={
   'start':1,
   'stop':1,
@@ -304,7 +305,7 @@ def do(i, arg):
                        '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
-                       '##choices#env#CK_CONVOLUTION_METHOD_HINT'
+                       '##choices#env#CK_CONVOLUTION_METHOD'
                    ],
                    [
                        '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'
