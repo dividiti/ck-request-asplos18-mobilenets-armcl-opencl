@@ -88,10 +88,10 @@ def do(i, arg):
 
     # Restrict accuracy testing to the ReQuEST fork of ArmCL and direct convolution for large datasets.
     if arg.accuracy and batch_count > 500:
-        use_lib_tags = [ 'request-d8f69c13' ]
+        use_lib_tags = [ 'request-d8f69c13', '18.05-0acd60ed-request' ]
         ch['start'] = 1
     else:
-        use_lib_tags = [ 'request-d8f69c13', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
+        use_lib_tags = [ 'request-d8f69c13', '18.05-0acd60ed-request', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
     # On Firefly-RK3399, the version hash has only 7 characters, not 8.
     if platform_tags=='firefly-rk3399':
         use_lib_tags = [ tag[:-1] for tag in use_lib_tags ]
