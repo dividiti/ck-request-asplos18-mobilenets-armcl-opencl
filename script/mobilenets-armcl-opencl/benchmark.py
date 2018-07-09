@@ -32,6 +32,7 @@ bs={
 }
 
 # ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
+# NB: WINOGRAD does not support 1x1 convolutions used in MobileNets.
 ch={
   'start':0,
   'stop':1,
@@ -226,8 +227,6 @@ def do(i, arg):
         # Skip some libs with "in [..]" or "not in [..]".
         if arg.accuracy and lib_tags not in use_lib_tags: continue
         skip_compile='no'
-        # Adjust the last convolution method depending on the library. (Only 18.05 supports Winograd convolutions.)
-        ch['stop']=2 if lib_tags=='18.05-b3a371bc' else 1
         # For each MobileNets model.*************************************************
         for model_uoa in udepm:
             # Load model.
