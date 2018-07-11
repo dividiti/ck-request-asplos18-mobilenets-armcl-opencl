@@ -42,14 +42,16 @@
   "compiler_env": "CK_CXX",
   "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_CPP11>>$ -Wno-ignored-attributes",
   "data_name": "mobilenets-armcl-opencl",
-  "linker_add_lib_as_env": [
-    "CK_CXX_EXTRA",
-    "CK_ENV_LIB_STDCPP_STATIC"
-  ],
+  "extra_ld_vars": "$<<CK_ENV_LIB_STDCPP_DYNAMIC>>$",
   "main_language": "cpp",
   "only_for_target_os_tags": [
+    "android",
     "linux"
   ],
+  "print_files_after_run": [
+    "tmp-stdout.tmp",
+    "tmp-stderr.tmp"
+  ], 
   "process_in_tmp": "yes",
   "program": "yes",
   "run_cmds": {
@@ -58,36 +60,41 @@
       "run_time": {
         "output_invariant_of_repeat": "yes",
         "fine_grain_timer_file": "tmp-ck-timer.json",
-        "run_cmd_out1": "tmp-stdout.tmp", 
-        "run_cmd_out2": "tmp-stderr.tmp", 
         "need_compute_device": "opencl",
-        "pre_process_via_ck": {
-          "script_name": "preprocess"
-        },
         "post_process_via_ck": "yes",
         "post_process_cmds": [
-          "python $#src_path_local#$postprocess.py"
+          "python $#ck_take_from_{script:689867d1939a781d}#$postprocess.py"
         ],
+        "pre_process_via_ck": {
+          "module_uoa": "script",
+          "data_uoa": "689867d1939a781d",
+          "script_name": "preprocess"
+        },
         "run_cmd_main": "$#BIN_FILE#$",
+        "run_cmd_out1": "tmp-stdout.tmp",
+        "run_cmd_out2": "tmp-stderr.tmp",
         "run_output_files": [
-          "tmp-ck-timer.json"
+          "tmp-ck-timer.json",
+          "tmp-stdout.tmp",
+          "tmp-stderr.tmp"
         ]
       }
     }
   },
   "run_vars": {
-    "CK_IMAGE_FILE": "",
-    "CK_IMAGE_LIST": "../images",
-    "CK_BATCH_LIST": "../batches",
-    "CK_BATCHES_DIR": "../batches",
-    "CK_RESULTS_DIR": "predictions",
     "CK_BATCH_COUNT": 1,
     "CK_BATCH_SIZE": 1,
+    "CK_CROP_PERCENT": 87.5, 
+    "CK_IMAGE_FILE": "",
+    "CK_RECREATE_CACHE": "NO", 
     "CK_SKIP_IMAGES": 0,
-    "CK_PREPARE_ALWAYS": "NO"
+    "CK_NORMALIZE_DATA": "YES",
+    "CK_SUBTRACT_MEAN": "YES",
+    "CK_TMP_IMAGE_SIZE": 0
   },
   "run_deps": {
     "weights": {
+      "force_target_as_host": "yes",
       "local": "yes",
       "name": "MobileNet weights (as NumPy arrays)",
       "sort": 10,
@@ -95,12 +102,14 @@
       "no_tags": "mobilenet-all"
     },
     "imagenet-aux": {
+      "force_target_as_host": "yes",
       "local": "yes",
       "name": "ImageNet dataset (aux)",
       "sort": 20,
       "tags": "dataset,imagenet,aux"
     },
     "imagenet-val": {
+      "force_target_as_host": "yes",
       "local": "yes",
       "name": "ImageNet dataset (val)",
       "sort": 30,
@@ -110,7 +119,7 @@
   "skip_bin_ext": "yes",
   "source_files": [
     "benchmark.cpp",
-    "mobilenets.cpp",
+    "mobilenet.cpp",
     "$<<CK_ENV_LIB_ARMCL_UTILS>>$/GraphUtils.cpp",
     "$<<CK_ENV_LIB_ARMCL_UTILS>>$/Utils.cpp"
   ],
