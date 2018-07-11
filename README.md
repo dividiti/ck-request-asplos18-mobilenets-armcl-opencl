@@ -148,6 +148,17 @@ $ ck install ck-math:package:lib-armcl-opencl-17.12 --env.USE_GRAPH=ON --env.USE
 
 **NB:** It is necessary to specify `--env.USE_GRAPH=ON --env.USE_NEON=ON` for the official release packages (from `repo:ck-math`), but not for `package:lib-armcl-opencl-request`.
 
+To build this program for Android you need to embedd kernels and select target API as follows:
+```
+$ ck install ck-math:package:lib-armcl-opencl-18.05 --env.USE_GRAPH=ON --env.USE_NEON=ON --env.USE_EMBEDDED_KERNELS=ON --env.DEBUG=ON --target_os=android23-arm64
+```
+We have to embed kernels when building for Android as OpenCL kernel files are not copied to a remote device.
+
+**NB:** Use `--target_os=android23-arm64` to build for Android API 23 (v6.0 "Marshmallow") or [similar](https://source.android.com/setup/start/build-numbers).
+
+**TODO:** For some reason only debug version of the library can be used with this program on Android. When we use release version, the program gets stuck at graph preparation stage.
+
+
 To check all the installed ArmCL variants:
 ```
 $ ck show env --tags=armcl

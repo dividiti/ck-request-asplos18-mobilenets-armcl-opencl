@@ -24,25 +24,7 @@ We have to embed kernels when building for Android as OpenCL kernel files are no
 ### Weights package
 One of MobileNet weights packages:
 ```
-ck install package:weights-mobilenet-v1-1.0-224-npy
-ck install package:weights-mobilenet-v1-0.75-224-npy
-ck install package:weights-mobilenet-v1-0.50-224-npy
-ck install package:weights-mobilenet-v1-0.25-224-npy
-
-ck install package:weights-mobilenet-v1-1.0-192-npy
-ck install package:weights-mobilenet-v1-0.75-192-npy
-ck install package:weights-mobilenet-v1-0.50-192-npy
-ck install package:weights-mobilenet-v1-0.25-192-npy
-
-ck install package:weights-mobilenet-v1-1.0-160-npy
-ck install package:weights-mobilenet-v1-0.75-160-npy
-ck install package:weights-mobilenet-v1-0.50-160-npy
-ck install package:weights-mobilenet-v1-0.25-160-npy
-
-ck install package:weights-mobilenet-v1-1.0-128-npy
-ck install package:weights-mobilenet-v1-0.75-128-npy
-ck install package:weights-mobilenet-v1-0.50-128-npy
-ck install package:weights-mobilenet-v1-0.25-128-npy
+ck install package --tags=mobilenet,weights,npy
 ```
 
 ### ImageNet dataset
