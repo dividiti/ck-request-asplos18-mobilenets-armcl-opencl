@@ -69,7 +69,7 @@ public:
     const size_t num_classes = tensor.info()->dimension(0);
     float* probes = reinterpret_cast<float*>(tensor.buffer() + tensor.info()->offset_first_element_in_bytes());
     std::copy(probes, probes + num_classes, _buffer);
-    return true;
+    return false;
   }
 
 private:
