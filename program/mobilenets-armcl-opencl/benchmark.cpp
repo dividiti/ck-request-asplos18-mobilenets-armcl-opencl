@@ -26,7 +26,10 @@ int main(int argc, const char **argv)
     try
     {
         init_benchmark();
-        init_armcl();
+
+        auto tuner_type = get_lws_tuner_type();
+        auto tuner = get_lws_tuner(tuner_type);
+        init_armcl(tuner.get());
         
         BenchmarkSettings settings;
         if (settings.batch_size != 1)
@@ -47,6 +50,12 @@ int main(int argc, const char **argv)
         measure_setup([&]
         {
             setup_mobilenet(graph, resolution, multiplier, settings.graph_file, input.data(), probes.data());
+
+          // Do a warm up run for dynamic tuners (i.e. first tune here, then measure the best configuration later).
+          if (tuner_type == CL_TUNER_DEFAULT) {
+            graph.run(); // Input buffer allocated but filled with a trash, it doesn't matter for the first run
+            arm_compute::CLScheduler::get().sync(); // Ensure that all OpenCL jobs have completed.
+          }
         });
 
         cout << "\nProcessing batches..." << endl;
