@@ -66,6 +66,42 @@ def select_program():
     return {'return': 1, 'error': 'No related programs found'}
 
 
+def get_ImageNet_path(dataset_env):
+    return dataset_env['meta']['env']['CK_ENV_DATASET_IMAGENET_VAL']
+
+
+def select_ImageNet():
+    res = ck.access({'action':'show',
+                     'module_uoa':'env',
+                     'tags':'dataset,imagenet,raw,val'})
+    if res['return'] > 0:
+        return res
+    datasets = res.get('lst',[])
+    if datasets:
+        if len(datasets) == 1:
+            return {'return': 0, 'dataset': datasets[0]}
+
+        ck.out('')
+        ck.out('More than one ImageNet dataset is found suitable for this script:')
+        ck.out('')
+        dataset_choices = []
+        for d in datasets:
+            dataset_choices.append({
+                'data_uid': d['data_uid'],
+                'data_uoa': get_ImageNet_path(d)
+            })
+        res = ck.access({'action': 'select_uoa',
+                        'module_uoa': 'choice',
+                        'choices': dataset_choices})
+        if res['return'] > 0:
+            return res
+        for d in datasets:
+            if d['data_uid'] == res['choice']:
+                return {'return': 0, 'dataset': d}
+
+    return {'return': 1, 'error': 'No installed ImageNet dataset found'}
+
+
 def do(i, arg):
     # Process arguments.
     if (arg.accuracy):
@@ -100,16 +136,15 @@ def do(i, arg):
     r = select_program()
     if r['return'] > 0: return r
     program = r['program']
-    # `lib_type` is used to distinguish result repo records
+    # `lib_type` is used to distinguish result repo records: tf-py, tf-cpp, tflite
     lib_type = program[len('image-classification-'):]
 
-    ii={'action':'show',
-        'module_uoa':'env',
-        'tags':'dataset,imagenet,raw,val'}
-    rx=ck.access(ii)
-    if len(rx['lst']) == 0: return rx
-    # FIXME: It's probably better to use CK_ENV_DATASET_IMAGE_DIR.
-    img_dir_val = rx['lst'][0]['meta']['env']['CK_CAFFE_IMAGENET_VAL']
+    # Select ImageNet dataset
+    r = select_ImageNet()
+    if r['return'] > 0: return r
+    img_dir_val = get_ImageNet_path(r['dataset'])
+    print('ImageNet path: ' + img_dir_val)
+    #raw_input('Press something')
 
     if (arg.accuracy):
         # Use as many batches (of size 1), as there are JPEG images in the directory.
@@ -205,9 +240,6 @@ def do(i, arg):
         'env':{
           'CK_ENV_DATASET_IMAGENET_VAL':img_dir_val,
           'CK_BATCH_COUNT':batch_count,
-          'CK_BATCHES_DIR':'../batches',
-          'CK_BATCH_LIST':'../batches',
-          'CK_IMAGE_LIST':'../images',
           'CK_RESULTS_DIR':'predictions',
           'CK_SKIP_IMAGES':0
         },
@@ -243,6 +275,11 @@ def do(i, arg):
     if 'fail' in r: del(r['fail'])
     if 'return' in r: del(r['return'])
 
+    experiment_count = 0
+
+    def get_obj_str(obj):
+        return json.dumps(obj, indent=2)
+
     pipeline=copy.deepcopy(r)
     # For each TensorFlow lib.*************************************************
     for lib_uoa in udepl:
@@ -276,15 +313,27 @@ def do(i, arg):
 
             alpha=float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
             rho=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
+            ver=r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION']
 
             record_repo='local'
-            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-'+lib_tags
+            record_uoa='{}-mobilenet-v{}-{}-{}-{}'.format(experiment_type, ver, alpha, rho, lib_tags)
+
+            # Check if experiment already exists and skip it
+            if arg.resume:
+                r = ck.access({'action':'search',
+                               'module_uoa':'experiment',
+                               'repo_uoa':record_repo,
+                               'data_uoa':record_uoa})
+                if r['return']>0: return r
+                if len(r['lst']) > 0:
+                    ck.out('Experiment "%s" already exists, skip it.' % record_uoa)
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
             ck.out('%s - %s' % (lib_name, lib_uoa))
             ck.out('%s - %s' % (model_name, model_uoa))
             ck.out('Experiment - %s:%s' % (record_repo, record_uoa))
+            experiment_count += 1
 
             # Prepare autotuning input.
             cpipeline=copy.deepcopy(pipeline)
@@ -391,6 +440,11 @@ def do(i, arg):
                 if fail=='yes':
                     return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
 
+    if arg.dry_run:
+        ck.out('---------------------------------------------------------------------------------------')
+        ck.out('Experiment count: %d' % experiment_count)
+
+
 ### end pipeline
     return {'return':0}
 
@@ -403,6 +457,7 @@ parser.add_argument("--repetitions", action="store", default=10, dest="repetitio
 parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 parser.add_argument("--dry_run", action="store_true", default=False, dest="dry_run")
+parser.add_argument("--resume", action="store_true", default=False, dest="resume")
 
 myarg=parser.parse_args()
 
