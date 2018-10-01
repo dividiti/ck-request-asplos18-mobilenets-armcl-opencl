@@ -1,9 +1,11 @@
 #! /usr/bin/python
+
 import ck.kernel as ck
 import copy
 import re
 import argparse,json
 import os
+import sys
 
 # ReQuEST description.
 request_dict={
@@ -68,7 +70,6 @@ def select_program():
 
 def get_ImageNet_path(dataset_env):
     return dataset_env['meta']['env']['CK_ENV_DATASET_IMAGENET_VAL']
-
 
 def select_ImageNet():
     res = ck.access({'action':'show',
@@ -142,9 +143,9 @@ def do(i, arg):
     # Select ImageNet dataset
     r = select_ImageNet()
     if r['return'] > 0: return r
-    img_dir_val = get_ImageNet_path(r['dataset'])
+    imagenet_val = r['dataset']
+    img_dir_val = get_ImageNet_path(imagenet_val)
     print('ImageNet path: ' + img_dir_val)
-    #raw_input('Press something')
 
     if (arg.accuracy):
         # Use as many batches (of size 1), as there are JPEG images in the directory.
@@ -159,7 +160,9 @@ def do(i, arg):
         'tags':'dataset,imagenet,aux'}
     rx=ck.access(ii)
     if len(rx['lst']) == 0: return rx
-    img_dir_aux = rx['lst'][0]['meta']['env']['CK_ENV_DATASET_IMAGENET_AUX']
+    imagenet_aux = rx['lst'][0]
+    img_dir_aux = imagenet_aux['meta']['env']['CK_ENV_DATASET_IMAGENET_AUX']
+    
     ii={'action':'load',
         'module_uoa':'program',
         'data_uoa':program}
@@ -222,6 +225,23 @@ def do(i, arg):
 
     cdeps[library_key]['uoa']=udepl[0]
     cdeps['weights']['uoa']=udepm[0]
+    cdeps['imagenet-val']['uoa']=imagenet_val['data_uoa']
+    cdeps['imagenet-aux']['uoa']=imagenet_aux['data_uoa']
+
+    env = {
+        'CK_ENV_DATASET_IMAGENET_VAL':img_dir_val,
+        'CK_BATCH_COUNT':batch_count,
+        'CK_RESULTS_DIR':'predictions',
+        'CK_SKIP_IMAGES':0
+    }
+
+    if arg.accuracy:
+        env['CK_SILENT_MODE']='YES'
+
+    # Pass additional env vars from input
+    if 'env' in i:
+        for key in i['env']:
+            env[key] = i['env'][key]
 
     ii={'action':'pipeline',
         'prepare':'yes',
@@ -237,12 +257,7 @@ def do(i, arg):
         'no_compiler_description':'yes',
         'skip_calibration':'yes',
 
-        'env':{
-          'CK_ENV_DATASET_IMAGENET_VAL':img_dir_val,
-          'CK_BATCH_COUNT':batch_count,
-          'CK_RESULTS_DIR':'predictions',
-          'CK_SKIP_IMAGES':0
-        },
+        'env':env,
 
         'cpu_freq':'max',
         'gpu_freq':'max',
@@ -277,9 +292,6 @@ def do(i, arg):
 
     experiment_count = 0
 
-    def get_obj_str(obj):
-        return json.dumps(obj, indent=2)
-
     pipeline=copy.deepcopy(r)
     # For each TensorFlow lib.*************************************************
     for lib_uoa in udepl:
@@ -292,10 +304,15 @@ def do(i, arg):
         lib_name=r['data_name']
         lib_tags=lib_type+'-'+r['dict']['customize']['version']
 
+        # Skip other libraries if there is specified one
+        if arg.library_uoa and lib_uoa != arg.library_uoa: continue
+
         # Skip some libs with "in [..]" or "not in [..]".
         if lib_uoa in [ ]: continue
+        
         # Skip XLA libs.
-        if arg.accuracy and r['dict']['customize']['install_env']['CK_TF_ENABLE_XLA']=='YES': continue
+        if arg.accuracy and r['dict']['customize']['install_env'].get('CK_TF_ENABLE_XLA')=='YES': continue
+
         skip_compile='no'
         # For each TensorFlow model.*************************************************
         for model_uoa in udepm:
@@ -327,6 +344,7 @@ def do(i, arg):
                 if r['return']>0: return r
                 if len(r['lst']) > 0:
                     ck.out('Experiment "%s" already exists, skip it.' % record_uoa)
+                    continue
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
@@ -449,6 +467,21 @@ def do(i, arg):
     return {'return':0}
 
 ##############################################################################################
+
+# Extract `--env.VAR=VALUE` arguments from command line and pass them separately
+args = copy.deepcopy(sys.argv)
+env_vars = {}
+sys.argv = []
+for arg in args:
+    print(arg)
+    if arg.startswith('--env.'):
+        key_value = arg.split('=')
+        key = key_value[0][6:]
+        value = key_value[1] if len(key_value) > 1 else ''
+        env_vars[key] = value
+    else:
+        sys.argv.append(arg)
+
 parser = argparse.ArgumentParser(description='Pipeline')
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
@@ -458,8 +491,12 @@ parser.add_argument("--random_name", action="store_true", default=False, dest="r
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 parser.add_argument("--dry_run", action="store_true", default=False, dest="dry_run")
 parser.add_argument("--resume", action="store_true", default=False, dest="resume")
+parser.add_argument("--library_uoa", action="store", default='', dest="library_uoa")
 
 myarg=parser.parse_args()
 
-r=do({}, myarg)
+i = {
+    'env': env_vars
+}
+r=do(i, myarg)
 if r['return']>0: ck.err(r)
