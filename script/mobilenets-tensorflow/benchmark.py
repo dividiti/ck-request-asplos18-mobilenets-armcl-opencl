@@ -23,7 +23,7 @@ request_dict={
 }
 
 # Platform tag.
-platform_tags='firefly-rk3399'
+platform_tags='huawei-mate10pro'
 
 # Batch size.
 bs={
@@ -35,7 +35,7 @@ bs={
 
 # ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
 # NB: Assume TensorFlow only supports DIRECT.
-ch={
+cm={
   'start':1,
   'stop':1,
   'step':1,
@@ -422,7 +422,7 @@ def do(i, arg):
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                   {'type':'loop', 'start':ch['start'], 'stop':ch['stop'], 'step':ch['step'], 'default':ch['default']},
+                   {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],

@@ -20,8 +20,8 @@ request_dict={
   'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
 
-# Platform tag: 'hikey-960', 'firefly-rk3399', etc.
-platform_tags='hikey-960'
+# Platform tag: 'huawei-mate10pro', 'linaro-hikey960', 'firefly-rk3399', etc.
+platform_tags='huawei-mate10pro'
 
 # Batch size.
 bs={
@@ -33,7 +33,7 @@ bs={
 
 # ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
 # NB: WINOGRAD does not support 1x1 convolutions used in MobileNets.
-ch={
+cm={
   'start':0,
   'stop':1,
   'step':1,
@@ -318,7 +318,7 @@ def do(i, arg):
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                   {'type':'loop', 'start':ch['start'], 'stop':ch['stop'], 'step':ch['step'], 'default':ch['default']},
+                   {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],
