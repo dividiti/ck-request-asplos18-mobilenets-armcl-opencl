@@ -409,10 +409,10 @@ def do(i, arg):
                'data_uoa':'program',
                'choices_order':[
                    [
-                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION'
+                       '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
-                       '##choices#env#CK_CONVOLUTION_METHOD'
+                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION'
                    ],
                    [
                        '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'
@@ -422,8 +422,8 @@ def do(i, arg):
                    ]
                ],
                'choices_selection':[
+                   {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
                    {'type':'loop', 'choice': [mobilenet_ver], 'default': mobilenet_ver},
-                   {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],
