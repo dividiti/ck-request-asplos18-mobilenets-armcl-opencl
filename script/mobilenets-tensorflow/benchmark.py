@@ -330,10 +330,10 @@ def do(i, arg):
 
             alpha=float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
             rho=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
-            ver=r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION']
+            mobilenet_ver=r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION']
 
             record_repo='local'
-            record_uoa='{}-mobilenet-v{}-{}-{}-{}'.format(experiment_type, ver, alpha, rho, lib_tags)
+            record_uoa='{}-mobilenet-v{}-{}-{}-{}'.format(experiment_type, mobilenet_ver, alpha, rho, lib_tags)
 
             # Check if experiment already exists and skip it
             if arg.resume:
@@ -402,13 +402,14 @@ def do(i, arg):
             tags.append(platform_tags)
             tags.append(str(rho))
             tags.append(str(alpha))
+            tags.append('mobilenet-v{}'.format(mobilenet_ver))
 
             ii={'action':'autotune',
                'module_uoa':'pipeline',
                'data_uoa':'program',
                'choices_order':[
                    [
-                       '##choices#env#CK_BATCH_SIZE'
+                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION'
                    ],
                    [
                        '##choices#env#CK_CONVOLUTION_METHOD'
@@ -421,7 +422,7 @@ def do(i, arg):
                    ]
                ],
                'choices_selection':[
-                   {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
+                   {'type':'loop', 'choice': [mobilenet_ver], 'default': mobilenet_ver},
                    {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
