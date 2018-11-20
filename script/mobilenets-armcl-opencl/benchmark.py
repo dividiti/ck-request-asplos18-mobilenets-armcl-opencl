@@ -238,7 +238,7 @@ def do(i, arg):
             alpha = float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
             rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
             record_repo='local'
-            record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-armcl-opencl-'+lib_tags
+            record_uoa=experiment_type+'-mobilenet-v1-'+str(alpha)+'-'+str(rho)+'-armcl-opencl-'+lib_tags
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
