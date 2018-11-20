@@ -92,7 +92,7 @@ def do(i, arg):
         use_lib_tags = [ 'request-d8f69c13', '18.05-0acd60ed-request' ]
         ch['start'] = 1
     else:
-        use_lib_tags = [ 'request-d8f69c13', '18.05-0acd60ed-request', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
+        use_lib_tags = [ 'request-d8f69c13', '18.08-52ba29e9', '18.05-0acd60ed-request', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
     # On Firefly-RK3399, the version hash has only 7 characters, not 8.
     if platform_tags=='firefly-rk3399':
         use_lib_tags = [ tag[:-1] for tag in use_lib_tags ]
@@ -240,7 +240,6 @@ def do(i, arg):
             record_repo='local'
             record_uoa='mobilenets-'+experiment_type+'-'+str(rho)+'-'+str(alpha)+'-armcl-opencl-'+lib_tags
 
-
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
             ck.out('%s - %s' % (lib_name, lib_uoa))
@@ -310,6 +309,9 @@ def do(i, arg):
                        '##choices#env#CK_CONVOLUTION_METHOD'
                    ],
                    [
+                       '##choices#env#CK_DATA_LAYOUT'
+                   ],
+                   [
                        '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
                    ],
                    [
@@ -319,6 +321,7 @@ def do(i, arg):
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
                    {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
+                   {'type':'loop', 'choice': ['NCHW', 'NHWC'], 'default': 'NCHW'},
                    {'type':'loop', 'choice': [rho], 'default': 224},
                    {'type':'loop', 'choice': [alpha], 'default': 1.0},
                ],
