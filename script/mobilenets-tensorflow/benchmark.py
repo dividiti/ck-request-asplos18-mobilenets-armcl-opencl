@@ -23,19 +23,10 @@ request_dict={
 }
 
 # Platform tag.
-platform_tags='huawei-mate10pro'
+platform_tags='linaro-hikey960'
 
 # Batch size.
 bs={
-  'start':1,
-  'stop':1,
-  'step':1,
-  'default':1
-}
-
-# ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
-# NB: Assume TensorFlow only supports DIRECT.
-cm={
   'start':1,
   'stop':1,
   'step':1,
@@ -328,12 +319,12 @@ def do(i, arg):
             # Skip aggregate MobileNets packages.
             if 'mobilenet-all' in r['dict']['tags']: continue
 
-            alpha=float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
-            rho=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
-            mobilenet_ver=r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION']
+            version=r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION']
+            multiplier=float(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'])
+            resolution=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
 
             record_repo='local'
-            record_uoa='{}-mobilenet-v{}-{}-{}-{}'.format(experiment_type, mobilenet_ver, alpha, rho, lib_tags)
+            record_uoa='{}-mobilenet-v{}-{}-{}-{}'.format(experiment_type, version, multiplier, resolution, lib_tags)
 
             # Check if experiment already exists and skip it
             if arg.resume:
@@ -400,9 +391,9 @@ def do(i, arg):
             tags.append('explore-mobilenets-'+experiment_type)
             tags.append(lib_tags)
             tags.append(platform_tags)
-            tags.append(str(rho))
-            tags.append(str(alpha))
-            tags.append('mobilenet-v{}'.format(mobilenet_ver))
+            tags.append(str(resolution))
+            tags.append(str(multiplier))
+            tags.append('mobilenet-v{}'.format(version))
 
             ii={'action':'autotune',
                'module_uoa':'pipeline',
@@ -423,9 +414,9 @@ def do(i, arg):
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                   {'type':'loop', 'choice': [mobilenet_ver], 'default': mobilenet_ver},
-                   {'type':'loop', 'choice': [rho], 'default': 224},
-                   {'type':'loop', 'choice': [alpha], 'default': 1.0},
+                   {'type':'loop', 'choice': [version], 'default': version},
+                   {'type':'loop', 'choice': [multiplier], 'default': 1.0},
+                   {'type':'loop', 'choice': [resolution], 'default': 224},
                ],
 
                'features_keys_to_process':['##choices#*'],
