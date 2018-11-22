@@ -6,6 +6,7 @@ import re
 import argparse,json
 import os
 import sys
+#from pprint import pprint
 
 # ReQuEST description.
 request_dict={
@@ -22,8 +23,27 @@ request_dict={
   'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
 
-# Platform tag.
-platform_tags='linaro-hikey960'
+# Some tested experimental platforms.
+platform_config={
+  "HiKey960\x00": {
+    "name":     "Linaro HiKey960",
+    "id":       "linaro-hikey960",
+    "gpu":      "Mali-G71 MP8",
+    "gpu_mhz":  "807 MHz"
+  },
+  "Rockchip RK3399 Firefly Board (Linux Opensource)\u0000": {
+    "name":     "Firefly RK3399",
+    "id":       "firefly-rk3399",
+    "gpu":      "Mali-T860 MP4",
+    "gpu_mhz":  "800 MHz"
+  },
+  "BLA-L09": {
+    "name":     "Huawei Mate 10 Pro",
+    "id":       "huawei-mate10pro",
+    "gpu":      "Mali-G72 MP12",
+    "gpu_mhz":  "767 MHz"
+  }
+}
 
 # Batch size.
 bs={
@@ -124,14 +144,17 @@ def do(i, arg):
     tosd=r['os_dict']
     tdid=r['device_id']
 
-    # Select program `image-classification-tf*`
+    # Determine platform tags: if one of the known platforms, use its id; otherwise, 'unknown-platform'.
+    platform_tags=platform_config.get(r['features']['platform']['model'], {'id':'unknown-platform'})['id']
+
+    # Select program `image-classification-tf*`.
     r = select_program()
     if r['return'] > 0: return r
     program = r['program']
     # `lib_type` is used to distinguish result repo records: tf-py, tf-cpp, tflite
     lib_type = program[len('image-classification-'):]
 
-    # Select ImageNet dataset
+    # Select ImageNet dataset.
     r = select_ImageNet()
     if r['return'] > 0: return r
     imagenet_val = r['dataset']
@@ -324,9 +347,9 @@ def do(i, arg):
             resolution=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
 
             record_repo='local'
-            record_uoa='{}-mobilenet-v{}-{}-{}-{}'.format(experiment_type, version, multiplier, resolution, lib_tags)
+            record_uoa='{}-{}-{}-mobilenet-v{}-{}-{}'.format(experiment_type, platform_tags, lib_tags, version, multiplier, resolution)
 
-            # Check if experiment already exists and skip it
+            # Skip the experiment if it already exists.
             if arg.resume:
                 r = ck.access({'action':'search',
                                'module_uoa':'experiment',
@@ -334,7 +357,7 @@ def do(i, arg):
                                'data_uoa':record_uoa})
                 if r['return']>0: return r
                 if len(r['lst']) > 0:
-                    ck.out('Experiment "%s" already exists, skip it.' % record_uoa)
+                    ck.out('Experiment "%s" already exists, skipping...' % record_uoa)
                     continue
 
             # Prepare pipeline.
@@ -394,6 +417,7 @@ def do(i, arg):
             tags.append(str(resolution))
             tags.append(str(multiplier))
             tags.append('mobilenet-v{}'.format(version))
+            tags.append('mobilenet-v{}-{}-{}'.format(version, multiplier, resolution))
 
             ii={'action':'autotune',
                'module_uoa':'pipeline',
@@ -453,7 +477,6 @@ def do(i, arg):
     if arg.dry_run:
         ck.out('---------------------------------------------------------------------------------------')
         ck.out('Experiment count: %d' % experiment_count)
-
 
 ### end pipeline
     return {'return':0}
