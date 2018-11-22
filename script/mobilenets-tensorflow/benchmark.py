@@ -347,7 +347,7 @@ def do(i, arg):
             resolution=int(r['dict']['env']['CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'])
 
             record_repo='local'
-            record_uoa='{}-{}-{}-mobilenet-v{}-{}-{}'.format(experiment_type, platform_tags, lib_tags, version, multiplier, resolution)
+            record_uoa='{}-{}-{}-mobilenet-v{}-{:.2f}-{}'.format(experiment_type, platform_tags, lib_tags, version, multiplier, resolution)
 
             # Skip the experiment if it already exists.
             if arg.resume:
