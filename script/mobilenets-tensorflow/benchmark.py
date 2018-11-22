@@ -31,7 +31,7 @@ platform_config={
     "gpu":      "Mali-G71 MP8",
     "gpu_mhz":  "807 MHz"
   },
-  "Rockchip RK3399 Firefly Board (Linux Opensource)\u0000": {
+  "Rockchip RK3399 Firefly Board (Linux Opensource)\x00": {
     "name":     "Firefly RK3399",
     "id":       "firefly-rk3399",
     "gpu":      "Mali-T860 MP4",
