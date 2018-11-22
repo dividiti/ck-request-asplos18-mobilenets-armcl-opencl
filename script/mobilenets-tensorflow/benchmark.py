@@ -417,7 +417,7 @@ def do(i, arg):
             tags.append(str(resolution))
             tags.append(str(multiplier))
             tags.append('mobilenet-v{}'.format(version))
-            tags.append('mobilenet-v{}-{}-{}'.format(version, multiplier, resolution))
+            tags.append('mobilenet-v{}-{:.2f}-{}'.format(version, multiplier, resolution))
 
             ii={'action':'autotune',
                'module_uoa':'pipeline',
@@ -430,11 +430,11 @@ def do(i, arg):
                        '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_VERSION'
                    ],
                    [
-                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'
+                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'
                    ],
                    [
-                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_MULTIPLIER'
-                   ]
+                       '##choices#env#CK_ENV_TENSORFLOW_MODEL_MOBILENET_RESOLUTION'
+                   ],
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
