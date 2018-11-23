@@ -147,7 +147,7 @@ def do(i, arg):
     # Determine platform tags: if one of the known platforms, use its id; otherwise, 'unknown-platform'.
     platform_tags=platform_config.get(r['features']['platform']['model'], {'id':'unknown-platform'})['id']
 
-    # Select program `image-classification-tf*`.
+    # Select one of `image-classification-tf*`.
     r = select_program()
     if r['return'] > 0: return r
     program = r['program']
@@ -159,7 +159,7 @@ def do(i, arg):
     if r['return'] > 0: return r
     imagenet_val = r['dataset']
     img_dir_val = get_ImageNet_path(imagenet_val)
-    print('ImageNet path: ' + img_dir_val)
+    ck.out('ImageNet path: ' + img_dir_val)
 
     if (arg.accuracy):
         # Use as many batches (of size 1), as there are JPEG images in the directory.

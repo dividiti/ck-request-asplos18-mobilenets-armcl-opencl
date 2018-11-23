@@ -59,6 +59,39 @@ cm={
   'default':1
 }
 
+
+def select_ImageNet():
+    res = ck.access({'action':'show',
+                     'module_uoa':'env',
+                     'tags':'dataset,imagenet,raw,val'})
+    if res['return'] > 0:
+        return res
+    datasets = res.get('lst',[])
+    if datasets:
+        if len(datasets) == 1:
+            return {'return': 0, 'dataset': datasets[0]}
+
+        ck.out('')
+        ck.out('More than one ImageNet dataset is found suitable for this script:')
+        ck.out('')
+        dataset_choices = []
+        for d in datasets:
+            dataset_choices.append({
+                'data_uid': d['data_uid'],
+                'data_uoa': get_ImageNet_path(d)
+            })
+        res = ck.access({'action': 'select_uoa',
+                        'module_uoa': 'choice',
+                        'choices': dataset_choices})
+        if res['return'] > 0:
+            return res
+        for d in datasets:
+            if d['data_uid'] == res['choice']:
+                return {'return': 0, 'dataset': d}
+
+    return {'return': 1, 'error': 'No installed ImageNet dataset found'}
+
+
 def do(i, arg):
     # Process arguments.
     if (arg.accuracy):
@@ -95,14 +128,12 @@ def do(i, arg):
     # The only supported program.
     program='mobilenets-armcl-opencl'
 
-    ii={'action':'show',
-        'module_uoa':'env',
-        'tags':'dataset,imagenet,raw,val'}
-
-    rx=ck.access(ii)
-    if len(rx['lst']) == 0: return rx
-    # FIXME: It's probably better to use CK_ENV_DATASET_IMAGE_DIR.
-    img_dir_val = rx['lst'][0]['meta']['env']['CK_CAFFE_IMAGENET_VAL']
+    # Select ImageNet dataset.
+    r = select_ImageNet()
+    if r['return'] > 0: return r
+    imagenet_val = r['dataset']
+    img_dir_val = get_ImageNet_path(imagenet_val)
+    ck.out('ImageNet path: ' + img_dir_val)
 
     if arg.accuracy:
         batch_count = len([f for f in os.listdir(img_dir_val)
