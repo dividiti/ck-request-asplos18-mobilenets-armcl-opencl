@@ -60,6 +60,9 @@ cm={
 }
 
 
+def get_ImageNet_path(dataset_env):
+    return dataset_env['meta']['env']['CK_ENV_DATASET_IMAGENET_VAL']
+
 def select_ImageNet():
     res = ck.access({'action':'show',
                      'module_uoa':'env',
