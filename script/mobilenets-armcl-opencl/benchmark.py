@@ -42,23 +42,6 @@ platform_config={
   }
 }
 
-# Batch size.
-bs={
-  'start':1,
-  'stop':1,
-  'step':1,
-  'default':1
-}
-
-# ConvolutionMethod: 0 - GEMM, 1 - DIRECT, 2 - WINOGRAD.
-# NB: WINOGRAD does not support 1x1 convolutions used in MobileNets.
-cm={
-  'start':0,
-  'stop':1,
-  'step':1,
-  'default':1
-}
-
 
 def get_ImageNet_path(dataset_env):
     return dataset_env['meta']['env']['CK_ENV_DATASET_IMAGENET_VAL']
@@ -305,6 +288,8 @@ def do(i, arg):
             # Skip aggregate MobileNets packages.
             if 'mobilenet-all' in r['dict']['tags']: continue
 
+            batch_size=1
+
             version=1
             multiplier=float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
             resolution=int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
@@ -390,6 +375,9 @@ def do(i, arg):
                        '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
+                       '##choices#env#CK_ENV_MOBILENET_VERSION'
+                   ],
+                   [
                        '##choices#env#CK_ENV_MOBILENET_MULTIPLIER'
                    ],
                    [
@@ -399,15 +387,20 @@ def do(i, arg):
                        '##choices#env#CK_CONVOLUTION_METHOD'
                    ],
                    [
+                       '##choices#env#CK_LWS_TUNER_TYPE'
+                   ],
+                   [
                        '##choices#env#CK_DATA_LAYOUT'
                    ],
                ],
                'choices_selection':[
-                   {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                   {'type':'loop', 'choice': [multiplier], 'default': 1.0},
-                   {'type':'loop', 'choice': [resolution], 'default': 224},
-                   {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
-                   {'type':'loop', 'choice': ['NCHW', 'NHWC'], 'default': 'NCHW'},
+                   {'type':'loop', 'choice':[batch_size], 'default':1}, # Only batch_size=1 is supported.
+                   {'type':'loop', 'choice':[version],    'default':1}, # Only version=1 is supported.
+                   {'type':'loop', 'choice':[multiplier], 'default':1.0},
+                   {'type':'loop', 'choice':[resolution], 'default':224},
+                   {'type':'loop', 'choice':['DEFAULT','GEMM','DIRECT'], 'default':'DEFAULT'}, # NB: WINOGRAD does not support 1x1 convolutions used in MobileNets
+                   {'type':'loop', 'choice':['NONE','DEFAULT'], 'default':'NONE'}, # DEFAULT is the library CLTuner which is disabled by default
+                   {'type':'loop', 'choice':['NCHW','NHWC'], 'default':'NCHW'}, # NHWC is only supported from v18.08
                ],
 
                'features_keys_to_process':['##choices#*'],
