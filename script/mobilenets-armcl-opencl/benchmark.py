@@ -291,10 +291,12 @@ def do(i, arg):
             # Skip aggregate MobileNets packages.
             if 'mobilenet-all' in r['dict']['tags']: continue
 
-            alpha = float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
-            rho = int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
+            version=1
+            multiplier=float(r['dict']['env']['CK_ENV_MOBILENET_MULTIPLIER'])
+            resolution=int(r['dict']['env']['CK_ENV_MOBILENET_RESOLUTION'])
+
             record_repo='local'
-            record_uoa=experiment_type+'-mobilenet-v1-'+str(alpha)+'-'+str(rho)+'-armcl-opencl-'+lib_tags
+            record_uoa='{}-{}-{}-mobilenet-v{}-{:.2f}-{}'.format(experiment_type, platform_tags, lib_tags, version, multiplier, resolution)
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
@@ -345,14 +347,14 @@ def do(i, arg):
                record_uoa=rx['data_uid']
 
             tags=r['tags']
-
             tags.append(experiment_type)
-
             tags.append('explore-mobilenets-'+experiment_type)
             tags.append(lib_tags)
             tags.append(platform_tags)
-            tags.append(str(rho))
-            tags.append(str(alpha))
+            tags.append(str(resolution))
+            tags.append(str(multiplier))
+            tags.append('mobilenet-v{}'.format(version))
+            tags.append('mobilenet-v{}-{:.2f}-{}'.format(version, multiplier, resolution))
 
             ii={'action':'autotune',
                'module_uoa':'pipeline',
@@ -378,8 +380,8 @@ def do(i, arg):
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
                    {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
                    {'type':'loop', 'choice': ['NCHW', 'NHWC'], 'default': 'NCHW'},
-                   {'type':'loop', 'choice': [rho], 'default': 224},
-                   {'type':'loop', 'choice': [alpha], 'default': 1.0},
+                   {'type':'loop', 'choice': [resolution], 'default': 224},
+                   {'type':'loop', 'choice': [multiplier], 'default': 1.0},
                ],
 
                'features_keys_to_process':['##choices#*'],
