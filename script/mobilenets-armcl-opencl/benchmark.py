@@ -298,6 +298,10 @@ def do(i, arg):
             r=ck.access(ii)
             if r['return']>0: return r
             model_name=r['data_name']
+
+            # Skip other models if one is explicitly specified.
+            if arg.model_uoa and model_uoa != arg.model_uoa: continue
+
             # Skip aggregate MobileNets packages.
             if 'mobilenet-all' in r['dict']['tags']: continue
 
@@ -454,6 +458,7 @@ parser.add_argument("--random_name", action="store_true", default=False, dest="r
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 parser.add_argument("--dry_run", action="store_true", default=False, dest="dry_run")
 parser.add_argument("--library_uoa", action="store", default='', dest="library_uoa")
+parser.add_argument("--model_uoa", action="store", default='', dest="model_uoa")
 parser.add_argument("--resume", action="store_true", default=False, dest="resume")
 
 myarg=parser.parse_args()
