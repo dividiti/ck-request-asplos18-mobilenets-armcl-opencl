@@ -20,8 +20,27 @@ request_dict={
   'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
 
-# Platform tag: 'huawei-mate10pro', 'linaro-hikey960', 'firefly-rk3399', etc.
-platform_tags='huawei-mate10pro'
+# Some tested experimental platforms.
+platform_config={
+  "HiKey960\x00": {
+    "name":     "Linaro HiKey960",
+    "id":       "linaro-hikey960",
+    "gpu":      "Mali-G71 MP8",
+    "gpu_mhz":  "807 MHz"
+  },
+  "Rockchip RK3399 Firefly Board (Linux Opensource)\x00": {
+    "name":     "Firefly RK3399",
+    "id":       "firefly-rk3399",
+    "gpu":      "Mali-T860 MP4",
+    "gpu_mhz":  "800 MHz"
+  },
+  "BLA-L09": {
+    "name":     "Huawei Mate 10 Pro",
+    "id":       "huawei-mate10pro",
+    "gpu":      "Mali-G72 MP12",
+    "gpu_mhz":  "767 MHz"
+  }
+}
 
 # Batch size.
 bs={
@@ -70,6 +89,10 @@ def do(i, arg):
     tosd=r['os_dict']
     tdid=r['device_id']
 
+    # Determine platform tags: if one of the known platforms, use its id; otherwise, 'unknown-platform'.
+    platform_tags=platform_config.get(r['features']['platform']['model'], {'id':'unknown-platform'})['id']
+
+    # The only supported program.
     program='mobilenets-armcl-opencl'
 
     ii={'action':'show',
