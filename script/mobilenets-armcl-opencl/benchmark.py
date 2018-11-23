@@ -269,6 +269,8 @@ def do(i, arg):
     if 'fail' in r: del(r['fail'])
     if 'return' in r: del(r['return'])
 
+    experiment_count = 0
+
     pipeline=copy.deepcopy(r)
     for lib_uoa in udepl:
         # Load ArmCL lib.
@@ -300,6 +302,17 @@ def do(i, arg):
 
             record_repo='local'
             record_uoa='{}-{}-{}-mobilenet-v{}-{:.2f}-{}'.format(experiment_type, platform_tags, lib_tags, version, multiplier, resolution)
+
+            # Skip the experiment if it already exists.
+            if arg.resume:
+                r = ck.access({'action':'search',
+                               'module_uoa':'experiment',
+                               'repo_uoa':record_repo,
+                               'data_uoa':record_uoa})
+                if r['return']>0: return r
+                if len(r['lst']) > 0:
+                    ck.out('Experiment "%s" already exists, skipping...' % record_uoa)
+                    continue
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
@@ -435,6 +448,7 @@ parser.add_argument("--repetitions", action="store", default=10, dest="repetitio
 parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 parser.add_argument("--dry_run", action="store_true", default=False, dest="dry_run")
+parser.add_argument("--resume", action="store_true", default=False, dest="resume")
 
 myarg=parser.parse_args()
 
