@@ -303,6 +303,7 @@ def do(i, arg):
             ck.out('%s - %s' % (lib_name, lib_uoa))
             ck.out('%s - %s' % (model_name, model_uoa))
             ck.out('Experiment - %s:%s' % (record_repo, record_uoa))
+            experiment_count += 1
 
             # Prepare autotuning input.
             cpipeline=copy.deepcopy(pipeline)
@@ -407,12 +408,17 @@ def do(i, arg):
                'pipeline':cpipeline,
                'out':'con'
             }
-            r=ck.access(ii)
-            if r['return']>0: return r
 
-            fail=r.get('fail','')
-            if fail=='yes':
-                return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
+            if not arg.dry_run:
+                r=ck.access(ii)
+                if r['return']>0: return r
+                fail=r.get('fail','')
+                if fail=='yes':
+                    return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
+
+    if arg.dry_run:
+        ck.out('---------------------------------------------------------------------------------------')
+        ck.out('Experiment count: %d' % experiment_count)
 
 ### end pipeline
     return {'return':0}
@@ -425,6 +431,7 @@ parser.add_argument("--accuracy", action="store_true", default=False, dest="accu
 parser.add_argument("--repetitions", action="store", default=10, dest="repetitions")
 parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
+parser.add_argument("--dry_run", action="store_true", default=False, dest="dry_run")
 
 myarg=parser.parse_args()
 
