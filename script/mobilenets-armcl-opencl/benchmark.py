@@ -364,24 +364,24 @@ def do(i, arg):
                        '##choices#env#CK_BATCH_SIZE'
                    ],
                    [
+                       '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
+                   ],
+                   [
+                       '##choices#env#CK_ENV_MOBILENET_MULTIPLIER'
+                   ],
+                   [
                        '##choices#env#CK_CONVOLUTION_METHOD'
                    ],
                    [
                        '##choices#env#CK_DATA_LAYOUT'
                    ],
-                   [
-                       '##choices#env#CK_ENV_MOBILENET_RESOLUTION'
-                   ],
-                   [
-                       '##choices#env#CK_ENV_MOBILENET_MULTIPLIER'
-                   ]
                ],
                'choices_selection':[
                    {'type':'loop', 'start':bs['start'], 'stop':bs['stop'], 'step':bs['step'], 'default':bs['default']},
-                   {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
-                   {'type':'loop', 'choice': ['NCHW', 'NHWC'], 'default': 'NCHW'},
                    {'type':'loop', 'choice': [resolution], 'default': 224},
                    {'type':'loop', 'choice': [multiplier], 'default': 1.0},
+                   {'type':'loop', 'start':cm['start'], 'stop':cm['stop'], 'step':cm['step'], 'default':cm['default']},
+                   {'type':'loop', 'choice': ['NCHW', 'NHWC'], 'default': 'NCHW'},
                ],
 
                'features_keys_to_process':['##choices#*'],
