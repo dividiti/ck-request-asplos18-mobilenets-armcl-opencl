@@ -281,8 +281,13 @@ def do(i, arg):
         if r['return']>0: return r
         lib_name=r['data_name']
         lib_tags=r['dict']['customize']['version']
+
+        # Skip other libraries if one is explicitly specified.
+        if arg.library_uoa and lib_uoa != arg.library_uoa: continue
+
         # Skip some libs with "in [..]" or "not in [..]".
         if arg.accuracy and lib_tags not in use_lib_tags: continue
+
         skip_compile='no'
         # For each MobileNets model.*************************************************
         for model_uoa in udepm:
@@ -448,6 +453,7 @@ parser.add_argument("--repetitions", action="store", default=10, dest="repetitio
 parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
 parser.add_argument("--share_platform", action="store_true", default=False, dest="share_platform")
 parser.add_argument("--dry_run", action="store_true", default=False, dest="dry_run")
+parser.add_argument("--library_uoa", action="store", default='', dest="library_uoa")
 parser.add_argument("--resume", action="store_true", default=False, dest="resume")
 
 myarg=parser.parse_args()

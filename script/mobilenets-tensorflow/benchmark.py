@@ -318,7 +318,7 @@ def do(i, arg):
         lib_name=r['data_name']
         lib_tags=lib_type+'-'+r['dict']['customize']['version']
 
-        # Skip other libraries if there is specified one
+        # Skip other libraries if one is explicitly specified.
         if arg.library_uoa and lib_uoa != arg.library_uoa: continue
 
         # Skip some libs with "in [..]" or "not in [..]".
