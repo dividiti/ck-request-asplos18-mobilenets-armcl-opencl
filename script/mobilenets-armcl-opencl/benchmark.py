@@ -136,9 +136,11 @@ def do(i, arg):
     ck.out('ImageNet path: ' + img_dir_val)
 
     if arg.accuracy:
+        # Use as many batches (of size 1), as there are JPEG images in the directory.
         batch_count = len([f for f in os.listdir(img_dir_val)
            if f.endswith('.JPEG') and os.path.isfile(os.path.join(img_dir_val, f))])
     else:
+        # FIXME: Use 2 batches, using the first for warm up (to be excluded from the average)?
         batch_count = 1
 
     # Restrict accuracy testing to the ReQuEST fork of ArmCL and direct convolution for large datasets.
