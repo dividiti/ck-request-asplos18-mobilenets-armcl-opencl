@@ -42,6 +42,16 @@ platform_config={
   }
 }
 
+# ArmCL-specific choices:
+# WINOGRAD does not support 1x1 convolutions used in MobileNets.
+convolution_methods = ['DEFAULT','GEMM','DIRECT']
+default_convolution_method = 'DEFAULT'
+# DEFAULT is the library CLTuner which is disabled by default.
+kernel_tuners = ['NONE','DEFAULT']
+default_kernel_tuner = 'NONE'
+# NHWC is only supported from v18.08.
+data_layouts = ['NCHW','NHWC']
+default_data_layout ='NCHW'
 
 def get_ImageNet_path(dataset_env):
     return dataset_env['meta']['env']['CK_ENV_DATASET_IMAGENET_VAL']
@@ -83,6 +93,7 @@ def do(i, arg):
     if (arg.accuracy):
         experiment_type = 'accuracy'
         num_repetitions = 1
+        kernel_tuners = [default_kernel_tuner]
     else:
         experiment_type = 'performance'
         num_repetitions = arg.repetitions
@@ -129,12 +140,11 @@ def do(i, arg):
         # FIXME: Use 2 batches, using the first for warm up (to be excluded from the average)?
         batch_count = 1
 
-    # Restrict accuracy testing to the ReQuEST fork of ArmCL and direct convolution for large datasets.
+    # Restrict accuracy testing to the ReQuEST fork of ArmCL. TODO: restrict to direct convolution for large datasets.
     if arg.accuracy and batch_count > 500:
         use_lib_tags = [ 'request-d8f69c13', '18.05-0acd60ed-request' ]
-        ch['start'] = 1
     else:
-        use_lib_tags = [ 'request-d8f69c13', '18.08-52ba29e9', '18.05-0acd60ed-request', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
+        use_lib_tags = [ 'request-d8f69c13', '18.11-b9abeae08', '18.08-52ba29e9', '18.05-0acd60ed-request', '18.05-b3a371bc', '18.03-e40997bb', '18.01-f45d5a9b', '17.12-48bc34ea' ]
     # On Firefly-RK3399, the version hash has only 7 characters, not 8.
     if platform_tags=='firefly-rk3399':
         use_lib_tags = [ tag[:-1] for tag in use_lib_tags ]
@@ -398,9 +408,9 @@ def do(i, arg):
                    {'type':'loop', 'choice':[version],    'default':1}, # Only version=1 is supported.
                    {'type':'loop', 'choice':[multiplier], 'default':1.0},
                    {'type':'loop', 'choice':[resolution], 'default':224},
-                   {'type':'loop', 'choice':['DEFAULT','GEMM','DIRECT'], 'default':'DEFAULT'}, # NB: WINOGRAD does not support 1x1 convolutions used in MobileNets
-                   {'type':'loop', 'choice':['NONE','DEFAULT'], 'default':'NONE'}, # DEFAULT is the library CLTuner which is disabled by default
-                   {'type':'loop', 'choice':['NCHW','NHWC'], 'default':'NCHW'}, # NHWC is only supported from v18.08
+                   {'type':'loop', 'choice':convolution_methods, 'default':default_convolution_method},
+                   {'type':'loop', 'choice':kernel_tuners, 'default':default_kernel_tuner},
+                   {'type':'loop', 'choice':data_layouts, 'default':default_data_layout},
                ],
 
                'features_keys_to_process':['##choices#*'],
