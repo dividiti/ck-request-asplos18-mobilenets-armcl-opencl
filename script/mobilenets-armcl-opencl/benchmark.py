@@ -109,6 +109,7 @@ def do(i, arg):
     tdid=r['device_id']
 
     # Determine platform tags: if one of the known platforms, use its id; otherwise, 'unknown-platform'.
+    # FIXME: only works when the target platform is the same as the host platform.
     platform_tags=platform_config.get(r['features']['platform']['model'], {'id':'unknown-platform'})['id']
 
     # The only supported program.

@@ -145,6 +145,7 @@ def do(i, arg):
     tdid=r['device_id']
 
     # Determine platform tags: if one of the known platforms, use its id; otherwise, 'unknown-platform'.
+    # FIXME: only works when the target platform is the same as the host platform.
     platform_tags=platform_config.get(r['features']['platform']['model'], {'id':'unknown-platform'})['id']
 
     # Select one of `image-classification-tf*`.
@@ -220,8 +221,8 @@ def do(i, arg):
     if len(udepl)==0:
         return {'return':1, 'error':'no installed TensorFlow libs'}
     cdeps[library_key]['uoa']=udepl[0]
-
     depm=copy.deepcopy(cdeps['weights'])
+
     ii={'action':'resolve',
         'module_uoa':'env',
         'host_os':hos,
