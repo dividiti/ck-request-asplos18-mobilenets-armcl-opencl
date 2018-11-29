@@ -155,7 +155,7 @@ void setup_mobilenet(GraphObject& graph,
       SubStream sg(graph);
 #else
       SubGraph sg;
-#endif   
+#endif
       sg << DepthwiseConvolutionLayer(
              3U, 3U,
              weights_accessor(param_path + "_depthwise_depthwise_weights.npy"),
@@ -180,7 +180,11 @@ void setup_mobilenet(GraphObject& graph,
              weights_accessor(param_path + "_pointwise_BatchNorm_beta.npy"),
              0.001f)
          << ActivationLayer(ActivationLayerInfo(ActivationLayerInfo::ActivationFunction::BOUNDED_RELU, 6.f));
+#if defined(ARMCL_18_11_PLUS)
+      return ConcatLayer(std::move(sg));
+#else
       return BranchLayer(std::move(sg));
+#endif
     };
 
     auto target_hint = get_target_hint();
@@ -188,7 +192,7 @@ void setup_mobilenet(GraphObject& graph,
     auto convolution_method = load_convolution_methods(get_convolution_method());
 
 #if defined(ARMCL_18_08_PLUS)
-    TensorDescriptor tensor_descr(input_shape, DATATYPE, arm_compute::QuantizationInfo(), 
+    TensorDescriptor tensor_descr(input_shape, DATATYPE, arm_compute::QuantizationInfo(),
         (data_layout == LAYOUT_NCHW) ? arm_compute::DataLayout::NCHW : arm_compute::DataLayout::NHWC);
 #elif defined(ARMCL_18_05_PLUS)
     TensorDescriptor tensor_descr(input_shape, DATATYPE);
