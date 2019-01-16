@@ -1,36 +1,36 @@
 {
   "customize": {
-    "extra_dir": "", 
+    "extra_dir": "",
     "install_env": {
-      "MOBILENET_MULTIPLIER": "0.25", 
-      "MOBILENET_RESOLUTION": "224", 
-      "MOBILENET_VERSION": "1", 
-      "PACKAGE_NAME": "mobilenet_v1_0.25_224_2017_06_14.tar.gz", 
+      "MOBILENET_MULTIPLIER": "0.25",
+      "MOBILENET_RESOLUTION": "224",
+      "MOBILENET_VERSION": "1",
+      "PACKAGE_NAME": "mobilenet_v1_0.25_224_2017_06_14.tar.gz",
       "PACKAGE_URL": "http://download.tensorflow.org/models/mobilenet_v1_0.25_224_2017_06_14.tar.gz"
-    }, 
-    "no_os_in_suggested_path": "yes", 
-    "no_ver_in_suggested_path": "yes", 
+    },
+    "no_os_in_suggested_path": "yes",
+    "no_ver_in_suggested_path": "yes",
     "version": "1_0.25_224"
-  }, 
+  },
   "deps": {
     "lib-tensorflow": {
-      "local": "yes", 
-      "name": "TensorFlow library", 
-      "sort": 10, 
+      "local": "yes",
+      "name": "TensorFlow library",
+      "sort": 10,
       "tags": "lib,tensorflow"
     }
-  }, 
+  },
   "end_full_path_universal": "mobilenet_v1_0.25_224.ckpt.index",
-  "process_script": "install", 
-  "soft_uoa": "50b442db9bde0a0c", 
-  "suggested_path": "weights-mobilenet-v1_0.25_224", 
+  "process_script": "install",
+  "soft_uoa": "50b442db9bde0a0c",
+  "suggested_path": "weights-mobilenet-v1_0.25_224",
   "tags": [
-    "mobilenet", 
-    "weights", 
+    "mobilenet",
+    "weights",
     "checkpoints"
-  ], 
+  ],
   "use_scripts_from_another_entry": {
-    "data_uoa": "c91e02b8f9061d66", 
+    "data_uoa": "c91e02b8f9061d66",
     "module_uoa": "package"
   }
 }

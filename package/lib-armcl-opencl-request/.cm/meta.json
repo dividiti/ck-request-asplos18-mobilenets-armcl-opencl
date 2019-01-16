@@ -49,7 +49,7 @@
   },
   "need_cpu_info": "yes",
   "only_for_host_os_tags": [
-    "windows", 
+    "windows",
     "linux"
   ],
   "only_for_target_os_tags": [

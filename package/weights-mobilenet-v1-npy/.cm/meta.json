@@ -7,99 +7,99 @@
   "deps": {
     "mobilenet-v1-0.25-128": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.25-128",
       "name": "mobilenet-v1-0.25-128",
-      "sort": 0
+      "sort": 0,
+      "tags": "weights,npy,mobilenet-v1-0.25-128"
     },
     "mobilenet-v1-0.25-160": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.25-160",
       "name": "mobilenet-v1-0.25-160",
-      "sort": 1
+      "sort": 1,
+      "tags": "weights,npy,mobilenet-v1-0.25-160"
     },
     "mobilenet-v1-0.25-192": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.25-192",
       "name": "mobilenet-v1-0.25-192",
-      "sort": 2
+      "sort": 2,
+      "tags": "weights,npy,mobilenet-v1-0.25-192"
     },
     "mobilenet-v1-0.25-224": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.25-224",
       "name": "mobilenet-v1-0.25-224",
-      "sort": 3
+      "sort": 3,
+      "tags": "weights,npy,mobilenet-v1-0.25-224"
     },
     "mobilenet-v1-0.50-128": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.50-128",
       "name": "mobilenet-v1-0.50-128",
-      "sort": 4
+      "sort": 4,
+      "tags": "weights,npy,mobilenet-v1-0.50-128"
     },
     "mobilenet-v1-0.50-160": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.50-160",
       "name": "mobilenet-v1-0.50-160",
-      "sort": 5
+      "sort": 5,
+      "tags": "weights,npy,mobilenet-v1-0.50-160"
     },
     "mobilenet-v1-0.50-192": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.50-192",
       "name": "mobilenet-v1-0.50-192",
-      "sort": 6
+      "sort": 6,
+      "tags": "weights,npy,mobilenet-v1-0.50-192"
     },
     "mobilenet-v1-0.50-224": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.50-224",
       "name": "mobilenet-v1-0.50-224",
-      "sort": 7
+      "sort": 7,
+      "tags": "weights,npy,mobilenet-v1-0.50-224"
     },
     "mobilenet-v1-0.75-128": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.75-128",
       "name": "mobilenet-v1-0.75-128",
-      "sort": 8
+      "sort": 8,
+      "tags": "weights,npy,mobilenet-v1-0.75-128"
     },
     "mobilenet-v1-0.75-160": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.75-160",
       "name": "mobilenet-v1-0.75-160",
-      "sort": 9
+      "sort": 9,
+      "tags": "weights,npy,mobilenet-v1-0.75-160"
     },
     "mobilenet-v1-0.75-192": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.75-192",
       "name": "mobilenet-v1-0.75-192",
-      "sort": 10
+      "sort": 10,
+      "tags": "weights,npy,mobilenet-v1-0.75-192"
     },
     "mobilenet-v1-0.75-224": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-0.75-224",
       "name": "mobilenet-v1-0.75-224",
-      "sort": 11
+      "sort": 11,
+      "tags": "weights,npy,mobilenet-v1-0.75-224"
     },
     "mobilenet-v1-1.0-128": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-1.0-128",
       "name": "mobilenet-v1-1.0-128",
-      "sort": 12
+      "sort": 12,
+      "tags": "weights,npy,mobilenet-v1-1.0-128"
     },
     "mobilenet-v1-1.0-160": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-1.0-160",
       "name": "mobilenet-v1-1.0-160",
-      "sort": 13
+      "sort": 13,
+      "tags": "weights,npy,mobilenet-v1-1.0-160"
     },
     "mobilenet-v1-1.0-192": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-1.0-192",
       "name": "mobilenet-v1-1.0-192",
-      "sort": 14
+      "sort": 14,
+      "tags": "weights,npy,mobilenet-v1-1.0-192"
     },
     "mobilenet-v1-1.0-224": {
       "local": "yes",
-      "tags": "weights,npy,mobilenet-v1-1.0-224",
       "name": "mobilenet-v1-1.0-224",
-      "sort": 15
+      "sort": 15,
+      "tags": "weights,npy,mobilenet-v1-1.0-224"
     }
   },
   "end_full_path_universal": "README.md",

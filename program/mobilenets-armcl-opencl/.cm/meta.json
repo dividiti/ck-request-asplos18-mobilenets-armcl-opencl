@@ -51,23 +51,23 @@
   "print_files_after_run": [
     "tmp-stdout.tmp",
     "tmp-stderr.tmp"
-  ], 
+  ],
   "process_in_tmp": "yes",
   "program": "yes",
   "run_cmds": {
     "default": {
       "ignore_return_code": "yes",
       "run_time": {
-        "output_invariant_of_repeat": "yes",
         "fine_grain_timer_file": "tmp-ck-timer.json",
         "need_compute_device": "opencl",
-        "post_process_via_ck": "yes",
+        "output_invariant_of_repeat": "yes",
         "post_process_cmds": [
           "python $#ck_take_from_{script:689867d1939a781d}#$postprocess.py"
         ],
+        "post_process_via_ck": "yes",
         "pre_process_via_ck": {
-          "module_uoa": "script",
           "data_uoa": "689867d1939a781d",
+          "module_uoa": "script",
           "script_name": "preprocess"
         },
         "run_cmd_main": "$#BIN_FILE#$",
@@ -81,26 +81,7 @@
       }
     }
   },
-  "run_vars": {
-    "CK_BATCH_COUNT": 1,
-    "CK_BATCH_SIZE": 1,
-    "CK_CROP_PERCENT": 87.5, 
-    "CK_IMAGE_FILE": "",
-    "CK_RECREATE_CACHE": "NO", 
-    "CK_SKIP_IMAGES": 0,
-    "CK_NORMALIZE_DATA": "YES",
-    "CK_SUBTRACT_MEAN": "YES",
-    "CK_TMP_IMAGE_SIZE": 0
-  },
   "run_deps": {
-    "weights": {
-      "force_target_as_host": "yes",
-      "local": "yes",
-      "name": "MobileNet weights (as NumPy arrays)",
-      "sort": 10,
-      "tags": "mobilenet,weights,npy",
-      "no_tags": "mobilenet-all"
-    },
     "imagenet-aux": {
       "force_target_as_host": "yes",
       "local": "yes",
@@ -114,7 +95,26 @@
       "name": "ImageNet dataset (val)",
       "sort": 30,
       "tags": "dataset,imagenet,raw,val"
+    },
+    "weights": {
+      "force_target_as_host": "yes",
+      "local": "yes",
+      "name": "MobileNet weights (as NumPy arrays)",
+      "no_tags": "mobilenet-all",
+      "sort": 10,
+      "tags": "mobilenet,weights,npy"
     }
+  },
+  "run_vars": {
+    "CK_BATCH_COUNT": 1,
+    "CK_BATCH_SIZE": 1,
+    "CK_CROP_PERCENT": 87.5,
+    "CK_IMAGE_FILE": "",
+    "CK_NORMALIZE_DATA": "YES",
+    "CK_RECREATE_CACHE": "NO",
+    "CK_SKIP_IMAGES": 0,
+    "CK_SUBTRACT_MEAN": "YES",
+    "CK_TMP_IMAGE_SIZE": 0
   },
   "skip_bin_ext": "yes",
   "source_files": [
@@ -132,12 +132,14 @@
     "f32",
     "vopencl"
   ],
+  "target_file": "benchmark",
+  "template": "yes",
+  "template_type": "image classification via ArmCL",
   "use_preprocess_compilation_scripts": {
     "data_uoa": "3144372763a44cd2",
     "module_uoa": "84e27ad9dd12e734",
     "script_func": "ck_preprocess",
     "script_name": "compile-preprocess"
   },
-  "target_file": "benchmark",
   "version": "1.0.0"
 }
