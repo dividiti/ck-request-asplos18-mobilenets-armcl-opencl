@@ -507,9 +507,11 @@ $ cd `ck find script:mobilenets-tensorflow`
 $ python benchmark.py --accuracy
 ```
 
-## See accepted results on the live scoreboard
+## See experimental results on an interactive scoreboard
 
-[Link](http://cKnowledge.org/request-results)
+- [MLPerf MobileNets](http://cknowledge.org/dashboard/mlperf.mobilenets)
+- [ReQuEST](http://cknowledge.org/dashboard/request.asplos18)
+
 
 ## Further discussions
 
