@@ -1,5 +1,6 @@
 {
   "check_exit_status": "yes",
+  "comment": "DEPRECATED - 2018_02_22",
   "customize": {
     "install_env": {
       "MODEL_IMAGE_HEIGHT": "128",

@@ -1,11 +1,12 @@
 {
   "check_exit_status": "yes",
+  "comment": "DEPRECATED - 2018_02_22",
   "customize": {
     "force_ask_path": "no",
     "no_os_in_suggested_path": "yes",
     "no_ver_in_suggested_path": "yes",
     "skip_file_check": "yes",
-    "version": "v1_all"
+    "version": "v1_all_2018_02_22"
   },
   "deps": {
     "mobilenet-v1-0.25-128": {
